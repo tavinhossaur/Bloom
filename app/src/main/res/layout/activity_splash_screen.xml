@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash_screen_gradient_color">
+
+    <!-- Logo do aplicativo -->
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="340dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/bloom_lotus_icon"
+        app:tint="@color/black1" />
+
+</RelativeLayout>

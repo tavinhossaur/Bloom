@@ -3,7 +3,25 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_main.xml" value="0.296195652173913" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/drawable/bloom_lotus_icon.xml" value="0.188" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/drawable/ic_baseline_album_24.xml" value="0.188" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/drawable/ic_baseline_queue_music_24.xml" value="0.188" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/drawable/ic_baseline_settings_24.xml" value="0.1715" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/drawable/ic_lotus.xml" value="0.188" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/drawable/splash_screen_gradient_color.xml" value="0.188" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_albuns.xml" value="0.1" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_artistas.xml" value="0.1" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_favoritos.xml" value="0.1" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_navheader.xml" value="0.22" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_permissao.xml" value="0.1" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_player.xml" value="0.1" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_playlists.xml" value="0.1" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/activity_splash_screen.xml" value="0.1" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/fragment_mini_player.xml" value="0.33" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/music_item_layout.xml" value="0.33" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
+        <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/menu/main_nav_menu.xml" value="0.1" />
       </map>
     </option>
   </component>

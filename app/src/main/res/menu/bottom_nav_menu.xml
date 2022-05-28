@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_config"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="Configurações" />
+    <item
+        android:id="@+id/item_equalizador"
+        android:icon="@drawable/ic_baseline_equalizer_24"
+        android:title="Equalizador" />
+    <item
+        android:id="@+id/item_sobre"
+        android:icon="@drawable/ic_baseline_info_24"
+        android:title="Sobre" />
+</menu>
