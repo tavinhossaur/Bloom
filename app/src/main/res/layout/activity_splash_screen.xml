@@ -9,8 +9,7 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="340dp"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
         android:src="@drawable/bloom_lotus_icon"
         app:tint="@color/black1" />
 

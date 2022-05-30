@@ -19,16 +19,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding // Variável usada para ligar os componentes da tela
+    private lateinit var musicaAdapter : MusicaAdapter // Variável que leva o Adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Inicialização do binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        checarPermissoes()
-        setTheme(R.style.temaClaroNav)
+        iniciarLayout()
 
         // Abrir a tela de playlists
         binding.playlistBtn.setOnClickListener {
@@ -99,5 +94,32 @@ class MainActivity : AppCompatActivity() {
 
         bar_title_text.isGone = true
         search_bar.isVisible = true
+    }
+
+    // Método para chamar tudo que será a inicialização do layout da tela inicial
+    private fun iniciarLayout(){
+        // Inicialização do binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        checarPermissoes()
+        setTheme(R.style.temaClaroNav)
+
+        // Lista de músicas
+        val listaMusicas = ArrayList<String>()
+        listaMusicas.add("In Bloom")
+        listaMusicas.add("Smells Like Teen Spirit")
+        listaMusicas.add("Sappy")
+        listaMusicas.add("Dumb")
+        listaMusicas.add("Breed")
+        listaMusicas.add("Come As You Are")
+        listaMusicas.add("The Man Who Sold The World")
+
+        binding.musicasRv.setHasFixedSize(true) // Para otimização do RecyclerView, o seu tamanho é fixo, mesmo quando itens são adicionados ou removidos
+        binding.musicasRv.setItemViewCacheSize(13) // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados" para depois potencialmente usá-los de novo (Reciclagem de itens)
+        binding.musicasRv.layoutManager = LinearLayoutManager(this@MainActivity)
+
+        musicaAdapter = MusicaAdapter(this@MainActivity, listaMusicas)
+        binding.musicasRv.adapter = musicaAdapter
     }
 }

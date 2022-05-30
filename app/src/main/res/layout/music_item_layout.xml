@@ -20,7 +20,8 @@
             android:layout_width="55dp"
             android:layout_height="55dp"
             android:layout_centerVertical="true"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="6dp"
             app:cardCornerRadius="10dp">
 
             <!-- Imagem da música -->
@@ -28,46 +29,48 @@
                 android:id="@+id/imagem_musica"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
-                android:scaleType="fitXY"/>
+                android:scaleType="fitXY" />
 
         </androidx.cardview.widget.CardView>
 
         <!-- Título e artista da música -->
         <LinearLayout
             android:id="@+id/dados_musica"
-            android:layout_width="236dp"
+            android:layout_width="220dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_centerVertical="true"
             android:layout_toEndOf="@id/card_imagem"
             android:orientation="vertical">
 
             <!-- Título da música -->
+
+            <!-- Artista da música -->
             <TextView
                 android:id="@+id/titulo_musica"
-                android:layout_width="235dp"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="In Bloom"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textColor="#404040"
+                android:textSize="16.5sp" />
 
-            <!-- Artista da música -->
             <TextView
                 android:id="@+id/artista_musica"
                 android:layout_width="235dp"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="Nirvana"
-                android:textColor="#8a8a8a"
-                android:textSize="14sp" />
+                android:textColor="#a3a2a2"
+                android:textSize="12.5sp" />
 
         </LinearLayout>
 
         <!-- Tempo total da música e botão de opções extras -->
         <LinearLayout
-            android:layout_width="98dp"
-            android:layout_height="43dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:layout_marginHorizontal="5dp"
             android:layout_toEndOf="@id/dados_musica"
             android:orientation="horizontal">
 
@@ -76,24 +79,24 @@
                 android:id="@+id/anim_play"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="5dp"
-                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_baseline_graphic_eq_24"
-                android:visibility="invisible"
+                android:visibility="visible"
                 app:tint="@color/purple1" />
 
             <!-- Tempo total da música -->
+
             <TextView
                 android:id="@+id/tempo_musica"
                 android:layout_width="40dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:layout_marginEnd="3dp"
-                android:text="03:52"
+                android:text="04:16"
                 android:textAlignment="center" />
 
-            <!-- Botão de opções extras -->
             <ImageView
                 android:id="@+id/btn_extra"
                 android:layout_width="25dp"
@@ -101,6 +104,8 @@
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_baseline_more_vert_24"
                 app:tint="@color/black1" />
+
+            <!-- Botão de opções extras -->
 
         </LinearLayout>
 

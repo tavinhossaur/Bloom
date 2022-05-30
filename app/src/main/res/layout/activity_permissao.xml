@@ -8,8 +8,8 @@
     tools:context=".PermissaoActivity">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="350dp"
-        android:layout_height="600dp"
+        android:layout_width="330dp"
+        android:layout_height="550dp"
         android:layout_marginTop="60dp"
         app:cardCornerRadius="35dp"
         app:cardElevation="50dp"
@@ -44,41 +44,37 @@
             android:text='O aplicativo precisa da permissão de acesso ao armazenamento, caso contrário não poderemos obter suas músicas!\n\nAo clicar em "Cancelar" o aplicativo será encerrado.'
             android:textSize="21.5sp" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:padding="5dp"
-            android:layout_marginTop="520dp">
+        <Button
+            android:id="@+id/btn_permitir"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="150dp"
+            android:layout_height="55dp"
+            android:layout_gravity="bottom"
+            android:text="Permitir"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:textAllCaps="false"
+            android:textColor="@color/purple1"
+            android:textSize="20sp"
+            android:outlineSpotShadowColor="@color/purple1"
+            app:strokeColor="@color/purple1"
+            app:strokeWidth="2dp" />
 
-            <Button
-                android:id="@+id/btn_permitir"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="150dp"
-                android:layout_height="55dp"
-                android:layout_marginEnd="10dp"
-                android:text="Permitir"
-                android:textAllCaps="false"
-                android:textColor="@color/purple1"
-                android:textSize="20sp"
-                app:strokeColor="@color/purple1"
-                app:strokeWidth="2dp" />
-
-            <Button
-                android:id="@+id/btn_cancelar"
-                style="@style/Widget.Material3.Button.OutlinedButton"
-                android:layout_width="150dp"
-                android:layout_height="55dp"
-                android:layout_toEndOf="@id/btn_permitir"
-                android:outlineSpotShadowColor="@color/purple1"
-                android:text="Cancelar"
-                android:textAllCaps="false"
-                android:textColor="@color/purple1"
-                android:textSize="20sp"
-                app:strokeColor="@color/purple1"
-                app:strokeWidth="2dp" />
-
-        </RelativeLayout>
+        <Button
+            android:id="@+id/btn_cancelar"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="150dp"
+            android:layout_height="55dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="170dp"
+            android:layout_marginBottom="10dp"
+            android:text="Cancelar"
+            android:textAllCaps="false"
+            android:textColor="@color/purple1"
+            android:textSize="20sp"
+            android:outlineSpotShadowColor="@color/purple1"
+            app:strokeColor="@color/purple1"
+            app:strokeWidth="2dp" />
 
     </androidx.cardview.widget.CardView>
 
