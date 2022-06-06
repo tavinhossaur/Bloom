@@ -25,10 +25,12 @@ class PermissaoActivity : AppCompatActivity() {
         // Inicialização do binding
         binding = ActivityMainBinding.inflate(layoutInflater)
 
+        // Botões de opção
         btn_permitir.setOnClickListener { permitirPerm() }
         btn_cancelar.setOnClickListener { finish() }
     }
 
+    // Função para checar a permissão e pedir se o usuário ainda não as tiver concedido
     private fun permitirPerm(){
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 13)
     }

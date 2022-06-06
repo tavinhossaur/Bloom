@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
@@ -24,13 +25,13 @@ class SplashScreen : AppCompatActivity() {
     private fun goHome(){
         // Se o usuário ainda não tiver concedido a permissão de acessar o armazenamento, vá para a tela de aviso sobre a permissão
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 startActivity(Intent(applicationContext, PermissaoActivity::class.java))
                 finish() // Impede que o usuário volte a essa tela usando o botão voltar do celular
             }, 2000)
             // Se o usuário já tiver concedido a permissão de acessar o armazenamento, vá para a tela inicial
         }else{
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 startActivity(Intent(applicationContext, MainActivity::class.java))
                 finish() // Impede que o usuário volte a essa tela usando o botão voltar do celular
             }, 2000)

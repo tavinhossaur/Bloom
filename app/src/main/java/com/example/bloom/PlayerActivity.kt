@@ -1,8 +1,10 @@
 package com.example.bloom
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.bloom.databinding.ActivityMainBinding
+import kotlinx.android.synthetic.main.activity_player.*
 
 class PlayerActivity : AppCompatActivity() {
 

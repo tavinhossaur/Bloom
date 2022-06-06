@@ -8,10 +8,10 @@ import com.example.bloom.databinding.MusicItemLayoutBinding
 
 class MusicaAdapter(private val context: Context, private val listaMusicas: ArrayList<String>)  : RecyclerView.Adapter<MusicaAdapter.Holder>() {
     class Holder(binding: MusicItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        val titulo = binding.tituloMusica
-        val artista = binding.artistaMusica
-        val imagem = binding.imagemMusica
-        val tempo = binding.tempoMusica
+        val titulo = binding.tituloMusicaView    // Título da música
+        val artista = binding.artistaMusicaView  // Artista da música
+        val imagem = binding.imgMusicaView       // Imagem da música
+        val duracao = binding.tempoMusicaView    // Duração da música
     }
 
     // Um ViewHolder descreve uma exibição de itens e metadados sobre seu lugar dentro do RecyclerView.

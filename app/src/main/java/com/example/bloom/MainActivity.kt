@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -15,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_mini_player.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,7 +61,7 @@ class MainActivity : AppCompatActivity() {
           }
           */
 
-        mini_player.setOnClickListener{startActivity(Intent(this, PlayerActivity::class.java))}
+        // mini_player.setOnClickListener{startActivity(Intent(this, PlayerActivity::class.java))}
         btn_menu_main.setOnClickListener{setDrawer()}
         btn_search.setOnClickListener{openSearch()}
     }
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
     private fun checarPermissoes(){
         // Se o aplicativo ainda não tiver a permissão concedida, fara a requisição da mesma, caso contrário, nada acontece e a pessoa pode utilizar o aplicativo normalmente
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 startActivity(Intent(applicationContext, PermissaoActivity::class.java))
                 finish() // Impede que o usuário volte a essa tela usando o botão voltar do celular
             }, 500)
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun closeSearch(){
-        bar_title_text.isVisible = true
+        titulo_main.isVisible = true
         search_bar.isGone = true
     }
 
@@ -92,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 
-        bar_title_text.isGone = true
+        titulo_main.isGone = true
         search_bar.isVisible = true
     }
 
@@ -114,6 +116,13 @@ class MainActivity : AppCompatActivity() {
         listaMusicas.add("Breed")
         listaMusicas.add("Come As You Are")
         listaMusicas.add("The Man Who Sold The World")
+        listaMusicas.add("Something In The Way")
+        listaMusicas.add("Heart-Shaped Box")
+        listaMusicas.add("About a Girl")
+        listaMusicas.add("Lithium")
+        listaMusicas.add("Rape Me")
+        listaMusicas.add("Polly")
+        listaMusicas.add("All Apologies")
 
         binding.musicasRv.setHasFixedSize(true) // Para otimização do RecyclerView, o seu tamanho é fixo, mesmo quando itens são adicionados ou removidos
         binding.musicasRv.setItemViewCacheSize(13) // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados" para depois potencialmente usá-los de novo (Reciclagem de itens)

@@ -1,120 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="?android:attr/selectableItemBackground"
     android:id="@+id/viewMusica"
-    android:clickable="true"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="75dp"
+    android:gravity="center">
 
-    <!-- Barra da música na lista -->
-    <RelativeLayout
-        android:id="@+id/song_bar"
-        android:layout_width="match_parent"
-        android:layout_height="70dp">
+    <!-- Card que contém a foto de capa da música -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_img_musica_view"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="7dp"
+        app:cardCornerRadius="10dp">
 
-        <!-- CardView da imagem da música (Moldura) -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_imagem"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="6dp"
-            app:cardCornerRadius="10dp">
+        <!-- Imagem da música -->
+        <ImageView
+            android:id="@+id/img_musica_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-            <!-- Imagem da música -->
-            <ImageView
-                android:id="@+id/imagem_musica"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:scaleType="fitXY" />
+    </androidx.cardview.widget.CardView>
 
-        </androidx.cardview.widget.CardView>
+    <!-- Título e artista da música -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginHorizontal="3dp"
+        android:layout_toStartOf="@id/play_anim"
+        android:layout_toEndOf="@id/card_img_musica_view"
+        android:orientation="vertical">
 
-        <!-- Título e artista da música -->
-        <LinearLayout
-            android:id="@+id/dados_musica"
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/card_imagem"
-            android:orientation="vertical">
-
-            <!-- Título da música -->
-
-            <!-- Artista da música -->
-            <TextView
-                android:id="@+id/titulo_musica"
-                android:layout_width="220dp"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="In Bloom"
-                android:textColor="#404040"
-                android:textSize="16.5sp" />
-
-            <TextView
-                android:id="@+id/artista_musica"
-                android:layout_width="235dp"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:text="Nirvana"
-                android:textColor="#a3a2a2"
-                android:textSize="12.5sp" />
-
-        </LinearLayout>
-
-        <!-- Tempo total da música e botão de opções extras -->
-        <LinearLayout
+        <!-- Título da música -->
+        <TextView
+            android:id="@+id/titulo_musica_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginHorizontal="5dp"
-            android:layout_toEndOf="@id/dados_musica"
-            android:orientation="horizontal">
+            android:singleLine="true"
+            android:text="In Bloom"
+            android:textColor="@color/black1"
+            android:textSize="17sp" />
 
-            <!-- Botão de opções extras -->
-            <ImageView
-                android:id="@+id/anim_play"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="5dp"
-                android:src="@drawable/ic_baseline_graphic_eq_24"
-                android:visibility="visible"
-                app:tint="@color/purple1" />
+        <!-- Artista da música -->
+        <TextView
+            android:id="@+id/artista_musica_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:text="Nirvana"
+            android:textColor="@color/grey3"
+            android:textSize="13sp" />
 
-            <!-- Tempo total da música -->
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/tempo_musica"
-                android:layout_width="40dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:layout_marginEnd="3dp"
-                android:text="04:16"
-                android:textAlignment="center" />
+    <!-- Ícone de sinalização de reprodução da música -->
+    <ImageView
+        android:id="@+id/play_anim"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_toStartOf="@id/tempo_musica_view"
+        android:gravity="center"
+        android:src="@drawable/ic_baseline_graphic_eq_24"
+        android:visibility="visible"
+        app:tint="@color/purple1" />
 
-            <ImageView
-                android:id="@+id/btn_extra"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_baseline_more_vert_24"
-                app:tint="@color/black1" />
+    <!-- Duração da música -->
+    <TextView
+        android:id="@+id/tempo_musica_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="5dp"
+        android:layout_toStartOf="@id/btn_extra_view"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="04:16" />
 
-            <!-- Botão de opções extras -->
-
-        </LinearLayout>
-
-    </RelativeLayout>
+    <!-- Botão de opções extras -->
+     <ImageView
+         android:id="@+id/btn_extra_view"
+         android:layout_width="wrap_content"
+         android:layout_height="match_parent"
+         android:layout_alignParentEnd="true"
+         android:layout_marginEnd="5dp"
+         android:gravity="center"
+         android:src="@drawable/ic_baseline_more_vert_24"
+         app:tint="@color/black1" />
 
     <!-- Linha divisória -->
     <View
-        android:layout_width="match_parent"
+        android:id="@+id/linha_div_ss"
+        android:layout_width="wrap_content"
         android:layout_height="2.5dp"
-        android:background="@color/grey2"/>
+        android:layout_alignParentBottom="true"
+        android:background="@color/grey2" />
 
-</LinearLayout>
+</RelativeLayout>

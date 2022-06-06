@@ -10,6 +10,7 @@
     tools:openDrawer="start"
     tools:context=".MainActivity">
 
+    <!-- ConstraintLayout da tela principal -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -23,7 +24,7 @@
             <!-- Cabeçalho da barra de pesquisa, botão de menu e título -->
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <!-- Botão de pesquisa -->
@@ -51,10 +52,10 @@
                 <!-- Barras de título e pesquisa -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="55dp"
+                    android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="55dp"
-                    android:layout_marginEnd="55dp"
+                    android:layout_toEndOf="@+id/btn_menu_main"
+                    android:layout_toStartOf="@id/btn_search"
                     android:orientation="horizontal"
                     android:padding="5dp">
 
@@ -62,21 +63,21 @@
                     <EditText
                         android:id="@+id/search_bar"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:drawablePadding="10dp"
-                        android:inputType="text"
+                        android:layout_height="wrap_content"
                         android:autofillHints="name"
-                        android:hint="Procurar música"
-                        android:visibility="gone"
                         android:backgroundTint="@color/purple1"
-                        android:textColorHint="#909090" />
+                        android:hint="Procurar música"
+                        android:inputType="text"
+                        android:textColorHint="@color/grey3"
+                        android:textSize="18sp"
+                        android:visibility="gone" />
 
                     <!-- Barra do título -->
                     <TextView
-                        android:id="@+id/bar_title_text"
+                        android:id="@+id/titulo_main"
                         android:layout_width="match_parent"
-                        android:layout_height="25dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
                         android:text="Todas as músicas"
                         android:textSize="18sp"
                         android:textStyle="italic"
@@ -89,7 +90,7 @@
             <!-- Barra dos botões playlist, favoritos e randomizar -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <!-- Botão "Playlists" -->
@@ -98,6 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textSize="13sp"
                     android:text="Playlists"
                     android:textAllCaps="false"
                     android:textColor="@color/black1"
@@ -111,6 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textSize="13sp"
                     android:text="Favoritos"
                     android:textAllCaps="false"
                     android:textColor="@color/black1"
@@ -124,6 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textSize="13sp"
                     android:text="Randomizar"
                     android:textAllCaps="false"
                     android:textColor="@color/black1"
@@ -144,16 +148,6 @@
                 android:id="@+id/musicas_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/mini_player"
-                android:name="com.example.bloom.MiniPlayerFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                tools:layout="@layout/fragment_mini_player">
-
-            </androidx.fragment.app.FragmentContainerView>
 
         </LinearLayout>
 
@@ -184,14 +178,15 @@
             android:layout_marginBottom="200dp"
             android:background="@color/black1" />
 
+        <!-- Componente "NavigationView" (Menu inferior) -->
         <com.google.android.material.navigation.NavigationView
             android:layout_width="wrap_content"
             android:layout_height="200dp"
             android:layout_gravity="bottom"
             app:itemIconSize="25dp"
-            app:itemIconTint="@color/grey1"
+            app:itemIconTint="@color/grey3"
             app:itemTextAppearance="@style/menu_text_style"
-            app:itemTextColor="@color/grey1"
+            app:itemTextColor="@color/grey3"
             app:menu="@menu/bottom_nav_menu" />
 
     </com.google.android.material.navigation.NavigationView>

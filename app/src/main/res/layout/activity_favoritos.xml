@@ -19,7 +19,7 @@
         <!-- Cabeçalho da barra de pesquisa, botão de menu e título -->
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <!-- Botão de menu -->
@@ -36,10 +36,10 @@
             <!-- Barra de título -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginStart="55dp"
-                android:layout_marginEnd="55dp"
+                android:layout_toEndOf="@+id/btn_menu_fav"
+                android:layout_toStartOf="@+id/btn_voltar_fav"
                 android:orientation="horizontal"
                 android:padding="5dp">
 
@@ -47,8 +47,8 @@
                 <TextView
                     android:id="@+id/bar_title_text"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="Favoritos"
                     android:textSize="18sp"
                     android:textStyle="italic" />
@@ -69,6 +69,7 @@
 
         </RelativeLayout>
 
+        <!-- ConstraintLayout para fazer o FAB -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -119,14 +120,15 @@
             android:layout_marginBottom="200dp"
             android:background="@color/black1" />
 
+        <!-- Componente "NavigationView" (Menu inferior) -->
         <com.google.android.material.navigation.NavigationView
             android:layout_width="wrap_content"
             android:layout_height="200dp"
             android:layout_gravity="bottom"
             app:itemIconSize="25dp"
-            app:itemIconTint="@color/grey1"
+            app:itemIconTint="@color/grey3"
             app:itemTextAppearance="@style/menu_text_style"
-            app:itemTextColor="@color/grey1"
+            app:itemTextColor="@color/grey3"
             app:menu="@menu/bottom_nav_menu" />
 
     </com.google.android.material.navigation.NavigationView>

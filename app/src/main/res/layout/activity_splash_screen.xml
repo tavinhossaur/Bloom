@@ -5,11 +5,21 @@
     android:layout_height="match_parent"
     android:background="@drawable/splash_screen_gradient_color">
 
+    <!-- Linha divisória -->
+    <View
+        android:id="@+id/linha_div_ss"
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:layout_centerVertical="true"
+        android:background="@android:color/transparent"/>
+
     <!-- Logo do aplicativo -->
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/linha_div_ss"
         android:src="@drawable/bloom_lotus_icon"
         app:tint="@color/black1" />
 
