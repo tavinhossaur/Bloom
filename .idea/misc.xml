@@ -35,13 +35,14 @@
         <entry key="..\:/Bloom/app/src/main/res/drawable/ic_baseline_queue_music_24.xml" value="0.172" />
         <entry key="..\:/Bloom/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.1635" />
         <entry key="..\:/Bloom/app/src/main/res/drawable/ic_baseline_skip_next_24.xml" value="0.104" />
+        <entry key="..\:/Bloom/app/src/main/res/drawable/splash_screen_gradient_color.xml" value="0.304" />
         <entry key="..\:/Bloom/app/src/main/res/layout/activity_favoritos.xml" value="0.25" />
         <entry key="..\:/Bloom/app/src/main/res/layout/activity_main.xml" value="0.3211050724637681" />
         <entry key="..\:/Bloom/app/src/main/res/layout/activity_navheader.xml" value="0.3211050724637681" />
         <entry key="..\:/Bloom/app/src/main/res/layout/activity_permissao.xml" value="0.33" />
         <entry key="..\:/Bloom/app/src/main/res/layout/activity_player.xml" value="0.5" />
         <entry key="..\:/Bloom/app/src/main/res/layout/activity_playlists.xml" value="0.3211050724637681" />
-        <entry key="..\:/Bloom/app/src/main/res/layout/activity_splash_screen.xml" value="0.358695652173913" />
+        <entry key="..\:/Bloom/app/src/main/res/layout/activity_splash_screen.xml" value="0.40919199406968126" />
         <entry key="..\:/Bloom/app/src/main/res/layout/fragment_mini_player.xml" value="0.33" />
         <entry key="..\:/Bloom/app/src/main/res/layout/music_item_layout.xml" value="0.5692995529061102" />
         <entry key="..\:/Users/Lab5-1/AndroidStudioProjects/Bloom/app/src/main/res/layout/activity_player.xml" value="0.30337078651685395" />

@@ -1,14 +1,18 @@
 package com.example.bloom
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.ContactsContract
+import android.provider.MediaStore
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
@@ -17,11 +21,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_mini_player.*
+import java.io.File
+import java.net.URI
+import java.util.logging.Level.parse
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding // Variável usada para ligar os componentes da tela
     private lateinit var musicaAdapter : MusicaAdapter // Variável que leva o Adapter
+
+    // Funciona como uma classe static do Java
+    companion object{
+        lateinit var ListaMusicaMain : ArrayList<Musica> // Lista de músicas da tela principal
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +58,18 @@ class MainActivity : AppCompatActivity() {
             closeSearch()
         }
 
+        // Abrir a gaveta lateral de opções (Drawer)
+        binding.btnMenuMain.setOnClickListener{setDrawer()}
+
+        // Abrir a barra de pesquisa de músicas
+        binding.btnSearch.setOnClickListener{openSearch()}
+
+        /* Abrir a tela do player clicando no miniplayer
+         binding.miniPlayerMain.setOnClickListener{
+             startActivity(Intent(this, PlayerActivity::class.java))
+             closeSearch()}
+        */
+
         /*  binding.navLayout.setNavigationItemSelectedListener {
               when(it.itemId){
                   R.id.item_musicas ->
@@ -60,10 +84,6 @@ class MainActivity : AppCompatActivity() {
               true
           }
           */
-
-        // mini_player.setOnClickListener{startActivity(Intent(this, PlayerActivity::class.java))}
-        btn_menu_main.setOnClickListener{setDrawer()}
-        btn_search.setOnClickListener{openSearch()}
     }
 
     // Método que faz a checa se foram concedidas as permissões que o app precisa
@@ -79,23 +99,23 @@ class MainActivity : AppCompatActivity() {
 
     // Método para abrir e fechar o DrawerLayout
     private fun setDrawer() {
-        drawer_layout_main.openDrawer(GravityCompat.START)
+        binding.drawerLayoutMain.openDrawer(GravityCompat.START)
         closeSearch()
     }
 
     private fun closeSearch(){
-        titulo_main.isVisible = true
-        search_bar.isGone = true
+        binding.tituloMain.isVisible = true
+        binding.searchBar.isGone = true
     }
 
     // Função que é passada para o botão search, para que quando ele seja clicado, abra a EditText de pesquisa, e esconda a TextView "Todas as músicas"
     private fun openSearch() {
-        search_bar.requestFocus()
+        binding.searchBar.requestFocus()
         val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
 
-        titulo_main.isGone = true
-        search_bar.isVisible = true
+        binding.tituloMain.isGone = true
+        binding.searchBar.isVisible = true
     }
 
     // Método para chamar tudo que será a inicialização do layout da tela inicial
@@ -104,31 +124,76 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Checagem de permissões quando o usuário entrar na tela principal
         checarPermissoes()
         setTheme(R.style.temaClaroNav)
 
         // Lista de músicas
-        val listaMusicas = ArrayList<String>()
-        listaMusicas.add("In Bloom")
-        listaMusicas.add("Smells Like Teen Spirit")
-        listaMusicas.add("Sappy")
-        listaMusicas.add("Dumb")
-        listaMusicas.add("Breed")
-        listaMusicas.add("Come As You Are")
-        listaMusicas.add("The Man Who Sold The World")
-        listaMusicas.add("Something In The Way")
-        listaMusicas.add("Heart-Shaped Box")
-        listaMusicas.add("About a Girl")
-        listaMusicas.add("Lithium")
-        listaMusicas.add("Rape Me")
-        listaMusicas.add("Polly")
-        listaMusicas.add("All Apologies")
+        ListaMusicaMain = procurarMusicas()
 
-        binding.musicasRv.setHasFixedSize(true) // Para otimização do RecyclerView, o seu tamanho é fixo, mesmo quando itens são adicionados ou removidos
-        binding.musicasRv.setItemViewCacheSize(13) // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados" para depois potencialmente usá-los de novo (Reciclagem de itens)
+        // Para otimização do RecyclerView, o seu tamanho é fixo,
+        // mesmo quando itens são adicionados ou removidos.
+        binding.musicasRv.setHasFixedSize(true)
+        // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados"
+        // para depois potencialmente usá-los de novo (Reciclagem de itens).
+        binding.musicasRv.setItemViewCacheSize(13)
+        // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
+        // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.musicasRv.layoutManager = LinearLayoutManager(this@MainActivity)
 
-        musicaAdapter = MusicaAdapter(this@MainActivity, listaMusicas)
+        // Criando uma variável do Adapter com o contexto (tela) e a lista de músicas que será adicionada
+        // ao RecyclerView por meio do mesmo Adapter
+        musicaAdapter = MusicaAdapter(this@MainActivity, ListaMusicaMain)
+        // Setando o Adapter para este RecyclerView
         binding.musicasRv.adapter = musicaAdapter
     }
+
+    // Método que faz a procura de músicas pelos arquivos do celular
+    @SuppressLint("Recycle", "Range")
+    private fun procurarMusicas(): ArrayList<Musica>{
+        // Lista temporária de músicas
+        val tempLista = ArrayList<Musica>()
+        // Condições para a seleção das músicas dos arquivos
+        val selectMusica = MediaStore.Audio.Media.IS_MUSIC + ">= 0"
+        // Array de dados que serão retornados dos arquivos
+        val dadosMusica = arrayOf(
+            MediaStore.Audio.Media._ID, // ID da música
+            MediaStore.Audio.Media.TITLE, // Título da música
+            MediaStore.Audio.Media.ARTIST, // Artista da música
+            MediaStore.Audio.Media.ALBUM, // Álbum da música
+            MediaStore.Audio.Media.DURATION, // Duração da música
+            MediaStore.Audio.Media.DATE_ADDED, // Data de quando a música foi adicionada ao aplicativo
+            MediaStore.Audio.Media.DATA) // Caminho da música
+
+        // Cursor é o mecanismo que faz a busca e seleciona as músicas e as organiza com base nas condições passadas nos parâmetros
+        val cursor = this.contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, dadosMusica, selectMusica, null, MediaStore.Audio.Media.TITLE + " ASC", null)
+
+        // If que, se houverem arquivos de áudios, o cursor começará a passar por todos eles um por um,
+        // retornando seus dados e os adicionando ao modelo do array da música (Musica.kt),
+        // e então as adicionando para a lista de músicas temporarias
+        if (cursor != null) {
+            if (cursor.moveToFirst())
+                do {
+                    val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)) // Cursor procura e adiciona o ID da música
+                    val tituloC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)) // Cursor procura e adiciona o título da música
+                    val artistaC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)) // Cursor procura e adiciona o artista da música
+                    val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)) // Cursor procura e adiciona o álbuns da música
+                    val duracaoC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) // Cursor procura e adiciona o duração da música
+                    val caminhoC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)) // Cursor procura e adiciona o caminho da música
+
+                    // Passando os dados retornados da música para o modelo do array da música (Musica.kt)
+                    val musica = Musica(id = idC, titulo = tituloC, artista = artistaC, album = albumC, duracao = duracaoC, caminho = caminhoC)
+                    // Passando o caminho da música para uma constante que o identifica como um arquivo
+                    val arquivo = File(musica.caminho)
+                    // Se o arquivo existir, ele será adicionado para a lista de músicas,
+                    // se ele foi excluído, não aparecerá mais na lista quando o aplicativo for iniciado novamente
+                    if (arquivo.exists())
+                        tempLista.add(musica)
+
+                } while (cursor.moveToNext())
+                cursor.close() // Termina o cursor, para que ele não fique executando o loop de pesquisa infinitamente
+        }
+        return tempLista // Retorna a lista de músicas para o ArrayList<Musica>
+    }
+
 }
