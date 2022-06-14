@@ -153,8 +153,11 @@ class MainActivity : AppCompatActivity() {
     private fun procurarMusicas(): ArrayList<Musica>{
         // Lista temporária de músicas
         val tempLista = ArrayList<Musica>()
-        // Condições para a seleção das músicas dos arquivos
-        val selectMusica = MediaStore.Audio.Media.IS_MUSIC + ">= 0"
+        // Condições para a seleção das músicas dos arquivos "!= 0" (diferente de 0) significa que o cursor procurará apenas músicas
+        // e não ringtones do android " AND " título não igual a "AUD%" ou seja, o título da música não pode ser igual a
+        // AUD + zero ou outros caracteres.
+        val selectMusica = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.TITLE + " NOT  LIKE  'AUD%'"
+
         // Array de dados que serão retornados dos arquivos
         val dadosMusica = arrayOf(
             MediaStore.Audio.Media._ID, // ID da música
@@ -165,8 +168,17 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Audio.Media.DATE_ADDED, // Data de quando a música foi adicionada ao aplicativo
             MediaStore.Audio.Media.DATA) // Caminho da música
 
-        // Cursor é o mecanismo que faz a busca e seleciona as músicas e as organiza com base nas condições passadas nos parâmetros
-        val cursor = this.contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, dadosMusica, selectMusica, null, MediaStore.Audio.Media.TITLE + " ASC", null)
+        // Cursor é o mecanismo que faz a busca e seleciona as músicas e as organiza com base nas condições passadas nos parâmetros,
+        // para a organização alfabética, está sendo utilizado o código em SQL "COLLATE NOCASE ASC", sendo COLLATE a cláusula que
+        // define uma ordenação, essa ordenação recebe como argumentos o "NOCASE" que torna a ordenação case-insensitive e "ASC" seria
+        // "ascendente" ou seja, alfabéticamente de A a Z.
+        val cursor = this.contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            dadosMusica,
+            selectMusica,
+            null,
+            MediaStore.Audio.Media.DISPLAY_NAME + " COLLATE NOCASE ASC",
+            null)
 
         // If que, se houverem arquivos de áudios, o cursor começará a passar por todos eles um por um,
         // retornando seus dados e os adicionando ao modelo do array da música (Musica.kt),
