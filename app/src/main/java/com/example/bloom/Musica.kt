@@ -9,6 +9,7 @@ data class Musica(
     val artista:String,
     val album:String,
     val duracao:Long = 0,
+    val imagemUri:String,
     val caminho: String)
 
 // Método que formata a duração em milisegundos das músicas para o tempo comum (minutos : segundos)

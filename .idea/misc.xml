@@ -22,6 +22,7 @@
         <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/layout/music_item_layout.xml" value="0.33" />
         <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
         <entry key="..\:/Aplicativos/apps_android/Bloom/app/src/main/res/menu/main_nav_menu.xml" value="0.1" />
+        <entry key="..\:/Bloom/app/src/main/res/drawable/ic_album_image_24.xml" value="0.3235" />
         <entry key="..\:/Bloom/app/src/main/res/drawable/ic_baseline_favorite_24.xml" value="0.172" />
         <entry key="..\:/Bloom/app/src/main/res/drawable/ic_baseline_keyboard_arrow_up_24.xml" value="0.1635" />
         <entry key="..\:/Bloom/app/src/main/res/drawable/ic_baseline_pause.xml" value="0.172" />
@@ -35,6 +36,7 @@
         <entry key="..\:/Bloom/app/src/main/res/drawable/ic_baseline_queue_music_24.xml" value="0.172" />
         <entry key="..\:/Bloom/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.1635" />
         <entry key="..\:/Bloom/app/src/main/res/drawable/ic_baseline_skip_next_24.xml" value="0.104" />
+        <entry key="..\:/Bloom/app/src/main/res/drawable/ic_bloom_logo.xml" value="0.3235" />
         <entry key="..\:/Bloom/app/src/main/res/drawable/splash_screen_gradient_color.xml" value="0.3445" />
         <entry key="..\:/Bloom/app/src/main/res/layout/activity_favoritos.xml" value="0.25" />
         <entry key="..\:/Bloom/app/src/main/res/layout/activity_main.xml" value="0.3211050724637681" />
@@ -45,6 +47,7 @@
         <entry key="..\:/Bloom/app/src/main/res/layout/activity_splash_screen.xml" value="0.40919199406968126" />
         <entry key="..\:/Bloom/app/src/main/res/layout/fragment_mini_player.xml" value="0.33" />
         <entry key="..\:/Bloom/app/src/main/res/layout/music_item_layout.xml" value="0.5692995529061102" />
+        <entry key="..\:/Bloom/app/src/main/res/layout/music_view_layout.xml" value="0.5" />
         <entry key="..\:/Users/Lab5-1/AndroidStudioProjects/Bloom/app/src/main/res/layout/activity_player.xml" value="0.30337078651685395" />
         <entry key="..\:/Users/Lab5-1/StudioProjects/Bloom/app/src/main/res/layout/activity_main.xml" value="0.18819655521783182" />
         <entry key="..\:/Users/Lab5-1/StudioProjects/Bloom/app/src/main/res/layout/activity_permissao.xml" value="0.33" />

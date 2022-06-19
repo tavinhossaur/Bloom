@@ -15,10 +15,13 @@ class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_AppCompat_temaClaro)
+        // Settando a cor da status bar do android nessa tela para ela ficar coesa com a cor da splash
         window.statusBarColor = ContextCompat.getColor(this, R.color.end_gradient)
 
         setContentView(R.layout.activity_splash_screen)
-        goHome() // A função é chamada assim que essa activity inicia, pois a função dela é apenas aparecer por alguns segundos
+        // A função é chamada assim que essa activity inicia,
+        // pois a função da splash screen é apenas aparecer por alguns segundos
+        goHome()
     }
 
     // Método que leva o usuário a alguma das telas após 2 segundos

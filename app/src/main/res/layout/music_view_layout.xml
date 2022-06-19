@@ -13,13 +13,14 @@
         android:layout_height="55dp"
         android:layout_centerVertical="true"
         android:layout_marginHorizontal="7dp"
+        app:cardElevation="6dp"
         app:cardCornerRadius="10dp">
 
         <!-- Imagem da música -->
         <ImageView
             android:id="@+id/img_musica_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
     </androidx.cardview.widget.CardView>
 

@@ -74,7 +74,9 @@
                 android:id="@+id/img_musica_tpl"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitXY"/>
+                android:src="@drawable/ic_baseline_library_music_24"
+                android:scaleType="fitXY"
+                app:tint="@color/grey3" />
 
             <!-- Botão para acessar as letras da música
             <Button

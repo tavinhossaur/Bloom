@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -19,18 +18,15 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivityMainBinding
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_mini_player.*
 import java.io.File
-import java.net.URI
-import java.util.logging.Level.parse
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding // Variável usada para ligar os componentes da tela
-    private lateinit var musicaAdapter : MusicaAdapter // Variável que leva o Adapter
+    private lateinit var binding : ActivityMainBinding // binding é a variável do ViewBinding para ligar as views ao código
+    private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
 
-    // Funciona como uma classe static do Java
+    // Declaração de um objeto/classe estática
     companion object{
         lateinit var ListaMusicaMain : ArrayList<Musica> // Lista de músicas da tela principal
     }
@@ -122,6 +118,8 @@ class MainActivity : AppCompatActivity() {
     private fun iniciarLayout(){
         // Inicialização do binding
         binding = ActivityMainBinding.inflate(layoutInflater)
+        // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
+        // no caso, a ActivityMainBinding (activity_main.xml)
         setContentView(binding.root)
 
         // Checagem de permissões quando o usuário entrar na tela principal
@@ -165,7 +163,8 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Audio.Media.ARTIST, // Artista da música
             MediaStore.Audio.Media.ALBUM, // Álbum da música
             MediaStore.Audio.Media.DURATION, // Duração da música
-            MediaStore.Audio.Media.DATE_ADDED, // Data de quando a música foi adicionada ao aplicativo
+            MediaStore.Audio.Media.ALBUM_ID, // ID do álbum (imagem)
+            // MediaStore.Audio.Media.DATE_ADDED, // Data de quando a música foi adicionada ao aplicativo
             MediaStore.Audio.Media.DATA) // Caminho da música
 
         // Cursor é o mecanismo que faz a busca e seleciona as músicas e as organiza com base nas condições passadas nos parâmetros,
@@ -191,10 +190,13 @@ class MainActivity : AppCompatActivity() {
                     val artistaC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)) // Cursor procura e adiciona o artista da música
                     val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)) // Cursor procura e adiciona o álbuns da música
                     val duracaoC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) // Cursor procura e adiciona o duração da música
+                    val albumIdC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString() // Cursor procura e adiciona o id do álbum da música
+                    val uri = Uri.parse("content://media/external/audio/albumart") // Link onde ficará as imagens dos álbuns que o cursor deve retornar
+                    val imagemUriC = Uri.withAppendedPath(uri, albumIdC).toString() // A imagemUri é a junção do id com o link da imagem
                     val caminhoC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)) // Cursor procura e adiciona o caminho da música
 
                     // Passando os dados retornados da música para o modelo do array da música (Musica.kt)
-                    val musica = Musica(id = idC, titulo = tituloC, artista = artistaC, album = albumC, duracao = duracaoC, caminho = caminhoC)
+                    val musica = Musica(id = idC, titulo = tituloC, artista = artistaC, album = albumC, duracao = duracaoC, caminho = caminhoC, imagemUri = imagemUriC)
                     // Passando o caminho da música para uma constante que o identifica como um arquivo
                     val arquivo = File(musica.caminho)
                     // Se o arquivo existir, ele será adicionado para a lista de músicas,

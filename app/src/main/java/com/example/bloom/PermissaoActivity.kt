@@ -11,23 +11,25 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.example.bloom.databinding.ActivityMainBinding
+import com.example.bloom.databinding.ActivityPermissaoBinding
 import kotlinx.android.synthetic.main.activity_permissao.*
 
 class PermissaoActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding   // Variável usada para ligar os componentes da tela
+    private lateinit var binding : ActivityPermissaoBinding // binding é a variável do ViewBinding para ligar as views ao código
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_permissao)
+        // Inicialização do binding
+        binding = ActivityPermissaoBinding.inflate(layoutInflater)
+        // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
+        // no caso, a ActivityPermissaoBinding (activity_permissao.xml)
+        setContentView(binding.root)
         setTheme(R.style.Theme_AppCompat_temaClaro)
 
-        // Inicialização do binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
-
         // Botões de opção
-        btn_permitir.setOnClickListener { permitirPerm() }
-        btn_cancelar.setOnClickListener { finish() }
+        binding.btnPermitir.setOnClickListener { permitirPerm() }
+        binding.btnCancelar.setOnClickListener { finish() }
     }
 
     // Função para checar a permissão e pedir se o usuário ainda não as tiver concedido

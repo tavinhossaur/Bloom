@@ -3,27 +3,29 @@ package com.example.bloom
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.GravityCompat
+import com.example.bloom.databinding.ActivityFavoritosBinding
 import com.example.bloom.databinding.ActivityMainBinding
+import com.example.bloom.databinding.ActivityPlayerBinding
 import kotlinx.android.synthetic.main.activity_favoritos.*
 
 class FavoritosActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding   // Variável usada para ligar os componentes da tela
+    private lateinit var binding : ActivityFavoritosBinding   // Variável usada para ligar os componentes da tela
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_favoritos)
-
-        setTheme(R.style.temaClaroNav)
-
         // Inicialização do binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityFavoritosBinding.inflate(layoutInflater)
+        // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
+        // no caso, a ActivityFavoritosBinding (activity_favoritos.xml)
+        setContentView(binding.root)
+        setTheme(R.style.Theme_AppCompat_temaClaro)
 
-        btn_menu_fav.setOnClickListener{setDrawer()}
+        binding.btnMenuFav.setOnClickListener{setDrawer()}
     }
 
     // Método para abrir e fechar o DrawerLayout
     private fun setDrawer() {
-        drawer_layout_fav.openDrawer(GravityCompat.START)
+        binding.drawerLayoutFav.openDrawer(GravityCompat.START)
     }
 }

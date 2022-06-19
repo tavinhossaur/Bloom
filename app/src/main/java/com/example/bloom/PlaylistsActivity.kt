@@ -4,26 +4,28 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.view.GravityCompat
 import com.example.bloom.databinding.ActivityMainBinding
+import com.example.bloom.databinding.ActivityPermissaoBinding
+import com.example.bloom.databinding.ActivityPlaylistsBinding
 import kotlinx.android.synthetic.main.activity_playlists.*
 
 class PlaylistsActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding   // Variável usada para ligar os componentes da tela
+    private lateinit var binding : ActivityPlaylistsBinding // binding é a variável do ViewBinding para ligar as views ao código
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_playlists)
-
-        setTheme(R.style.temaClaroNav)
-
         // Inicialização do binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityPlaylistsBinding.inflate(layoutInflater)
+        // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
+        // no caso, a ActivityPlaylistsBinding (activity_playlists.xml)
+        setContentView(binding.root)
+        setTheme(R.style.Theme_AppCompat_temaClaro)
 
-        btn_menu_pl.setOnClickListener{setDrawer()}
+        binding.btnMenuPl.setOnClickListener{setDrawer()}
     }
 
     // Método para abrir e fechar o DrawerLayout
     private fun setDrawer() {
-        drawer_layout_pl.openDrawer(GravityCompat.START)
+       binding.drawerLayoutPl.openDrawer(GravityCompat.START)
     }
 }
