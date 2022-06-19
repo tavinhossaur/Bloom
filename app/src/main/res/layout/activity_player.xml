@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="18 de 50"
             android:textSize="14sp"
             tools:ignore="NestedWeights" />
 
@@ -53,7 +52,7 @@
         android:id="@+id/body_player"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.05"
+        android:layout_weight="0.02"
         android:layout_gravity="center"
         android:layout_marginHorizontal="25dp"
         android:orientation="vertical">
@@ -73,10 +72,7 @@
             <ImageView
                 android:id="@+id/img_musica_tpl"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_library_music_24"
-                android:scaleType="fitXY"
-                app:tint="@color/grey3" />
+                android:layout_height="match_parent"/>
 
             <!-- Botão para acessar as letras da música
             <Button
@@ -107,9 +103,9 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="15dp"
             android:layout_toStartOf="@+id/btn_fav_tpl"
-            android:text="In Bloom"
+            android:singleLine="true"
             android:textColor="@color/black1"
-            android:textSize="24sp"
+            android:textSize="23sp"
             android:textStyle="bold" />
 
         <!-- Artista da música -->
@@ -120,9 +116,9 @@
             android:layout_below="@id/titulo_musica_tpl"
             android:layout_marginStart="25dp"
             android:layout_toStartOf="@+id/btn_fav_tpl"
-            android:text="Nirvana"
+            android:singleLine="true"
             android:textColor="@color/purple1"
-            android:textSize="18sp" />
+            android:textSize="17sp" />
 
         <!-- Álbum da música -->
         <TextView
@@ -132,9 +128,9 @@
             android:layout_below="@id/artista_musica_tpl"
             android:layout_marginStart="25dp"
             android:layout_toStartOf="@+id/btn_fav_tpl"
-            android:text="Nevermind"
+            android:singleLine="true"
             android:textColor="@color/grey3"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
         <!-- Botão de favorito -->
         <ImageView
@@ -143,9 +139,9 @@
             android:layout_height="30dp"
             android:layout_below="@id/card_img_musica_tpl"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="17dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
-            android:src="@drawable/ic_baseline_favorite_24"
+            android:src="@drawable/ic_baseline_favorite_border_24"
             app:tint="@color/purple1" />
 
     </RelativeLayout>
@@ -162,9 +158,9 @@
 
         <!-- Botão compartilhar (Share) -->
         <ImageView
-            android:id="@+id/btn_share"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:id="@+id/btn_compart"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_share_24"
             app:tint="@color/black1"
@@ -173,8 +169,8 @@
         <!-- Botão temporizador (Timer) -->
         <ImageView
             android:id="@+id/btn_timer"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_timer_24"
             app:tint="@color/black1"/>
@@ -182,8 +178,8 @@
         <!-- Botão equalizador (Equalizer) -->
         <ImageView
             android:id="@+id/btn_equal"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_equalizer_24"
             app:tint="@color/black1"/>
@@ -191,8 +187,8 @@
         <!-- Botão adicionar à playlist (Add to playlist) -->
         <ImageView
             android:id="@+id/btn_addPl"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_playlist_add_24"
             app:tint="@color/black1"/>
@@ -206,7 +202,7 @@
         android:layout_height="25dp"
         android:layout_weight="0.02"
         android:gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_marginHorizontal="20dp"
         android:orientation="horizontal">
 
@@ -240,7 +236,6 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="5dp"
             android:gravity="center"
-            android:text="04:16"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp" />
 
@@ -251,7 +246,7 @@
         android:id="@+id/controles_btn_tpl"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.05"
+        android:layout_weight="0.03"
         android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="40dp"
         android:gravity="center"
@@ -269,7 +264,7 @@
 
         <!-- Botão "previous" (Voltar/Anterior) -->
         <ImageView
-            android:id="@+id/btn_previous"
+            android:id="@+id/btn_ante"
             android:layout_width="65dp"
             android:layout_height="45dp"
             android:layout_weight="1"
@@ -288,7 +283,7 @@
 
         <!-- Botão "next" (Pular/Próximo) -->
         <ImageView
-            android:id="@+id/btn_next"
+            android:id="@+id/btn_prox"
             android:layout_width="65dp"
             android:layout_height="45dp"
             android:layout_weight="1"
@@ -297,7 +292,7 @@
 
         <!-- Botão repetir música (Repeat song) -->
         <ImageView
-            android:id="@+id/btn_repeat"
+            android:id="@+id/btn_repetir"
             android:layout_width="65dp"
             android:layout_height="45dp"
             android:layout_weight="1"

@@ -18,6 +18,7 @@
 
         <!-- Imagem da música -->
         <ImageView
+            android:forceDarkAllowed="false"
             android:id="@+id/img_musica_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -77,7 +78,7 @@
         android:layout_toStartOf="@id/btn_extra_view"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="04:16" />
+        android:text="00:00" />
 
     <!-- Botão de opções extras -->
      <ImageView

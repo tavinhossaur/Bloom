@@ -11,6 +11,8 @@
 
     <!-- minhas cores -->
     <color name="end_gradient">#f8f5ff</color>
+    <color name="start_gradient">#7574e8</color>
+    <color name="center_gradient">#d0b8ff</color>
     <color name="purple1">#7574e8</color>
     <color name="purple2">#494991</color>
     <color name="black1">#413e4f</color>

@@ -38,7 +38,7 @@ class MusicaAdapter(private val context: Context, private val listaMusicas: Arra
         holder.duracao.text = formatarDuracao(listaMusicas[position].duracao)
 
         // Utilizando Glide, Procura na lista de músicas a posição da música em específico
-        // e retorna sua imagem de álbumno lugar da ImageView da mesma
+        // e retorna sua imagem de álbum no lugar da ImageView da mesma
         Glide.with(context)
             // Carrega a posição da música e a uri da sua imagem
             .load(listaMusicas[position].imagemUri)
@@ -50,6 +50,10 @@ class MusicaAdapter(private val context: Context, private val listaMusicas: Arra
         // Quando clicado na view da música no RecyclerView, o usuário é levado para o player
         holder.root.setOnClickListener {
             val intent = Intent(context, PlayerActivity::class.java)
+            // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
+            intent.putExtra("posMusica", position)
+            // Quando o usuário é levado a tela do player, também é enviado os dados da classe do adapter (String)
+            intent.putExtra("classeAdapter", "MusicaAdapter")
             ContextCompat.startActivity(context, intent, null)
         }
     }
