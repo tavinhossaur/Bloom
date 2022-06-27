@@ -25,13 +25,14 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <!-- Botão de pesquisa -->
                 <ImageView
                     android:id="@+id/btn_search"
                     android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_height="30dp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="10dp"
@@ -42,15 +43,16 @@
                 <ImageView
                     android:id="@+id/btn_menu_main"
                     android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_height="30dp"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="2dp"
                     android:src="@drawable/ic_baseline_menu_24"
                     app:tint="@color/black1" />
 
                 <!-- Barras de título e pesquisa -->
                 <LinearLayout
+                    android:id="@+id/cabecalho_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -91,6 +93,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <!-- Botão "Playlists" -->
@@ -141,6 +144,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
+                android:elevation="30dp"
                 android:background="@color/purple1"/>
 
             <!-- Lista de músicas -->

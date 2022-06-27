@@ -11,6 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.bloom.databinding.MusicViewLayoutBinding
 
+// Classe do Adapter que liga a lista de músicas aos itens do RecyclerView
 class MusicaAdapter(private val context: Context, private val listaMusicas: ArrayList<Musica>)  : RecyclerView.Adapter<MusicaAdapter.Holder>() {
     class Holder(binding: MusicViewLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val titulo = binding.tituloMusicaView    // Título da música
@@ -23,7 +24,7 @@ class MusicaAdapter(private val context: Context, private val listaMusicas: Arra
         val root = binding.root
     }
 
-    // Um ViewHolder descreve uma exibição de itens e metadados sobre seu lugar dentro do RecyclerView.
+    // Um ViewHolder descreve uma exibição de itens e metadados sobre seu lugar dentro do RecyclerView
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(MusicViewLayoutBinding.inflate(LayoutInflater.from(context), parent, false))
     }
@@ -49,12 +50,12 @@ class MusicaAdapter(private val context: Context, private val listaMusicas: Arra
 
         // Quando clicado na view da música no RecyclerView, o usuário é levado para o player
         holder.root.setOnClickListener {
-            val intent = Intent(context, PlayerActivity::class.java)
+            val adapterIntent = Intent(context, PlayerActivity::class.java)
             // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
-            intent.putExtra("posMusica", position)
+            adapterIntent.putExtra("indicador", position)
             // Quando o usuário é levado a tela do player, também é enviado os dados da classe do adapter (String)
-            intent.putExtra("classeAdapter", "MusicaAdapter")
-            ContextCompat.startActivity(context, intent, null)
+            adapterIntent.putExtra("classe", "Adapter")
+            ContextCompat.startActivity(context, adapterIntent, null)
         }
     }
 

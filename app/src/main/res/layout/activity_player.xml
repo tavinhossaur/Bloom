@@ -65,7 +65,7 @@
             android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true"
             android:outlineSpotShadowColor="@color/black"
-            app:cardCornerRadius="30dp"
+            app:cardCornerRadius="20dp"
             app:cardElevation="6dp">
 
             <!-- Capa da música -->
@@ -217,19 +217,18 @@
 
         <!-- Tempo decorrente -->
         <TextView
-            android:id="@+id/dec_tempo_tpl"
+            android:id="@+id/dec_tempo_seek_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="5dp"
             android:layout_below="@id/seekBar_musica"
-            android:text="00:00"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textSize="12sp" />
 
         <!-- Tempo final -->
         <TextView
-            android:id="@+id/fim_tempo_tpl"
+            android:id="@+id/fim_tempo_seek_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/seekBar_musica"

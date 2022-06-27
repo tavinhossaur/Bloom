@@ -12,6 +12,7 @@ class FavoritosActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityFavoritosBinding   // Variável usada para ligar os componentes da tela
 
+    // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Inicialização do binding

@@ -48,4 +48,7 @@ dependencies {
     // Glide (Biblioteca de carregamento e cache de imagens para Android, para otimização da rolagem da tela)
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+
+    // Notificação do app
+    implementation 'androidx.media:media:1.6.0'
 }

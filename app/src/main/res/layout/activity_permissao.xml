@@ -1,85 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_marginHorizontal="30dp"
     android:orientation="vertical"
     tools:context=".PermissaoActivity">
 
-    <!-- Logo do aplicativo -->
-    <ImageView
-        android:id="@+id/imagem_perm"
-        android:layout_width="160dp"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/bloom_lotus_icon"
-        app:tint="@color/purple1" />
-
-    <!-- Linha divisória -->
-    <View
-        android:id="@+id/linha_div"
-        android:layout_width="wrap_content"
-        android:layout_height="3dp"
-        android:layout_below="@id/imagem_perm"
-        android:layout_centerHorizontal="true"
-        android:layout_marginHorizontal="10dp"
-        android:background="@color/purple1"
-        android:elevation="6dp" />
-
-    <!-- Texto de aviso sobre a permissão -->
-    <TextView
-        android:id="@+id/text_perm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linha_div"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="10dp"
-        android:padding="10dp"
-        android:text='O aplicativo precisa da permissão de acesso ao armazenamento, caso contrário não poderemos obter suas músicas!\n\nAo clicar em "Cancelar" o aplicativo será encerrado.'
-        android:textSize="20sp" />
-
-    <!-- Botões de opção -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/text_perm"
-        android:layout_marginTop="20dp"
-        android:gravity="center_horizontal">
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="20dp"
+        android:orientation="vertical"
+        tools:ignore="UselessParent">
 
-        <!-- Botão permitir -->
-        <Button
-            android:id="@+id/btn_permitir"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="10dp"
-            android:outlineSpotShadowColor="@color/purple1"
-            android:text="Permitir"
-            android:textAllCaps="false"
-            android:textColor="@color/purple1"
-            android:textSize="17sp"
-            app:strokeColor="@color/purple1"
-            app:strokeWidth="2dp"
-            style="@style/Widget.Material3.Button.OutlinedButton"/>
+        <!-- Logo do aplicativo -->
+        <ImageView
+            android:id="@+id/imagem_perm"
+            android:layout_width="160dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/bloom_lotus_icon"
+            app:tint="@color/purple1" />
 
-        <!-- Botão cancelar -->
-        <Button
-            android:id="@+id/btn_cancelar"
-            android:layout_width="0dp"
+        <!-- Linha divisória -->
+        <View
+            android:id="@+id/linha_div"
+            android:layout_width="wrap_content"
+            android:layout_height="3dp"
+            android:layout_marginHorizontal="10dp"
+            android:background="@color/purple1"
+            android:elevation="6dp" />
+
+        <!-- Texto de aviso sobre a permissão -->
+        <TextView
+            android:id="@+id/text_perm"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:outlineSpotShadowColor="@color/purple1"
-            android:text="Cancelar"
-            android:textAllCaps="false"
-            android:textColor="@color/purple1"
-            android:textSize="17sp"
-            app:strokeColor="@color/purple1"
-            app:strokeWidth="2dp"
-            style="@style/Widget.Material3.Button.OutlinedButton"/>
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            android:text='O aplicativo precisa da permissão de acesso ao armazenamento, caso contrário não poderemos obter suas músicas!\n\nAo clicar em "Cancelar" o aplicativo será encerrado.'
+            android:textSize="20sp" />
+
+        <!-- Botões de opção -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal">
+
+            <!-- Botão permitir -->
+            <Button
+                android:id="@+id/btn_permitir"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:text="Permitir"
+                android:textAllCaps="false"
+                android:textColor="@color/purple1"
+                android:textSize="17sp"
+                app:strokeColor="@color/purple1"
+                app:strokeWidth="2dp"
+                tools:ignore="TextContrastCheck" />
+
+            <!-- Botão cancelar -->
+            <Button
+                android:id="@+id/btn_cancelar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancelar"
+                android:textAllCaps="false"
+                android:textColor="@color/purple1"
+                android:textSize="17sp"
+                app:strokeColor="@color/purple1"
+                app:strokeWidth="2dp"
+                tools:ignore="TextContrastCheck" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

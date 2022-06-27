@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreen : AppCompatActivity() {
+    // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_AppCompat_temaClaro)

@@ -10,7 +10,6 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
@@ -26,14 +25,26 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding // binding é a variável do ViewBinding para ligar as views ao código
     private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
 
-    // Declaração de um objeto/classe estática
+    // Declaração de objetos/classes estáticas
     companion object{
         lateinit var ListaMusicaMain : ArrayList<Musica> // Lista de músicas da tela principal
     }
 
+    // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        iniciarLayout()
+        // Inicialização do binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
+        // no caso, a ActivityMainBinding (activity_main.xml)
+        setContentView(binding.root)
+
+        // Checagem de permissões quando o usuário entrar na tela principal
+        if(checarPermissoes()){
+            iniciarLayout()
+        }
+
+        setTheme(R.style.temaClaroNav)
 
         // Abrir a tela de playlists
         binding.playlistBtn.setOnClickListener {
@@ -49,8 +60,13 @@ class MainActivity : AppCompatActivity() {
 
         // Randomizar as músicas
         binding.randomBtn.setOnClickListener {
-            startActivity(Intent(this, PlayerActivity::class.java))
-            Toast.makeText(this, "Músicas randomizadas!", Toast.LENGTH_SHORT).show()
+            val mainIntent = Intent(this@MainActivity, PlayerActivity::class.java)
+            // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
+            mainIntent.putExtra("indicador", 0)
+            // Quando o usuário é levado a tela do player, também é enviado os dados da classe da MainActivity (String)
+            mainIntent.putExtra("classe", "Main")
+            startActivity(mainIntent)
+            // Toast.makeText(this, "Músicas randomizadas!", Toast.LENGTH_SHORT).show()
             closeSearch()
         }
 
@@ -83,14 +99,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Método que faz a checa se foram concedidas as permissões que o app precisa
-    private fun checarPermissoes(){
+    private fun checarPermissoes() : Boolean{
         // Se o aplicativo ainda não tiver a permissão concedida, fara a requisição da mesma, caso contrário, nada acontece e a pessoa pode utilizar o aplicativo normalmente
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             Handler(Looper.getMainLooper()).postDelayed({
                 startActivity(Intent(applicationContext, PermissaoActivity::class.java))
                 finish() // Impede que o usuário volte a essa tela usando o botão voltar do celular
             }, 500)
+            return false
         }
+        return true
     }
 
     // Método para abrir e fechar o DrawerLayout
@@ -116,16 +134,6 @@ class MainActivity : AppCompatActivity() {
 
     // Método para chamar tudo que será a inicialização do layout da tela inicial
     private fun iniciarLayout(){
-        // Inicialização do binding
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
-        // no caso, a ActivityMainBinding (activity_main.xml)
-        setContentView(binding.root)
-
-        // Checagem de permissões quando o usuário entrar na tela principal
-        checarPermissoes()
-        setTheme(R.style.temaClaroNav)
-
         // Lista de músicas
         ListaMusicaMain = procurarMusicas()
 
@@ -205,7 +213,7 @@ class MainActivity : AppCompatActivity() {
                         tempLista.add(musica)
 
                 } while (cursor.moveToNext())
-                cursor.close() // Termina o cursor, para que ele não fique executando o loop de pesquisa infinitamente
+            cursor.close() // Termina o cursor, para que ele não fique executando o loop de pesquisa infinitamente
         }
         return tempLista // Retorna a lista de músicas para o ArrayList<Musica>
     }

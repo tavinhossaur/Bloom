@@ -6,8 +6,11 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
+        android:name=".ClasseApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,20 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.temaClaro"
+        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
         <activity
-            android:name=".SplashScreen"
+            android:name=".PermissaoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".PermissaoActivity"
             android:exported="false" />
         <activity
             android:name=".PlaylistsActivity"
@@ -56,6 +52,20 @@
             tools:ignore="LockedOrientationActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".SplashScreen"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service android:name=".MusicaService"/>
+        <receiver android:name=".NotificacaoReceiver"
+            android:enabled="true"/>
     </application>
 
 </manifest>

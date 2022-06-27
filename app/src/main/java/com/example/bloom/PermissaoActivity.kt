@@ -18,6 +18,7 @@ class PermissaoActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityPermissaoBinding // binding é a variável do ViewBinding para ligar as views ao código
 
+    // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Inicialização do binding
