@@ -217,5 +217,4 @@ class MainActivity : AppCompatActivity() {
         }
         return tempLista // Retorna a lista de músicas para o ArrayList<Musica>
     }
-
 }

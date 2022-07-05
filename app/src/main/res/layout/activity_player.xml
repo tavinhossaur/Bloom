@@ -6,11 +6,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     tools:context=".PlayerActivity"
+    android:background="@color/grey2"
     android:orientation="vertical">
 
     <!-- Cabeçalho do player -->
     <LinearLayout
-        android:id="@+id/header_player"
+        android:id="@+id/cabecalho_player"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.025"
@@ -58,13 +59,16 @@
         android:orientation="vertical">
 
         <!-- Card que contém a foto de capa da música -->
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
+            style="@style/CardViewShadow"
             android:id="@+id/card_img_musica_tpl"
             android:layout_width="305dp"
             android:layout_height="305dp"
             android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true"
-            android:outlineSpotShadowColor="@color/black"
+            android:outlineSpotShadowColor="@color/black2"
+            app:strokeWidth="2dp"
+            app:strokeColor="@color/grey2"
             app:cardCornerRadius="20dp"
             app:cardElevation="6dp">
 
@@ -72,7 +76,7 @@
             <ImageView
                 android:id="@+id/img_musica_tpl"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
             <!-- Botão para acessar as letras da música
             <Button
@@ -92,7 +96,7 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"/>
             -->
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Título da música -->
         <TextView
@@ -251,13 +255,13 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <!-- Botão embaralhar (Shuffle) -->
+        <!-- Botão fila (Queue) -->
         <ImageView
             android:id="@+id/btn_shuffle"
             android:layout_width="65dp"
             android:layout_height="45dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_shuffle_24"
+            android:src="@drawable/ic_baseline_queue_music_24"
             app:tint="@color/black1"
             tools:ignore="NestedWeights" />
 
@@ -298,6 +302,8 @@
             android:src="@drawable/ic_baseline_repeat_24"
             app:tint="@color/black1"/>
 
+        <!-- Botão repetir música (Repeat song) -->
+
     </LinearLayout>
-    
+
 </LinearLayout>

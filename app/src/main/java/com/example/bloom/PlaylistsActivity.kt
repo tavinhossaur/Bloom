@@ -22,7 +22,10 @@ class PlaylistsActivity : AppCompatActivity() {
         setContentView(binding.root)
         setTheme(R.style.Theme_AppCompat_temaClaro)
 
-        binding.btnMenuPl.setOnClickListener{setDrawer()}
+        // Ao clicar no botão fechar, a activity é simplesmente encerrada.
+        binding.btnVoltarPl.setOnClickListener {finish()}
+        // Abrir a gaveta lateral de opções (Drawer)
+        binding.btnMenuPl.setOnClickListener {setDrawer()}
     }
 
     // Método para abrir e fechar o DrawerLayout

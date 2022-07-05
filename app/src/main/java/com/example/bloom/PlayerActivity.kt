@@ -1,31 +1,22 @@
 package com.example.bloom
 
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
-import android.media.MediaParser
 import android.media.MediaPlayer
+import android.media.audiofx.AudioEffect
 import android.os.Bundle
 import android.os.IBinder
-import android.provider.MediaStore
-import android.service.notification.NotificationListenerService
-import android.service.notification.NotificationListenerService.NOTIFICATION_CHANNEL_OR_GROUP_DELETED
-import android.service.notification.StatusBarNotification
 import android.widget.SeekBar
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.bloom.MiniPlayerFragment.Companion.binding
-import com.example.bloom.PlayerActivity.Companion.filaMusica
-import com.example.bloom.PlayerActivity.Companion.musicaService
-import com.example.bloom.PlayerActivity.Companion.posMusica
 import com.example.bloom.databinding.ActivityPlayerBinding
-import kotlinx.android.synthetic.main.activity_favoritos.*
-import kotlinx.android.synthetic.main.activity_player.*
 
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
 class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {
@@ -36,7 +27,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         var posMusica : Int = 0 // Posição da música, valor padrão de 0
         var tocando : Boolean = false // Variável para definir se a música está tocando ou não, por padrão: "false"
         var musicaService : MusicaService? = null // Serviço da música, por padrão fica como null
-        var repetirMusica : Boolean = false // Variável para definir se a música está repetindo ou não, por padrão: "false"
+        var repetindo : Boolean = false // Variável para definir se a música está repetindo ou não, por padrão: "false"
+        // var randomizando : Boolean = false
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityPlayerBinding // binding é a variável do ViewBinding para ligar as views ao código
     }
@@ -51,6 +43,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // no caso, a ActivityPlayerBinding (activity_player.xml)
         setContentView(binding.root)
         setTheme(R.style.Theme_AppCompat_temaClaro)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.grey2)
 
         // Cria a intent com a classe MusicService
         val bindIntent = Intent(this, MusicaService::class.java)
@@ -63,6 +56,33 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         iniciarLayout()
 
+        // FUNÇÕES DA ACTIVITY (TELA)
+        // Ao clicar no botão fechar, a activity é simplesmente encerrada.
+        binding.btnFecharTpl.setOnClickListener {finish()}
+
+        // FUNÇÕES DA EXTRAS
+        // Quando clicado no botão de equalizador, ele tentará levar o usuário
+        // para o painel de controle de equalizador de som padrão do Android.
+        binding.btnEqual.setOnClickListener {
+            try {
+                // Intent recebendo a activity alvo dela (ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                val equalizadorIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
+                // Dados extras enviados junto da intent:
+                // Sessão de áudio (A sessão atual de áudio sendo reproduzida)
+                equalizadorIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, musicaService!!.mPlayer!!.audioSessionId)
+                // O nome do pacote do aplicativo (package com.example.bloom)
+                equalizadorIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, baseContext.packageName)
+                // E o tipo de equalizador que será mostrado para o usuário, no caso: "CONTENT_TYPE_MUSIC" (música)
+                equalizadorIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
+                // Lança a intent junto do método para retornar resultados da mesma.
+                resultadoIntent.launch(equalizadorIntent)
+            }catch (e: Exception){
+                // Se por algum motivo, o smartphone não for capaz de acessar o equalizador, o toast abaixo é apresentado
+                Toast.makeText(this, "Equalizador não suportado", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // FUNÇÕES DE CONTROLE DO PLAYER
         // Ao clicar no botão play/pause, chama o método para tocar ou pausar a música
         binding.btnPpTpl.setOnClickListener {tocarPausarMusica()}
         // Ao clicar no botão "previous", chama o método trocar música
@@ -72,20 +92,22 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // com valor "true" para o Boolean "proximo"
         binding.btnProx.setOnClickListener {trocarMusica(true)}
 
-        // Ao clicar no botão repetir, verifica se não está repetindo a música atual
+        // Por padrão o modo da reprodução é definido como 0 (Reprodução normal)
+        var modoReproducao = 0
+
+        // Quando for clicado no botão de repetir a música, terão 3 opções
         binding.btnRepetir.setOnClickListener {
-            // Se não estiver repetindo
-            if(!repetirMusica){
-                // Então define a variável como repetindo (true)
-                repetirMusica = true
-                // E muda a cor do botão para parecer que a opção está ativada
-                binding.btnRepetir.setColorFilter(ContextCompat.getColor(this, R.color.purple1))
-            // Caso contrário, se estiver repetindo
-            }else{
-                // Então define a variável como não repetindo (false)
-                repetirMusica = false
-                // E muda a cor do botão para parecer que a opção está desligada
-                binding.btnRepetir.setColorFilter(ContextCompat.getColor(this, R.color.black1))
+            // Toda vez que é clicado aumenta +1 no modo de reprodução até 3
+            // Quando chega no 3, as opções resetam
+            modoReproducao = (++modoReproducao) % 2 // % 3
+            // Quando o modo de reprodução for
+            when(modoReproducao){
+                // 0 - Reprodução normal da música
+                0 -> reproducaoNormal()
+                // 1 - Repete a música atual
+                1 -> reproducaoRepetir()
+                // 2 - Reproduz a playlist randômicamente
+                //2 -> reproducaoRandom()
             }
         }
 
@@ -103,8 +125,43 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Quando o usuário soltar o indicador ou a SeekBar
             override fun onStopTrackingTouch(p0: SeekBar?) = Unit
         })
-
     }
+
+    // Método para definir a reprodução normal da lista de músicas
+    private fun reproducaoNormal(){
+        // Se a reprodução for normal, então a música não está repetindo
+        repetindo = false
+        //randomizando = false
+        // O ícone do botão muda para o ícone de reprodução normal
+        binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_24)
+        // A cor é definida como a cor padrão dos botões do player
+        binding.btnRepetir.setColorFilter(resources.getColor(R.color.black1))
+        // E um toast é apresentado
+        Toast.makeText(this, "Reprodução normal", Toast.LENGTH_SHORT).show()
+    }
+
+    // Método para definir a repetição da música atual
+    private fun reproducaoRepetir() {
+        // Se a reprodução não for normal, então a música está repetindo
+        repetindo = true
+        //randomizando = false
+        // O ícone do botão muda para o ícone de reprodução de uma única música
+        binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_one_24)
+        // A cor é definida como a cor roxa padrão o app, para indicar que a opção está ligada
+        binding.btnRepetir.setColorFilter(resources.getColor(R.color.purple1))
+        // E um toast é apresentado
+        Toast.makeText(this, "Repetir a música", Toast.LENGTH_SHORT).show()
+    }
+
+    /* Método para definir a reprodução randômica da lista de músicas
+    private fun reproducaoRandom(){
+        repetindo = false
+        randomizando = true
+        binding.btnRepetir.setImageResource(R.drawable.ic_baseline_shuffle_24)
+        binding.btnRepetir.setColorFilter(resources.getColor(R.color.purple1))
+        Toast.makeText(this, "Playlist randomizada", Toast.LENGTH_SHORT).show()
+    }
+     */
 
     // Método que cria o player da música e faz ela reproduzir
     private fun criarPlayer() {
@@ -158,11 +215,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         binding.tituloMusicaTpl.text = filaMusica[posMusica].titulo
         binding.artistaMusicaTpl.text = filaMusica[posMusica].artista
         binding.albumMusicaTpl.text = filaMusica[posMusica].album
-
-        // Se a música estiver repetindo, mantém a cor de ativado no botão
-        if(repetirMusica){
-            binding.btnRepetir.setColorFilter(ContextCompat.getColor(this, R.color.purple1))
-        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -269,6 +321,22 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             carregarMusica()
         } catch (e: Exception){
             return
+        }
+    }
+
+    // Uma classe que pode chamar APIs do tipo startActivityForResult sem ter que gerenciar códigos de solicitação
+    // e converter solicitação/resposta para uma intent.
+    // Esse método serve para iniciar atividades dentro e fora do aplicativo recebendo um resultado, no caso, está sendo utilizado para
+    // o equalizador das músicas do aplicativo, para assim, os dados que são gerados lá, como a predefinição de som escolhida pelo usuário,
+    // seja recebida pelo aplicativo e a alteração do som ocorra.
+    private var resultadoIntent = registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+    { resultado ->
+        // Se o resultado for "OK", então não houve erros e crashes na intent, e ela pode seguir normalmente
+        if (resultado.resultCode == Activity.RESULT_OK) {
+            // getData(), pega os resultados da intent, a predefinição de som escolhida por exemplo
+            resultado.data
+            // retorna esses dados e os registra no resultado da activity.
+            return@registerForActivityResult
         }
     }
 }

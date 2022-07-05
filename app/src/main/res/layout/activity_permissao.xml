@@ -25,13 +25,14 @@
             app:tint="@color/purple1" />
 
         <!-- Linha divisória -->
-        <View
+        <com.google.android.material.divider.MaterialDivider
             android:id="@+id/linha_div"
             android:layout_width="wrap_content"
-            android:layout_height="3dp"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:background="@color/purple1"
-            android:elevation="6dp" />
+            android:elevation="6dp"
+            app:dividerThickness="3dp"
+            app:dividerColor="@color/purple1" />
 
         <!-- Texto de aviso sobre a permissão -->
         <TextView

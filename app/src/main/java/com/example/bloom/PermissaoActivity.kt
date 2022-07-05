@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import com.example.bloom.databinding.ActivityMainBinding
 import com.example.bloom.databinding.ActivityPermissaoBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.activity_permissao.*
 
 class PermissaoActivity : AppCompatActivity() {
@@ -52,16 +53,22 @@ class PermissaoActivity : AppCompatActivity() {
                 // ou diretamente escolha para negar e não pedir mais a permissão
                 // Um AlertDialog surgirá para dizer que o app não pedirá mais a permissão e portanto, ela deve ser concedida nas configurações do aplicativo
             }else if(!showRationale) {
-                val permAlert = AlertDialog.Builder(this, R.style.AlertDialogTheme)
+                // Criação do AlertDialog utilizando MaterialDesign e aplicando o estilo personalizado AlertDialogTheme
+                val permAlert = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
+                // Título do AlertDialog
                 permAlert.setTitle("Bloom não pedirá mais pelas permissões!")
+                // Mensagem do AlertDialog
                 permAlert.setMessage("Se você deseja utilizar o aplicativo, conceda as permissões necessárias nas configurações do Bloom.\n\nAo clicar em \"Cancelar\" o aplicativo será encerrado.")
-                permAlert.setCancelable(false) // Impede que o AlertDialog seja fechado se clicado na parte de fora dele ou utilizando o botão voltar do celular
+                // Impede que o AlertDialog seja fechado se clicado na parte de fora dele ou utilizando o botão voltar do celular
+                permAlert.setCancelable(false)
 
                 // Botão positivo que redireciona o usuário para a tela de configurações e detalhes do aplicativo
                 permAlert.setPositiveButton("Configurações"){ _, _ ->
                     startActivity(Intent().apply {
-                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS // Caminho para a tela que será redirecionado
-                        data = Uri.fromParts("package", packageName, null) // Pacote (package) do aplicativo para que o usuário seja levado para as configurações deste aplicativo.
+                        // Caminho para a tela que será redirecionado
+                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                        // Pacote (package) do aplicativo para que o usuário seja levado para as configurações deste aplicativo.
+                        data = Uri.fromParts("package", packageName, null)
                     })
                 }
 
@@ -70,9 +77,9 @@ class PermissaoActivity : AppCompatActivity() {
                     finish()
                 }
 
-                // Constante utilizada para mostrar o AlertDialog
-                val alert: AlertDialog = permAlert.create()
-                alert.show()
+                // objeto utilizado para mostrar o AlertDialog
+                val alerta: AlertDialog = permAlert.create()
+                alerta.show()
             }
         }
     }

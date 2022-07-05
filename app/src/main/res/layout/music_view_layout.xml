@@ -4,6 +4,7 @@
     android:id="@+id/viewMusica"
     android:layout_width="match_parent"
     android:layout_height="75dp"
+    android:background="@color/white"
     android:gravity="center">
 
     <!-- Card que contém a foto de capa da música -->
@@ -13,7 +14,7 @@
         android:layout_height="55dp"
         android:layout_centerVertical="true"
         android:layout_marginHorizontal="7dp"
-        app:cardElevation="6dp"
+        app:cardElevation="8dp"
         app:cardCornerRadius="10dp">
 
         <!-- Imagem da música -->
@@ -92,11 +93,12 @@
          app:tint="@color/black1" />
 
     <!-- Linha divisória -->
-    <View
+    <com.google.android.material.divider.MaterialDivider
         android:id="@+id/linha_div_ss"
         android:layout_width="wrap_content"
-        android:layout_height="2.5dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/grey2" />
+        app:dividerThickness="2.5dp"
+        app:dividerColor="@color/grey2" />
 
 </RelativeLayout>

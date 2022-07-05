@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:backgroundTint="@color/white"
-                app:icon="@drawable/ic_baseline_playlist_add_24"
+                app:icon="@drawable/ic_baseline_shuffle_24"
                 app:iconSize="35dp"
                 app:iconTint="@color/purple1"
                 app:strokeColor="@color/purple1"

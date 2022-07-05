@@ -60,4 +60,9 @@
         <item name="android:textColor">@color/purple1</item>
     </style>
 
+    <style name="CardViewShadow" parent="CardView">
+        <item name="android:ambientShadowAlpha">1</item>
+        <item name="android:spotShadowAlpha">1</item>
+    </style>
+
 </resources>

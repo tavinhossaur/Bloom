@@ -141,17 +141,24 @@
             </LinearLayout>
 
             <!-- Linha divisória -->
-            <View
+            <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:elevation="30dp"
-                android:background="@color/purple1"/>
+                android:layout_height="wrap_content"
+                android:elevation="8dp"
+                app:dividerThickness="2dp"
+                app:dividerColor="@color/purple1"/>
 
             <!-- Lista de músicas -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/musicas_rv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:scrollbarThumbVertical="@drawable/ic_baseline_scrollbar_24"
+                android:requiresFadingEdge="vertical"
+                android:fadingEdgeLength="5dp"
+                android:background="@color/grey3"/>
 
         </LinearLayout>
 
@@ -174,13 +181,14 @@
         app:menu="@menu/main_nav_menu">
 
         <!-- Linha divisória -->
-        <View
+        <com.google.android.material.divider.MaterialDivider
             android:layout_width="240dp"
-            android:layout_height="2dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="200dp"
-            android:background="@color/black1" />
+            app:dividerThickness="2dp"
+            app:dividerColor="@color/black2" />
 
         <!-- Componente "NavigationView" (Menu inferior) -->
         <com.google.android.material.navigation.NavigationView

@@ -1,7 +1,13 @@
 package com.example.bloom
 
+import android.content.Intent
 import android.media.MediaMetadataRetriever
+import android.util.Log
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.createDeviceProtectedStorageContext
+import androidx.core.content.ContextCompat.startActivity
+import java.nio.file.Files.size
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 // Dados da música do ArrayList de dados da mesma
@@ -31,18 +37,18 @@ fun retornarImgMusica(caminho: String): ByteArray?{
     return procurador.embeddedPicture
 }
 
-// Método para alterar a posição da música de forma correta evitando crashes e bugs
+// Método para alterar a posição da música e o modo de reprodução de forma correta evitando crashes e bugs
 // O método está sendo criado no Musica.kt como método publico para que seja utilizado
 // pela tela do player e do controle da barra de notificação
 fun mudarPosMusica(adicionar : Boolean){
     // Se não estiver repetindo então execute o código abaixo
-    if(!PlayerActivity.repetirMusica) {
+    if(!PlayerActivity.repetindo) {
         // Se estiver adicionando, e a posição da música for igual o tamanho da lista -1,
         // então a posição da música deverá ser 0, caso contrário apenas vá para próxima música
         if (adicionar) {
             if (PlayerActivity.filaMusica.size - 1 == PlayerActivity.posMusica) {
                 PlayerActivity.posMusica = 0
-            } else {
+            }else{
                 ++PlayerActivity.posMusica
             }
             // Caso contrário se a posição da música for igual a 0, então a posição da música

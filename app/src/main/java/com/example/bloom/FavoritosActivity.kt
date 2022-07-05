@@ -22,7 +22,10 @@ class FavoritosActivity : AppCompatActivity() {
         setContentView(binding.root)
         setTheme(R.style.Theme_AppCompat_temaClaro)
 
-        binding.btnMenuFav.setOnClickListener{setDrawer()}
+        // Ao clicar no botão fechar, a activity é simplesmente encerrada.
+        binding.btnVoltarFav.setOnClickListener {finish()}
+        // Abrir a gaveta lateral de opções (Drawer)
+        binding.btnMenuFav.setOnClickListener {setDrawer()}
     }
 
     // Método para abrir e fechar o DrawerLayout

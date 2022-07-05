@@ -28,11 +28,12 @@
         android:textStyle="italic"/>
 
     <!-- Linha divisória -->
-    <View
+    <com.google.android.material.divider.MaterialDivider
         android:layout_width="350dp"
-        android:layout_height="3dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
-        android:background="@color/purple1"/>
+        app:dividerThickness="2dp"
+        app:dividerColor="@color/purple1"/>
 
 </LinearLayout>

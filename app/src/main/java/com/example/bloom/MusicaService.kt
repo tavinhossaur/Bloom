@@ -47,9 +47,9 @@ class MusicaService : Service() {
     fun mostrarNotificacao(tocarPausarBtn : Int){
 
         // Cria o objeto que contém a ação de randomizar a reprodução de músicas
-        val randomizarIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.RANDOMIZAR)
+        //val repetirIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.REPETIR)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
-        val randomizarPendingIntent = PendingIntent.getBroadcast(baseContext, 0, randomizarIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        //val repetirPendingIntent = PendingIntent.getBroadcast(baseContext, 0, repetirIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // Cria o objeto que contém a ação de voltar a música
         val anteriorIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.ANTERIOR)
@@ -109,7 +109,7 @@ class MusicaService : Service() {
             // Fornece uma intent pendente para quando a barra de notificação for limpa pelo usuário
             .setDeleteIntent(limparPendingIntent)
             // Adição dos botões de funcionalidades de controle da música na barra de notificação
-            .addAction(R.drawable.ic_baseline_shuffle_24, "Randomizar", randomizarPendingIntent)
+            //.addAction(R.drawable.ic_baseline_repeat_24, "Repetir", repetirPendingIntent)
             .addAction(R.drawable.ic_baseline_skip_previous_24, "Anterior", anteriorPendingIntent)
             .addAction(tocarPausarBtn, "Tocar/Pausar", tocarPendingIntent)
             .addAction(R.drawable.ic_baseline_skip_next_24, "Próximo", proximoPendingIntent)
