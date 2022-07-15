@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     tools:context=".PlayerActivity"
-    android:background="@color/grey2"
+    android:background="@color/black3"
     android:orientation="vertical">
 
     <!-- Cabeçalho do player -->
@@ -26,7 +26,8 @@
             android:layout_height="30dp"
             android:rotation="180"
             android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
-            app:tint="@color/black1" />
+            android:forceDarkAllowed="false"
+            app:tint="@color/white" />
 
         <!-- Texto que mostra o número da música atual e o total de músicas -->
         <TextView
@@ -36,6 +37,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="14sp"
+            android:textColor="@color/white"
+            android:forceDarkAllowed="false"
             tools:ignore="NestedWeights" />
 
         <!-- Botão de opções extras -->
@@ -44,7 +47,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_baseline_more_vert_24"
-            app:tint="@color/black1" />
+            android:forceDarkAllowed="false"
+            app:tint="@color/white" />
 
     </LinearLayout>
 
@@ -66,11 +70,9 @@
             android:layout_height="305dp"
             android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true"
-            android:outlineSpotShadowColor="@color/black2"
-            app:strokeWidth="2dp"
-            app:strokeColor="@color/grey2"
+            android:outlineAmbientShadowColor="@color/black"
             app:cardCornerRadius="20dp"
-            app:cardElevation="6dp">
+            app:cardElevation="10dp">
 
             <!-- Capa da música -->
             <ImageView
@@ -108,7 +110,8 @@
             android:layout_marginTop="15dp"
             android:layout_toStartOf="@+id/btn_fav_tpl"
             android:singleLine="true"
-            android:textColor="@color/black1"
+            android:textColor="@color/white"
+            android:forceDarkAllowed="false"
             android:textSize="23sp"
             android:textStyle="bold" />
 
@@ -120,8 +123,9 @@
             android:layout_below="@id/titulo_musica_tpl"
             android:layout_marginStart="25dp"
             android:layout_toStartOf="@+id/btn_fav_tpl"
+            android:forceDarkAllowed="false"
             android:singleLine="true"
-            android:textColor="@color/purple1"
+            android:textColor="@color/grey2"
             android:textSize="17sp" />
 
         <!-- Álbum da música -->
@@ -132,8 +136,9 @@
             android:layout_below="@id/artista_musica_tpl"
             android:layout_marginStart="25dp"
             android:layout_toStartOf="@+id/btn_fav_tpl"
+            android:forceDarkAllowed="false"
             android:singleLine="true"
-            android:textColor="@color/grey3"
+            android:textColor="@color/grey2"
             android:textSize="15sp" />
 
         <!-- Botão de favorito -->
@@ -145,8 +150,9 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
+            android:forceDarkAllowed="false"
             android:src="@drawable/ic_baseline_favorite_border_24"
-            app:tint="@color/purple1" />
+            app:tint="@color/white" />
 
     </RelativeLayout>
 
@@ -167,7 +173,8 @@
             android:layout_height="27dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_share_24"
-            app:tint="@color/black1"
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"
             tools:ignore="NestedWeights"/>
 
         <!-- Botão temporizador (Timer) -->
@@ -177,7 +184,8 @@
             android:layout_height="27dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_timer_24"
-            app:tint="@color/black1"/>
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"/>
 
         <!-- Botão equalizador (Equalizer) -->
         <ImageView
@@ -186,7 +194,8 @@
             android:layout_height="27dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_equalizer_24"
-            app:tint="@color/black1"/>
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"/>
 
         <!-- Botão adicionar à playlist (Add to playlist) -->
         <ImageView
@@ -195,7 +204,8 @@
             android:layout_height="27dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_playlist_add_24"
-            app:tint="@color/black1"/>
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"/>
 
     </LinearLayout>
 
@@ -215,19 +225,20 @@
             android:id="@+id/seekBar_musica"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:outlineSpotShadowColor="@color/purple1"
-            android:progressTint="@color/purple1"
-            android:thumbTint="@color/purple1" />
+            android:forceDarkAllowed="false"
+            android:progressTint="@color/white"
+            android:thumbTint="@color/white" />
 
         <!-- Tempo decorrente -->
         <TextView
             android:id="@+id/dec_tempo_seek_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/seekBar_musica"
             android:layout_alignParentStart="true"
             android:layout_marginStart="5dp"
-            android:layout_below="@id/seekBar_musica"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/grey2"
             android:textSize="12sp" />
 
         <!-- Tempo final -->
@@ -240,6 +251,7 @@
             android:layout_marginEnd="5dp"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/grey2"
             android:textSize="12sp" />
 
     </RelativeLayout>
@@ -259,48 +271,53 @@
         <ImageView
             android:id="@+id/btn_shuffle"
             android:layout_width="65dp"
-            android:layout_height="45dp"
+            android:layout_height="35dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_queue_music_24"
-            app:tint="@color/black1"
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"
             tools:ignore="NestedWeights" />
 
         <!-- Botão "previous" (Voltar/Anterior) -->
         <ImageView
             android:id="@+id/btn_ante"
             android:layout_width="65dp"
-            android:layout_height="45dp"
+            android:layout_height="35dp"
             android:layout_weight="1"
             android:rotation="180"
             android:src="@drawable/ic_baseline_skip_next_24"
-            app:tint="@color/black1"/>
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"/>
 
         <!-- Botão reproduzir/pausar (Play/Pause) -->
         <ImageView
             android:id="@+id/btn_pp_tpl"
             android:layout_width="30dp"
-            android:layout_height="40dp"
+            android:layout_height="35dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_pause"
-            app:tint="@color/purple1"/>
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"/>
 
         <!-- Botão "next" (Pular/Próximo) -->
         <ImageView
             android:id="@+id/btn_prox"
             android:layout_width="65dp"
-            android:layout_height="45dp"
+            android:layout_height="35dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_skip_next_24"
-            app:tint="@color/black1"/>
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"/>
 
         <!-- Botão repetir música (Repeat song) -->
         <ImageView
             android:id="@+id/btn_repetir"
             android:layout_width="65dp"
-            android:layout_height="45dp"
+            android:layout_height="35dp"
             android:layout_weight="1"
             android:src="@drawable/ic_baseline_repeat_24"
-            app:tint="@color/black1"/>
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"/>
 
         <!-- Botão repetir música (Repeat song) -->
 

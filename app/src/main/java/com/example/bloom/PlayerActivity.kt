@@ -5,18 +5,36 @@ import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
+import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
+import android.view.View
+import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.bloom.databinding.ActivityPlayerBinding
+import com.maxkeppeler.sheets.core.SheetStyle
+import com.maxkeppeler.sheets.info.InfoSheet
+import com.maxkeppeler.sheets.input.InputSheet
+import com.maxkeppeler.sheets.input.type.InputRadioButtons
+import jp.wasabeef.glide.transformations.BlurTransformation
+import jp.wasabeef.glide.transformations.ColorFilterTransformation
+import kotlin.system.exitProcess
 
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
 class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {
@@ -29,6 +47,9 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         var musicaService : MusicaService? = null // Serviço da música, por padrão fica como null
         var repetindo : Boolean = false // Variável para definir se a música está repetindo ou não, por padrão: "false"
         // var randomizando : Boolean = false
+        var min15 : Boolean = false
+        var min30 : Boolean = false
+        var min60 : Boolean = false
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityPlayerBinding // binding é a variável do ViewBinding para ligar as views ao código
     }
@@ -36,14 +57,13 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     // Método chamado quando o aplicativo é iniciado
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
+        temaPlayer()
         super.onCreate(savedInstanceState)
         // Inicialização do binding
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
         // no caso, a ActivityPlayerBinding (activity_player.xml)
         setContentView(binding.root)
-        setTheme(R.style.Theme_AppCompat_temaClaro)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.grey2)
 
         // Cria a intent com a classe MusicService
         val bindIntent = Intent(this, MusicaService::class.java)
@@ -61,6 +81,74 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         binding.btnFecharTpl.setOnClickListener {finish()}
 
         // FUNÇÕES DA EXTRAS
+        // Ao clicar no botão de compartilhar música
+        binding.btnCompart.setOnClickListener {
+            // Cria a intent para o compartilhamento
+            val compartIntent = Intent()
+            // Define a ação que será feita na intent (ACTION_SEND), ("enviar")
+            compartIntent.action = Intent.ACTION_SEND
+            // Define o tipo do conteúdo que será enviado, no caso, audio
+            compartIntent.type = "audio/*"
+            // Junto da intent, com putExtra, estão indo os dados da música com base no caminho da música atual do player.
+            compartIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(filaMusica[posMusica].caminho))
+            // Inicia a intent chamando o método "createChooser" que mostra um BottomSheetDialog com opções de compartilhamento (Bluetooth, Whatsapp, Drive)
+            // E um título que aparece no BottomSheetDialog
+            startActivity(Intent.createChooser(compartIntent, "Selecione como você vai compartilhar a música"))
+        }
+
+        // Quando clicado no botão de timer, uma BottomSheet bar aparece para o usuário
+        // selecionar entre 3 opções de tempos em que ele quer que a música encerre.
+        binding.btnTimer.setOnClickListener {
+            // Tempo leva todos os booleans das opções de tempo
+            val tempo = min15 || min30 || min60
+            // Se caso nenhum deles forem "true", então chame o método para o BottomSheetBar
+            if (!tempo){
+                timerSheet()
+            // Caso contrário, diga que o timer já está ativado a partir de um novo BottomSheetBar
+            }else{
+                val permSheet = InfoSheet().build(this) {
+                    // Estilo do sheet (BottomSheet)
+                    style(SheetStyle.BOTTOM_SHEET)
+                    // Cor do título
+                    titleColorRes(R.color.purple1)
+                    // Título do BottomSheetDialog
+                    title("O timer já está ativado!")
+                    // Mensagem do BottomSheetDialog
+                    content("Deseja parar ou alterar o timer?")
+
+                    // Botão positivo que redireciona o usuário para a tela de configurações e detalhes do aplicativo
+                    positiveButtonColorRes(R.color.purple1)
+                    // Se o usuário quiser parar o timer e alterará-lo
+                    onPositive("Parar e alterar") {
+                        // Define todos os booleans de tempo para falso
+                        min15 = false
+                        min30 = false
+                        min60 = false
+                        // Altera a cor do botão de timer para a cor padrão
+                        binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.white))
+                        // E abre o timerSheet novamente
+                        timerSheet()
+                    }
+
+                    // Botão negativo que encerra o timer
+                    negativeButtonColorRes(R.color.grey3)
+                    // Se o usuário quiser apenas parar o timer
+                    onNegative("Parar") {
+                        // Define todos os booleans de tempo para falso
+                        min15 = false
+                        min30 = false
+                        min60 = false
+                        // Altera a cor do botão de timer para a cor padrão
+                        binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.white))
+                        // Toast indicando que o timer foi encerrado
+                        Toast.makeText(this@PlayerActivity, "Timer encerrado", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                // Mostra o BottomSheetDialog
+                permSheet.show()
+            }
+        }
+
         // Quando clicado no botão de equalizador, ele tentará levar o usuário
         // para o painel de controle de equalizador de som padrão do Android.
         binding.btnEqual.setOnClickListener {
@@ -127,6 +215,17 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         })
     }
 
+    // Método para deixar a tela do player com um tema personalizado
+    private fun temaPlayer(){
+        // Define o tema como sem actionBar
+        application.setTheme(R.style.Theme_BloomNoActionBar)
+        setTheme(R.style.Theme_BloomNoActionBar)
+        // Define a barra de status e navegação do android como transparentes
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val windowInsetsController = ViewCompat.getWindowInsetsController(window.decorView)
+        windowInsetsController?.isAppearanceLightNavigationBars = true
+    }
+
     // Método para definir a reprodução normal da lista de músicas
     private fun reproducaoNormal(){
         // Se a reprodução for normal, então a música não está repetindo
@@ -135,7 +234,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // O ícone do botão muda para o ícone de reprodução normal
         binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_24)
         // A cor é definida como a cor padrão dos botões do player
-        binding.btnRepetir.setColorFilter(resources.getColor(R.color.black1))
+        binding.btnRepetir.setColorFilter(resources.getColor(R.color.white))
         // E um toast é apresentado
         Toast.makeText(this, "Reprodução normal", Toast.LENGTH_SHORT).show()
     }
@@ -148,7 +247,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // O ícone do botão muda para o ícone de reprodução de uma única música
         binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_one_24)
         // A cor é definida como a cor roxa padrão o app, para indicar que a opção está ligada
-        binding.btnRepetir.setColorFilter(resources.getColor(R.color.purple1))
+        binding.btnRepetir.setColorFilter(resources.getColor(R.color.purple_500))
         // E um toast é apresentado
         Toast.makeText(this, "Repetir a música", Toast.LENGTH_SHORT).show()
     }
@@ -211,10 +310,43 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Alvo da aplicação da imagem
             .into(binding.imgMusicaTpl)
 
+        // Objeto que leva todas as transformações da imagem do background do player
+        val multiTransform = MultiTransformation<Bitmap>(
+            // Efeito embaçado na imagem
+            BlurTransformation(40, 5),
+            // Filtro de cor escuro na imagem
+            ColorFilterTransformation(Color.argb(70, 40, 40, 40))
+        )
+
+        // Utilizando Glide, está sendo retornado a imagem da música e colocado como background do Player
+        // O intuito desse código é apenas deixar a tela do player mais bonita e "profissional"
+        Glide.with(this)
+            // Carrega a posição da música e a uri da sua imagem
+            .load(filaMusica[posMusica].imagemUri)
+            // Faz a aplicação da imagem com as transformações e um placeholder caso a música não tenha nenhuma imagem
+            // ou ela ainda não tenha sido carregada
+            .apply(RequestOptions.bitmapTransform(multiTransform))
+            // Alvo da aplicação da imagem, como o alvo da aplicação não é um componente simples, e sim, o background de um LinearLayout
+            // é necessário utilizar o método CustomTraget do Glide.
+            .into(object : CustomTarget<Drawable?>() {
+                // Quando retornar a imagem
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
+                    // Aplica a imagem da música ao background do root da activity, ou seja, o LinearLayout que engloba todas as views.
+                    binding.root.background = resource
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    return
+                }
+            })
+
         // Carrega os dados corretos para a música atual sendo reproduzida
         binding.tituloMusicaTpl.text = filaMusica[posMusica].titulo
         binding.artistaMusicaTpl.text = filaMusica[posMusica].artista
         binding.albumMusicaTpl.text = filaMusica[posMusica].album
+
+        // Se estiver com o timer ligado, a cor do botão continua alterada mesmo quando mudar a música
+        if(min15 || min30 || min60) binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.teal_200))
     }
 
     @SuppressLint("SetTextI18n")
@@ -228,13 +360,20 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         posMusica = intent.getIntExtra("indicador", 0)
         // Quando a intent receber a String "classe", fara o seguinte:
         when(intent.getStringExtra("classe")){
+            // Caso o valor da string "classe" seja "Pesquisa", a fila de reprodução do player se torna um ArrayList
+            // e então, será adicionado todas as músicas da lista de músicas da pesquisa feita a ela,
+            // e o método para carregar os dados da música são chamados
+            "Pesquisa" ->{
+                filaMusica = ArrayList()
+                filaMusica.addAll(MainActivity.listaMusicaPesquisa)
+                carregarMusica()
+            }
             // Caso o valor da string "classe" seja "Adapter", a fila de reprodução do player se torna um ArrayList
             // e então, será adicionado todas as músicas da lista de músicas da tela principal a ela,
             // e o método para carregar os dados da música são chamados
             "Adapter" ->{
                 filaMusica = ArrayList()
                 filaMusica.addAll(MainActivity.ListaMusicaMain)
-                // Chama o método para carregar os dados da música
                 carregarMusica()
             }
             // Caso o valor da string "classe" seja "Main", a fila de reprodução do player se torna um ArrayList
@@ -245,7 +384,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 filaMusica = ArrayList()
                 filaMusica.addAll(MainActivity.ListaMusicaMain)
                 filaMusica.shuffle()
-                // Chama o método para carregar os dados da música
                 carregarMusica()
             }
         }
@@ -289,6 +427,77 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             mudarPosMusica(adicionar = false)
             carregarMusica()
             criarPlayer()
+        }
+    }
+
+    // Método para poder chamar o BottomSheetDialog ao botão do timer ser clicado
+    private fun timerSheet(){
+        // Cria e mostra a InputSheet
+        InputSheet().show(this@PlayerActivity) {
+            // Estilo do sheet (BottomSheet)
+            style(SheetStyle.BOTTOM_SHEET)
+            // Título do BottomSheetDialog
+            title("Timer da música")
+            // Cor do título
+            titleColorRes(R.color.purple1)
+            // Conteúdo da sheet (Radio Buttons)
+            with(InputRadioButtons("timer_opt") {
+                // Marca como um campo obrigatório ou não para liberar o botão "ok"
+                required(true)
+                // Título das opções
+                label("Daqui quanto tempo você quer que a música pare?")
+                // Opções disponíveis numa lista de arrays (MutableList)
+                options(mutableListOf("15 minutos", "30 minutos", "1 hora"))
+            })
+            // Cor do botão "confirmar"
+            positiveButtonColorRes(R.color.purple1)
+            // Botão confirmar do BottomSheet
+            onPositive("Confirmar") { result ->
+                // Altera a cor do botão do timer para uma cor que indique que ele está ligado
+                binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.teal_200))
+                // Quando o resultado, convertido para String for igual as strings abaixo
+                when(result.toString()){
+                    "Bundle[{timer_opt=0}]" -> {
+                        // Envia um toast dizendo que a música irá parar conforme o tempo escolhido
+                        Toast.makeText(this@PlayerActivity, "A música irá parar daqui 15 minutos", Toast.LENGTH_SHORT).show()
+                        // Define o boolean min15 como true
+                        min15 = true
+                        // Cria uma Thread a parte para funcionalidade do timer
+                        // Ela fica em estado "sleep" no tempo definido abaixo em milisegundos
+                        Thread{ Thread.sleep(15 * 60000)
+                            // Quando a Thread termina o "sleep", ela executa o código abaixo
+                            if (min15){exitProcess(1)}}.start()
+                    }
+                    "Bundle[{timer_opt=1}]" -> {
+                        // Envia um toast dizendo que a música irá parar conforme o tempo escolhido
+                        Toast.makeText(this@PlayerActivity, "A música irá parar daqui 30 minutos", Toast.LENGTH_SHORT).show()
+                        // Define o boolean min15 como true
+                        min30 = true
+                        // Cria uma Thread a parte para funcionalidade do timer
+                        // Ela fica em estado "sleep" no tempo definido abaixo em milisegundos
+                        Thread{ Thread.sleep(30 * 60000)
+                            // Quando a Thread termina o "sleep", ela executa o código abaixo
+                            if (min30){exitProcess(1)}}.start()
+                    }
+                    "Bundle[{timer_opt=2}]" -> {
+                        // Envia um toast dizendo que a música irá parar conforme o tempo escolhido
+                        Toast.makeText(this@PlayerActivity, "A música irá parar daqui uma hora", Toast.LENGTH_SHORT).show()
+                        // Define o boolean min15 como true
+                        min60 = true
+                        // Cria uma Thread a parte para funcionalidade do timer
+                        // Ela fica em estado "sleep" no tempo definido abaixo em milisegundos
+                        Thread{ Thread.sleep(60 * 60000)
+                            // Quando a Thread termina o "sleep", ela executa o código abaixo
+                            if (min60){exitProcess(1)}}.start()
+                    }
+                }
+            }
+            // Cor do botão "cancelar"
+            negativeButtonColorRes(R.color.grey3)
+            // Botão cancelar do BottomSheet
+            onNegative("Cancelar") {
+                dismiss()
+            }
         }
     }
 

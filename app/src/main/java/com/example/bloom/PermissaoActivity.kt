@@ -4,16 +4,17 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.bloom.databinding.ActivityMainBinding
+import androidx.core.content.ContextCompat
 import com.example.bloom.databinding.ActivityPermissaoBinding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.android.synthetic.main.activity_permissao.*
+import com.maxkeppeler.sheets.core.SheetStyle
+import com.maxkeppeler.sheets.info.InfoSheet
 
 class PermissaoActivity : AppCompatActivity() {
 
@@ -21,17 +22,28 @@ class PermissaoActivity : AppCompatActivity() {
 
     // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
+        modoEscuro()
         super.onCreate(savedInstanceState)
+
         // Inicialização do binding
         binding = ActivityPermissaoBinding.inflate(layoutInflater)
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
         // no caso, a ActivityPermissaoBinding (activity_permissao.xml)
         setContentView(binding.root)
-        setTheme(R.style.Theme_AppCompat_temaClaro)
 
         // Botões de opção
         binding.btnPermitir.setOnClickListener { permitirPerm() }
         binding.btnCancelar.setOnClickListener { finish() }
+    }
+
+    // Método para deixar o aplicativo no seu modo padrão
+    private fun modoEscuro(){
+        application.setTheme(R.style.Theme_BloomNoActionBar)
+        setTheme(R.style.Theme_BloomNoActionBar)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
     }
 
     // Função para checar a permissão e pedir se o usuário ainda não as tiver concedido
@@ -49,37 +61,40 @@ class PermissaoActivity : AppCompatActivity() {
                 startActivity(Intent(applicationContext, MainActivity::class.java))
                 finish()
 
-                // Caso o usuário selecione 2x para negar a permissão, marque a checkbox para não perguntar novamente,
-                // ou diretamente escolha para negar e não pedir mais a permissão
-                // Um AlertDialog surgirá para dizer que o app não pedirá mais a permissão e portanto, ela deve ser concedida nas configurações do aplicativo
+            // Caso o usuário selecione 2x para negar a permissão, marque a checkbox para não perguntar novamente,
+            // ou diretamente escolha para negar e não pedir mais a permissão
+            // Um AlertDialog surgirá para dizer que o app não pedirá mais a permissão e portanto, ela deve ser concedida nas configurações do aplicativo
             }else if(!showRationale) {
-                // Criação do AlertDialog utilizando MaterialDesign e aplicando o estilo personalizado AlertDialogTheme
-                val permAlert = MaterialAlertDialogBuilder(this, R.style.AlertDialogTheme)
-                // Título do AlertDialog
-                permAlert.setTitle("Bloom não pedirá mais pelas permissões!")
-                // Mensagem do AlertDialog
-                permAlert.setMessage("Se você deseja utilizar o aplicativo, conceda as permissões necessárias nas configurações do Bloom.\n\nAo clicar em \"Cancelar\" o aplicativo será encerrado.")
-                // Impede que o AlertDialog seja fechado se clicado na parte de fora dele ou utilizando o botão voltar do celular
-                permAlert.setCancelable(false)
+                // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
+                val permSheet = InfoSheet().build(this) {
+                    // Estilo do sheet (AlertDialog)
+                    style(SheetStyle.DIALOG)
+                    // Título do AlertDialog
+                    title("Bloom não pedirá mais pelas permissões!")
+                    // Cor do título
+                    titleColorRes(R.color.purple1)
+                    // Mensagem do AlertDialog
+                    content("Se você deseja utilizar o aplicativo, conceda as permissões necessárias nas configurações do Bloom.\n\n Ao clicar em \"Cancelar\" o aplicativo será encerrado.")
 
-                // Botão positivo que redireciona o usuário para a tela de configurações e detalhes do aplicativo
-                permAlert.setPositiveButton("Configurações"){ _, _ ->
-                    startActivity(Intent().apply {
-                        // Caminho para a tela que será redirecionado
-                        action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                        // Pacote (package) do aplicativo para que o usuário seja levado para as configurações deste aplicativo.
-                        data = Uri.fromParts("package", packageName, null)
-                    })
+                    // Botão positivo que redireciona o usuário para a tela de configurações e detalhes do aplicativo
+                    positiveButtonColorRes(R.color.purple1)
+                    onPositive("Permissões") {
+                        startActivity(Intent().apply {
+                            // Caminho para a tela que será redirecionado
+                            action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            // Pacote (package) do aplicativo para que o usuário seja levado para as configurações deste aplicativo.
+                            data = Uri.fromParts("package", packageName, null)
+                        })
+                    }
+
+                    // Botão negativo que encerra o aplicativo
+                    negativeButtonColorRes(R.color.grey3)
+                    onNegative("Cancelar") {
+                        finish()
+                    }
                 }
-
-                // Botão negativo que encerra o aplicativo
-                permAlert.setNegativeButton("Cancelar"){ _, _ ->
-                    finish()
-                }
-
-                // objeto utilizado para mostrar o AlertDialog
-                val alerta: AlertDialog = permAlert.create()
-                alerta.show()
+                // Mostra o AlertDialog
+                permSheet.show()
             }
         }
     }

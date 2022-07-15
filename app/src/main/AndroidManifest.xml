@@ -18,37 +18,46 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.temaClaro"
+        android:theme="@style/Theme.Bloom"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
         <activity
             android:name=".PermissaoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
+            android:launchMode="singleTask"
             tools:ignore="LockedOrientationActivity"
             android:exported="false" />
         <activity
             android:name=".PlaylistsActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             tools:ignore="LockedOrientationActivity"
             android:exported="false" />
         <activity
             android:name=".PlayerActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             tools:ignore="LockedOrientationActivity"
             android:exported="false" />
         <activity
             android:name=".FavoritosActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             tools:ignore="LockedOrientationActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             tools:ignore="LockedOrientationActivity"
             android:exported="true">
         </activity>
@@ -56,6 +65,8 @@
             android:name=".SplashScreen"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
             tools:ignore="LockedOrientationActivity"
             android:exported="true">
             <intent-filter>

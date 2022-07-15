@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/black3"
     tools:context=".MiniPlayerFragment">
 
     <!-- Mini-player do aplicativo -->
@@ -51,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:text="In Bloom"
-                android:textColor="@color/black1"
+                android:textColor="@color/white"
                 android:textSize="18sp" />
 
             <!-- Artista da música no mini-player -->
@@ -84,7 +85,7 @@
                 android:layout_marginEnd="2dp"
                 android:rotation="180"
                 android:src="@drawable/ic_baseline_skip_next_24"
-                app:tint="@color/black1" />
+                app:tint="@color/white" />
 
             <!-- Botão reproduzir/pausar (Play/Pause) do mini-player -->
             <ImageView
@@ -101,7 +102,7 @@
                 android:layout_width="30dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_baseline_skip_next_24"
-                app:tint="@color/black1" />
+                app:tint="@color/white" />
 
         </LinearLayout>
 

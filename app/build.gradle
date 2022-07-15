@@ -48,7 +48,14 @@ dependencies {
     // Glide (Biblioteca de carregamento e cache de imagens para Android, para otimização da rolagem da tela)
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+    // Background translúcido do player
+    implementation 'jp.wasabeef:glide-transformations:4.3.0'
 
     // Notificação do app
     implementation 'androidx.media:media:1.6.0'
+
+    // Sheets para AlertDialog e Bottom Sheets, etc.
+    implementation 'com.maxkeppeler.sheets:core:2.2.8'
+    implementation 'com.maxkeppeler.sheets:input:2.2.8'
+    implementation 'com.maxkeppeler.sheets:info:2.2.8'
 }

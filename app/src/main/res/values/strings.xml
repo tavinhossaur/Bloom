@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Bloom</string>
+    <string name="drawer_aberto">Aberto</string>
+    <string name="drawer_fechado">Fechado</string>
 </resources>

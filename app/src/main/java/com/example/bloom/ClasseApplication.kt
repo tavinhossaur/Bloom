@@ -23,6 +23,9 @@ class ClasseApplication : Application() {
         super.onCreate()
         // Objeto do canal de notificação, com o ID, o nome visível para o usuário e a importância da notificação
         val canalNotificacao = NotificationChannel(ID_CANAL, "Tocando agora", NotificationManager.IMPORTANCE_HIGH)
+        // Removendo som e vibração da notificação
+        canalNotificacao.setSound(null, null)
+        canalNotificacao.vibrationPattern = null
         // Criando o gerenciador da notificação
         val gerenciadorNotificacao = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         // Registrando o canal notificação ao criador de canal de notificações (createNotificationChannel)

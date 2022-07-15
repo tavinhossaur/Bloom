@@ -1,7 +1,6 @@
 package com.example.bloom
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -9,30 +8,44 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.view.inputmethod.InputMethodManager
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
+import android.widget.Toast
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
-import androidx.core.view.GravityCompat
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivityMainBinding
 import java.io.File
 
-@Suppress("DEPRECATION")
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding // binding é a variável do ViewBinding para ligar as views ao código
     private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
+    private lateinit var setMenuDrawer : ActionBarDrawerToggle // Toggle do Drawer Layout
 
-    // Declaração de objetos/classes estáticas
+    // Declaração de objetos/classes estáticas para poder util
     companion object{
         lateinit var ListaMusicaMain : ArrayList<Musica> // Lista de músicas da tela principal
+        lateinit var listaMusicaPesquisa : ArrayList<Musica> // Lista de músicas que aparecerá na pesquisa
+        var pesquisando : Boolean = false
     }
 
     // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
+        modoEscuro()
         super.onCreate(savedInstanceState)
+
+        // Define o título da tela atual
+        supportActionBar?.title = "Todas as músicas"
+        // Elevação 0 na actionBar
+        supportActionBar?.elevation = 0F
+
         // Inicialização do binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
@@ -44,18 +57,14 @@ class MainActivity : AppCompatActivity() {
             iniciarLayout()
         }
 
-        setTheme(R.style.temaClaroNav)
-
         // Abrir a tela de playlists
         binding.playlistBtn.setOnClickListener {
             startActivity(Intent(this, PlaylistsActivity::class.java))
-            closeSearch()
         }
 
         // Abrir a tela de favoritos
         binding.favoritosBtn.setOnClickListener {
             startActivity(Intent(this, FavoritosActivity::class.java))
-            closeSearch()
         }
 
         // Randomizar as músicas
@@ -67,14 +76,21 @@ class MainActivity : AppCompatActivity() {
             mainIntent.putExtra("classe", "Main")
             startActivity(mainIntent)
             // Toast.makeText(this, "Músicas randomizadas!", Toast.LENGTH_SHORT).show()
-            closeSearch()
         }
 
         // Abrir a gaveta lateral de opções (Drawer)
-        binding.btnMenuMain.setOnClickListener{setDrawer()}
+        setMenuDrawer = ActionBarDrawerToggle(this, binding.root, R.string.drawer_aberto, R.string.drawer_fechado)
+        // Adiciona um listener para o layout do Drawer
+        binding.root.addDrawerListener(setMenuDrawer)
+        // Sincroniza o ícone do drawer ao estado dele
+        setMenuDrawer.syncState()
+        // Mostra o ícone de menu
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // Muda a cor do ícone do drawer
+        setMenuDrawer.drawerArrowDrawable.color = ContextCompat.getColor(this, R.color.white)
 
         // Abrir a barra de pesquisa de músicas
-        binding.btnSearch.setOnClickListener{openSearch()}
+        //binding.btnSearch.setOnClickListener{openSearch()}
 
         /* Abrir a tela do player clicando no miniplayer
          binding.miniPlayerMain.setOnClickListener{
@@ -98,6 +114,16 @@ class MainActivity : AppCompatActivity() {
           */
     }
 
+    // Método para deixar o aplicativo no seu modo padrão
+    private fun modoEscuro(){
+        application.setTheme(R.style.Theme_Bloom)
+        setTheme(R.style.Theme_Bloom)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
+    }
+
     // Método que faz a checa se foram concedidas as permissões que o app precisa
     private fun checarPermissoes() : Boolean{
         // Se o aplicativo ainda não tiver a permissão concedida, fara a requisição da mesma, caso contrário, nada acontece e a pessoa pode utilizar o aplicativo normalmente
@@ -111,32 +137,11 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    // Método para abrir e fechar o DrawerLayout
-    private fun setDrawer() {
-        binding.drawerLayoutMain.openDrawer(GravityCompat.START)
-        closeSearch()
-    }
-
-    private fun closeSearch(){
-        binding.tituloMain.isVisible = true
-        binding.searchBar.isGone = true
-    }
-
-    // Função que é passada para o botão search, para que quando ele seja clicado, abra a EditText de pesquisa, e esconda a TextView "Todas as músicas"
-    private fun openSearch() {
-        binding.searchBar.requestFocus()
-        val imm = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-
-        binding.tituloMain.isGone = true
-        binding.searchBar.isVisible = true
-    }
-
     // Método para chamar tudo que será a inicialização do layout da tela inicial
     private fun iniciarLayout(){
+        pesquisando = false
         // Lista de músicas
         ListaMusicaMain = procurarMusicas()
-
         // Para otimização do RecyclerView, o seu tamanho é fixo,
         // mesmo quando itens são adicionados ou removidos.
         binding.musicasRv.setHasFixedSize(true)
@@ -216,5 +221,48 @@ class MainActivity : AppCompatActivity() {
             cursor.close() // Termina o cursor, para que ele não fique executando o loop de pesquisa infinitamente
         }
         return tempLista // Retorna a lista de músicas para o ArrayList<Musica>
+    }
+
+    // Método para seleção de itens do menu
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (setMenuDrawer.onOptionsItemSelected(item))
+            return true
+        return super.onOptionsItemSelected(item)
+    }
+
+    // Método para mostrar (inflar) o menu na action bar
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.pesquisa_menu, menu)
+        val pesquisaView = menu?.findItem(R.id.pesquisa_view)?.actionView as SearchView
+        // Fica lendo o que o usuário está digitando na barra de pesquisa
+        pesquisaView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            // O texto é sempre enviado, com ou sem a confirmação de pesquisa do usuário
+            // Dessa forma, a lista atualiza na hora com base na pesquisa do usuário
+            override fun onQueryTextSubmit(query: String?): Boolean = true
+
+            // Quando o texto muda
+            override fun onQueryTextChange(textoPesquisa: String?): Boolean {
+                // Cria a lista de músicas da pesquisa
+                listaMusicaPesquisa = ArrayList()
+                // Se o texto da pesquisa não for nulo
+                if (textoPesquisa != null){
+                    // Passa o texto dela para caixa baixa para pode encontrar a música de forma mais fácil
+                    val pesquisa = textoPesquisa.lowercase()
+                    // Para cada música na lista de músicas da tela principal
+                    for (musica in ListaMusicaMain)
+                        // Se o título da música, em caixa baixa conter o texto da pesquisa
+                        if (musica.titulo.contains(pesquisa) || musica.artista.contains(pesquisa) || musica.album.contains(pesquisa)){
+                            // Então adicione essa música a lista de pesquisa
+                            listaMusicaPesquisa.add(musica)
+                            // Defina pesquisando como true
+                            pesquisando = true
+                            // E atualize a lista de músicas pesquisadas
+                            musicaAdapter.atualizarLista(listaPesquisa = listaMusicaPesquisa)
+                        }
+                }
+                return true
+            }
+        })
+        return super.onCreateOptionsMenu(menu)
     }
 }

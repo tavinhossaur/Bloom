@@ -1,6 +1,7 @@
 package com.example.bloom
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.util.Log
 import androidx.core.content.ContextCompat
@@ -9,6 +10,7 @@ import androidx.core.content.ContextCompat.startActivity
 import java.nio.file.Files.size
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 // Dados da música do ArrayList de dados da mesma
 data class Musica(
@@ -26,6 +28,15 @@ fun formatarDuracao(duracao: Long) : String{
     val segundos = (TimeUnit.SECONDS.convert(duracao, TimeUnit.MILLISECONDS)
             - minutos * TimeUnit.SECONDS.convert(1, TimeUnit.MINUTES))
     return String.format("%02d:%02d", minutos, segundos)
+}
+
+fun encerrarProcesso(){
+    if (!PlayerActivity.tocando && PlayerActivity.musicaService!!.mPlayer != null){
+        PlayerActivity.musicaService!!.stopForeground(true)
+        PlayerActivity.musicaService!!.mPlayer!!.release()
+        PlayerActivity.musicaService = null
+        exitProcess(1)
+    }
 }
 
 // Método que retorna a imagem da música em array de bytes para colocar na barra de notificação

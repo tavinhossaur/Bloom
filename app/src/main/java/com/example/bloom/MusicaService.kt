@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
+import java.security.AccessController.getContext
 
 // Um service é um componente do aplicativo que pode realizar operações longas e não fornece uma interface do usuário.
 // É utilizado para serviços vinculados, como esse.
@@ -50,6 +51,10 @@ class MusicaService : Service() {
         //val repetirIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.REPETIR)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
         //val repetirPendingIntent = PendingIntent.getBroadcast(baseContext, 0, repetirIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        //val notifyIntent = Intent(baseContext, PlayerActivity::class.java)
+        //notifyIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        //val notifyPendingIntent = PendingIntent.getActivity(baseContext, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // Cria o objeto que contém a ação de voltar a música
         val anteriorIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.ANTERIOR)
@@ -100,12 +105,10 @@ class MusicaService : Service() {
             // Define o estilo da notificação, como o estilo padrão de notificações de um media player
             // juntamente de um token que representa a música atual sendo reproduzida para mostrá-la na notificação
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(sessaoMusica.sessionToken))
-            // Prioridade da notificação da música
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
             // Visibilidade da notificação, utilizado para mostrar a notificação até quando estiver na tela de bloqueio
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             // Fornece uma intent pendente para quando a barra de notificação for clicada pelo usuário
-            //.setContentIntent()
+            //.setContentIntent(notifyPendingIntent)
             // Fornece uma intent pendente para quando a barra de notificação for limpa pelo usuário
             .setDeleteIntent(limparPendingIntent)
             // Adição dos botões de funcionalidades de controle da música na barra de notificação

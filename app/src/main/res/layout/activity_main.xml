@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -13,7 +12,8 @@
     <!-- ConstraintLayout da tela principal -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/black3">
 
         <!-- Escopo "primário", desconsiderando o escopo do DrawerLayout -->
         <LinearLayout
@@ -21,122 +21,101 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!-- Cabeçalho da barra de pesquisa, botão de menu e título -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal">
-
-                <!-- Botão de pesquisa -->
-                <ImageView
-                    android:id="@+id/btn_search"
-                    android:layout_width="35dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_baseline_search_24"
-                    app:tint="@color/black1" />
-
-                <!-- Botão de menu -->
-                <ImageView
-                    android:id="@+id/btn_menu_main"
-                    android:layout_width="35dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="2dp"
-                    android:src="@drawable/ic_baseline_menu_24"
-                    app:tint="@color/black1" />
-
-                <!-- Barras de título e pesquisa -->
-                <LinearLayout
-                    android:id="@+id/cabecalho_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/btn_menu_main"
-                    android:layout_toStartOf="@id/btn_search"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <!-- Barra de pesquisa -->
-                    <EditText
-                        android:id="@+id/search_bar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:autofillHints="name"
-                        android:backgroundTint="@color/purple1"
-                        android:hint="Procurar música"
-                        android:inputType="text"
-                        android:textColorHint="@color/grey3"
-                        android:textSize="18sp"
-                        android:visibility="gone" />
-
-                    <!-- Barra do título -->
-                    <TextView
-                        android:id="@+id/titulo_main"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:text="Todas as músicas"
-                        android:textSize="18sp"
-                        android:textStyle="italic"
-                        android:visibility="visible" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
             <!-- Barra dos botões playlist, favoritos e randomizar -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginHorizontal="15dp"
                 android:orientation="horizontal">
 
                 <!-- Botão "Playlists" -->
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/playlist_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginEnd="10dp"
                     android:textSize="13sp"
                     android:text="Playlists"
                     android:textAllCaps="false"
-                    android:textColor="@color/black1"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/black2"
+                    android:background="@drawable/button_style"
+                    android:drawablePadding="15dp"
                     android:drawableTop="@drawable/ic_baseline_library_music_24"
-                    android:drawableTint="@color/purple1"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:drawableTint="@color/purple1" />
 
                 <!-- Botão "Favoritos" -->
-                <Button
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/favoritos_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_marginEnd="10dp"
                     android:textSize="13sp"
                     android:text="Favoritos"
                     android:textAllCaps="false"
-                    android:textColor="@color/black1"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/black2"
+                    android:background="@drawable/button_style"
+                    android:drawablePadding="15dp"
                     android:drawableTop="@drawable/ic_baseline_favorite_24"
-                    android:drawableTint="@color/purple1"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:drawableTint="@color/purple1"/>
 
                 <!-- Botão "Randomizar" -->
-                <Button
-                    android:id="@+id/random_btn"
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_aaa"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textSize="13sp"
                     android:text="Randomizar"
                     android:textAllCaps="false"
-                    android:textColor="@color/black1"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/black2"
+                    android:background="@drawable/button_style"
+                    android:drawablePadding="15dp"
                     android:drawableTop="@drawable/ic_baseline_shuffle_24"
+                    android:drawableTint="@color/purple1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="5dp"
+                android:backgroundTint="@color/black3"
+                android:background="@drawable/button_style"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/random_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:textSize="14sp"
+                    android:text="Reproduzir aleatóriamente"
+                    android:textAlignment="textStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_style"
+                    android:drawablePadding="5dp"
                     android:drawableTint="@color/purple1"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:drawableStart="@drawable/ic_baseline_play_circle_outline_24" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/filtro_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.15"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:textAllCaps="false"
+                    android:background="@drawable/button_style"
+                    android:drawableEnd="@drawable/ic_baseline_swap_vert_24"
+                    android:drawableTint="@color/white" />
 
             </LinearLayout>
 
@@ -156,9 +135,7 @@
                 android:scrollbars="vertical"
                 android:scrollbarAlwaysDrawVerticalTrack="true"
                 android:scrollbarThumbVertical="@drawable/ic_baseline_scrollbar_24"
-                android:requiresFadingEdge="vertical"
-                android:fadingEdgeLength="5dp"
-                android:background="@color/grey3"/>
+                android:background="@color/black3"/>
 
         </LinearLayout>
 
@@ -170,6 +147,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/black3"
         android:fitsSystemWindows="true"
         app:drawerLayoutCornerSize="30dp"
         app:headerLayout="@layout/activity_navheader"
@@ -177,7 +155,7 @@
         app:itemIconSize="25dp"
         app:itemIconTint="@color/purple1"
         app:itemTextAppearance="@style/menu_text_style"
-        app:itemTextColor="@color/black1"
+        app:itemTextColor="@color/white"
         app:menu="@menu/main_nav_menu">
 
         <!-- Linha divisória -->
@@ -187,14 +165,15 @@
             android:layout_gravity="bottom"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="200dp"
-            app:dividerThickness="2dp"
-            app:dividerColor="@color/black2" />
+            android:background="@color/white"
+            app:dividerThickness="2dp"/>
 
         <!-- Componente "NavigationView" (Menu inferior) -->
         <com.google.android.material.navigation.NavigationView
             android:layout_width="wrap_content"
             android:layout_height="200dp"
             android:layout_gravity="bottom"
+            android:background="@color/black3"
             app:itemIconSize="25dp"
             app:itemIconTint="@color/grey3"
             app:itemTextAppearance="@style/menu_text_style"
