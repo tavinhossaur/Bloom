@@ -1,28 +1,23 @@
 package com.example.bloom
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.bumptech.glide.request.RequestOptions
-import com.example.bloom.databinding.MusicViewLayoutBinding
-import com.maxkeppeler.sheets.info.InfoSheet
-import com.maxkeppeler.sheets.input.InputSheet
+import com.example.bloom.databinding.FavoritosViewLayoutBinding
 
 // Classe do Adapter que liga a lista de músicas aos itens do RecyclerView
-class MusicaAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>) : RecyclerView.Adapter<MusicaAdapter.Holder>() {
-    class Holder(binding: MusicViewLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        val titulo = binding.tituloMusicaView    // Título da música
-        val artista = binding.artistaMusicaView  // Artista da música
-        val imagem = binding.imgMusicaView       // Imagem da música
-        val duracao = binding.tempoMusicaView    // Duração da música
+class FavoritosAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>) : RecyclerView.Adapter<FavoritosAdapter.Holder>() {
+    class Holder(binding: FavoritosViewLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+        val titulo = binding.tituloMusicafavView    // Título da música
+        val artista = binding.artistaMusicafavView  // Artista da música
+        val imagem = binding.imgMusicafavView       // Imagem da música
+        val duracao = binding.tempoMusicafavView    // Duração da música
 
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
         // no caso, a MusicViewLayoutBinding (music_view_layout)
@@ -31,15 +26,14 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
 
     // Um ViewHolder descreve uma exibição de itens e metadados sobre seu lugar dentro do RecyclerView
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(MusicViewLayoutBinding.inflate(LayoutInflater.from(context), parent, false))
+        return Holder(FavoritosViewLayoutBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: Holder, posicao: Int) {
         // Procura na lista de músicas a posição da música em específico e retorna seu título no lugar da caixa de texto da mesma
         holder.titulo.text = listaMusicas[posicao].titulo
         // Procura na lista de músicas a posição da música em específico e retorna seu artista no lugar da caixa de texto da mesma
-        holder.artista.text = "${listaMusicas[posicao].artista} | ${listaMusicas[posicao].album}"
+        holder.artista.text = listaMusicas[posicao].artista
         // Procura na lista de músicas a posição da música em específico e retorna sua duração no lugar da caixa de texto da mesma
         // e também faz a formatação da duração da músicas
         holder.duracao.text = formatarDuracao(listaMusicas[posicao].duracao)
@@ -56,30 +50,18 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
 
         // Quando clicado na view da música no RecyclerView, o usuário é levado para o player
         holder.root.setOnClickListener {
-            when{
-                // Quando pesquisando for true, chame o método irParaMusica e passe a referência: "Pesquisa", e a posição da música
-                MainActivity.pesquisando -> irParaMusica("Pesquisa", posicao)
-                // Quando a música que for selecionada já estiver tocando, chame o método irParaMusica e passe a referência: "MiniPlayer", e a posição da música no Player
-                listaMusicas[posicao].id == PlayerActivity.musicaAtual -> irParaMusica("MiniPlayer", PlayerActivity.posMusica)
-                // Em qualquer outro caso, chame o método irParaMusica e passe a referência: "Adapter" e a posição da música
-                else -> irParaMusica("Adapter", posicao)
-            }
+            val adapterIntent = Intent(context, PlayerActivity::class.java)
+            // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
+            adapterIntent.putExtra("indicador", posicao)
+            // Quando o usuário é levado a tela do player, também é enviado a string da classe que fez a intent
+            adapterIntent.putExtra("classe", "Favoritos")
+            ContextCompat.startActivity(context, adapterIntent, null)
         }
     }
 
     // Retorna a quantidade total das músicas na lista de músicas
     override fun getItemCount(): Int {
         return listaMusicas.size
-    }
-
-    // Método para levar o usuário a música
-    private fun irParaMusica(referencia : String, pos : Int){
-        val adapterIntent = Intent(context, PlayerActivity::class.java)
-        // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
-        adapterIntent.putExtra("indicador", pos)
-        // Quando o usuário é levado a tela do player, também é enviado a string da classe que fez a intent
-        adapterIntent.putExtra("classe", referencia)
-        startActivity(context, adapterIntent, null)
     }
 
     // Método para atualizar a lista de músicas

@@ -1,63 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout_fav"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black3"
+    android:orientation="vertical"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
     tools:context=".FavoritosActivity">
 
-    <!-- Escopo "primário", desconsiderando o escopo do DrawerLayout -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black3"
-        android:orientation="vertical">
-
-        <!-- Cabeçalho da barra de pesquisa, botão de menu e título
+        <!-- Cabeçalho da barra de pesquisa, botão de menu e título -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"> -->
+            android:orientation="horizontal">
 
-            <!-- Botão de menu
-            <ImageView
-                android:id="@+id/btn_menu_fav"
-                android:layout_width="35dp"
-                android:layout_height="30dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
-                android:src="@drawable/ic_baseline_menu_24"
-                app:tint="@color/black1" /> -->
+        <!-- Barra de título -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/btn_voltar_fav"
+            android:orientation="horizontal"
+            android:padding="10dp">
 
-            <!-- Barra de título
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/btn_menu_fav"
-                android:layout_toStartOf="@+id/btn_voltar_fav"
-                android:orientation="horizontal"
-                android:padding="5dp"> -->
+        <!-- Título -->
+        <TextView
+            android:id="@+id/bar_title_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center"
+            android:text="Favoritos"
+            android:textColor="@color/grey3"
+            android:textSize="18sp"
+            android:textStyle="italic" />
 
-                <!-- Título
-                <TextView
-                    android:id="@+id/bar_title_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Favoritos"
-                    android:textColor="@color/grey3"
-                    android:textSize="18sp"
-                    android:textStyle="italic" />
+    </LinearLayout>
 
-            </LinearLayout> -->
-
-            <!-- Botão para voltar à tela principal
+        <!-- Botão para voltar à tela principal -->
             <ImageView
                 android:id="@+id/btn_voltar_fav"
                 android:layout_width="35dp"
@@ -67,9 +51,46 @@
                 android:layout_marginEnd="10dp"
                 android:rotation="270"
                 android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
-                app:tint="@color/black1" />
+                app:tint="@color/white" />
 
-        </RelativeLayout> -->
+    </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="@drawable/button_style"
+            android:backgroundTint="@color/black3"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/random_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_style"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Suas favoritas"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/filtro_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.13"
+                android:background="@drawable/button_style"
+                android:drawableEnd="@drawable/ic_baseline_swap_vert_24"
+                android:drawableTint="@color/white"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        </LinearLayout>
 
         <!-- ConstraintLayout para fazer o FAB -->
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -77,9 +98,21 @@
             android:layout_height="match_parent"
             android:background="@color/black3">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favoritos_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black3"
+            android:fadingEdge="vertical"
+            android:requiresFadingEdge="vertical"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
             <!-- FAB - Floating Action Button (Botão de Ação Flutuante) para criar uma nova playlist-->
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-                android:id="@+id/fab_fav"
+                android:id="@+id/fab_fav_random"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:backgroundTint="@color/black3"
@@ -94,48 +127,18 @@
                 android:layout_marginBottom="35dp"
                 tools:ignore="MissingConstraints" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <!--
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/mini_player"
+                android:name="com.example.bloom.MiniPlayerFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout="@layout/fragment_mini_player"/>
+            -->
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Componente "NavigationView" (Menu lateral) -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_layout_fav"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/black3"
-        android:fitsSystemWindows="true"
-        app:drawerLayoutCornerSize="30dp"
-        app:headerLayout="@layout/activity_navheader"
-        app:insetForeground="@color/purple1"
-        app:itemIconSize="25dp"
-        app:itemIconTint="@color/purple1"
-        app:itemTextAppearance="@style/menu_text_style"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/main_nav_menu">
-
-        <!-- Linha divisória -->
-        <View
-            android:layout_width="240dp"
-            android:layout_height="2dp"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="200dp"
-            android:background="@color/white" />
-
-        <!-- Componente "NavigationView" (Menu inferior) -->
-        <com.google.android.material.navigation.NavigationView
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_gravity="bottom"
-            android:background="@color/black3"
-            app:itemIconSize="25dp"
-            app:itemIconTint="@color/grey3"
-            app:itemTextAppearance="@style/menu_text_style"
-            app:itemTextColor="@color/grey3"
-            app:menu="@menu/bottom_nav_menu" />
-
-    </com.google.android.material.navigation.NavigationView>
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</LinearLayout>

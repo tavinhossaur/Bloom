@@ -1,14 +1,6 @@
 package com.example.bloom
 
-import android.content.Intent
-import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
-import android.util.Log
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.createDeviceProtectedStorageContext
-import androidx.core.content.ContextCompat.startActivity
-import java.nio.file.Files.size
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
@@ -30,12 +22,35 @@ fun formatarDuracao(duracao: Long) : String{
     return String.format("%02d:%02d", minutos, segundos)
 }
 
+// Metódo para encerrar o aplicativo
 fun encerrarProcesso(){
     if (!PlayerActivity.tocando && PlayerActivity.musicaService!!.mPlayer != null){
         PlayerActivity.musicaService!!.stopForeground(true)
         PlayerActivity.musicaService!!.mPlayer!!.release()
         PlayerActivity.musicaService = null
         exitProcess(1)
+    }
+}
+
+// Método para checar se a música esta favoritada ou não
+fun checarFavoritos(id: String) : Int{
+    PlayerActivity.favoritado = false
+    FavoritosActivity.listaFavoritos.forEachIndexed{ index, musica ->
+        if (id == musica.id){
+            PlayerActivity.favoritado = true
+            return index
+        }
+    }
+    return -1
+}
+
+// Metódo para sincronizar os botões do player na barra de notificação
+fun setBtnsNotify(){
+    when{
+        PlayerActivity.favoritado && PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
+        !PlayerActivity.favoritado && PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
+        PlayerActivity.favoritado && !PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
+        !PlayerActivity.favoritado && !PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
     }
 }
 

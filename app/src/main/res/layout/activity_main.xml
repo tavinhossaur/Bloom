@@ -16,17 +16,23 @@
         android:background="@color/black3">
 
         <!-- Escopo "primário", desconsiderando o escopo do DrawerLayout -->
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/mini_player"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <!-- Barra dos botões playlist, favoritos e randomizar -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <!-- Botão "Playlists" -->
@@ -34,34 +40,40 @@
                     android:id="@+id/playlist_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginEnd="10dp"
-                    android:textSize="13sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:backgroundTint="@color/black4"
+                    android:drawableTop="@drawable/ic_baseline_library_music_24"
+                    android:drawablePadding="15dp"
+                    android:drawableTint="@color/purple1"
+                    android:elevation="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="Playlists"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:backgroundTint="@color/black2"
-                    android:background="@drawable/button_style"
-                    android:drawablePadding="15dp"
-                    android:drawableTop="@drawable/ic_baseline_library_music_24"
-                    android:drawableTint="@color/purple1" />
+                    android:textSize="13sp" />
 
                 <!-- Botão "Favoritos" -->
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/favoritos_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginEnd="10dp"
-                    android:textSize="13sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:backgroundTint="@color/black4"
+                    android:drawableTop="@drawable/ic_baseline_favorite_notification_bar_24"
+                    android:drawablePadding="15dp"
+                    android:drawableTint="@color/purple1"
+                    android:elevation="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="Favoritos"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:backgroundTint="@color/black2"
-                    android:background="@drawable/button_style"
-                    android:drawablePadding="15dp"
-                    android:drawableTop="@drawable/ic_baseline_favorite_24"
-                    android:drawableTint="@color/purple1"/>
+                    android:textSize="13sp" />
 
                 <!-- Botão "Randomizar" -->
                 <androidx.appcompat.widget.AppCompatButton
@@ -69,75 +81,106 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="13sp"
+                    android:background="@drawable/button_style"
+                    android:backgroundTint="@color/black4"
+                    android:drawableTop="@drawable/ic_baseline_shuffle_24"
+                    android:drawablePadding="15dp"
+                    android:drawableTint="@color/purple1"
+                    android:elevation="10dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="Randomizar"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:backgroundTint="@color/black2"
-                    android:background="@drawable/button_style"
-                    android:drawablePadding="15dp"
-                    android:drawableTop="@drawable/ic_baseline_shuffle_24"
-                    android:drawableTint="@color/purple1" />
+                    android:textSize="13sp" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:backgroundTint="@color/black3"
+                android:orientation="vertical">
+
+                <!-- Linha divisória -->
+                <com.google.android.material.divider.MaterialDivider
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:elevation="8dp"
+                    app:dividerColor="@color/black2"
+                    app:dividerInsetEnd="18dp"
+                    app:dividerInsetStart="18dp"
+                    app:dividerThickness="2dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
                 android:background="@drawable/button_style"
+                android:backgroundTint="@color/black3"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/random_btn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginEnd="5dp"
-                    android:textSize="14sp"
-                    android:text="Reproduzir aleatóriamente"
-                    android:textAlignment="textStart"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
+                    android:layout_weight="1"
                     android:background="@drawable/button_style"
+                    android:drawableStart="@drawable/ic_baseline_play_circle_outline_24"
                     android:drawablePadding="5dp"
                     android:drawableTint="@color/purple1"
-                    android:drawableStart="@drawable/ic_baseline_play_circle_outline_24" />
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Reprodução aleatória"
+                    android:textAlignment="viewStart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/filtro_btn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.15"
                     android:layout_gravity="center_vertical"
-                    android:textSize="14sp"
-                    android:textAllCaps="false"
+                    android:layout_weight="0.13"
                     android:background="@drawable/button_style"
                     android:drawableEnd="@drawable/ic_baseline_swap_vert_24"
-                    android:drawableTint="@color/white" />
+                    android:drawableTint="@color/white"
+                    android:textAllCaps="false"
+                    android:textSize="14sp"
+                    tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             </LinearLayout>
-
-            <!-- Linha divisória -->
-            <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="8dp"
-                app:dividerThickness="2dp"
-                app:dividerColor="@color/purple1"/>
 
             <!-- Lista de músicas -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/musicas_rv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="vertical"
+                android:background="@color/black3"
+                android:fadingEdge="vertical"
+                android:requiresFadingEdge="vertical"
                 android:scrollbarAlwaysDrawVerticalTrack="true"
                 android:scrollbarThumbVertical="@drawable/ic_baseline_scrollbar_24"
-                android:background="@color/black3"/>
+                android:scrollbars="vertical"/>
 
         </LinearLayout>
+
+        <!-- Miniplayer -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/mini_player"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.example.bloom.MiniPlayerFragment"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:visibility="gone"
+            tools:layout="@layout/fragment_mini_player"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

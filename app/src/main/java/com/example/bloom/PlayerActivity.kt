@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
@@ -13,15 +12,11 @@ import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
-import android.view.View
-import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.request.RequestOptions
@@ -34,7 +29,6 @@ import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputRadioButtons
 import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
-import kotlin.system.exitProcess
 
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
 class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {
@@ -45,7 +39,10 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         var posMusica : Int = 0 // Posição da música, valor padrão de 0
         var tocando : Boolean = false // Variável para definir se a música está tocando ou não, por padrão: "false"
         var musicaService : MusicaService? = null // Serviço da música, por padrão fica como null
+        var musicaAtual : String = "" // Variável que recebe o id da música atual tocando
         var repetindo : Boolean = false // Variável para definir se a música está repetindo ou não, por padrão: "false"
+        var favoritado = false // Variável para definir se a música está favoritada ou não
+        var favIndex : Int = -1
         // var randomizando : Boolean = false
         var min15 : Boolean = false
         var min30 : Boolean = false
@@ -65,22 +62,39 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // no caso, a ActivityPlayerBinding (activity_player.xml)
         setContentView(binding.root)
 
-        // Cria a intent com a classe MusicService
-        val bindIntent = Intent(this, MusicaService::class.java)
-        // Conecta o serviço ao player e automaticamente cria o serviço enquanto a conexão existir,
-        // essa conexão, define uma dependência do player ao serviço
-        bindService(bindIntent, this, BIND_AUTO_CREATE)
-        // Permite que a conexão permaneça em execução indefinidamente mesmo que o usuário saia do aplicativo
-        // ou seja a música continuará reproduzindo, mesmo quando o usuário sair do app.
-        startService(bindIntent)
-
         iniciarLayout()
 
         // FUNÇÕES DA ACTIVITY (TELA)
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
         binding.btnFecharTpl.setOnClickListener {finish()}
+        // Texto do cabeçalho do player, mostrando ao usuário a quantidade total de músicas dele
+        binding.musicaAtualTotal.text = "Você tem ${MainActivity.listaMusicaMain.size} músicas no total."
 
         // FUNÇÕES DA EXTRAS
+        // Ao clicar no botão de favorito, favorita a música atual do player
+        binding.btnFavTpl.setOnClickListener {
+            favIndex = checarFavoritos(filaMusica[posMusica].id)
+            // Se a música já estiver favoritada
+            if (favoritado){
+                // Então defina a variável favoritado para false
+                favoritado = false
+                // Mude o ícone para o coração vazio de desfavoritado
+                binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+                setBtnsNotify()
+                // E remova a música da lista de favoritos utilizando o indicador favIndex
+                FavoritosActivity.listaFavoritos.removeAt(favIndex)
+            // Caso contrário (música desfavoritada)
+            }else{
+                // Então defina a variável favoritado para true
+                favoritado = true
+                // Mude o ícone para o coração cheio de favoritado
+                binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_24)
+                setBtnsNotify()
+                // E adicione a música atual a lista de favoritos
+                FavoritosActivity.listaFavoritos.add(filaMusica[posMusica])
+            }
+        }
+
         // Ao clicar no botão de compartilhar música
         binding.btnCompart.setOnClickListener {
             // Cria a intent para o compartilhamento
@@ -104,7 +118,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Se caso nenhum deles forem "true", então chame o método para o BottomSheetBar
             if (!tempo){
                 timerSheet()
-            // Caso contrário, diga que o timer já está ativado a partir de um novo BottomSheetBar
+                // Caso contrário, diga que o timer já está ativado a partir de um novo BottomSheetBar
             }else{
                 val permSheet = InfoSheet().build(this) {
                     // Estilo do sheet (BottomSheet)
@@ -218,12 +232,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     // Método para deixar a tela do player com um tema personalizado
     private fun temaPlayer(){
         // Define o tema como sem actionBar
-        application.setTheme(R.style.Theme_BloomNoActionBar)
-        setTheme(R.style.Theme_BloomNoActionBar)
-        // Define a barra de status e navegação do android como transparentes
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        val windowInsetsController = ViewCompat.getWindowInsetsController(window.decorView)
-        windowInsetsController?.isAppearanceLightNavigationBars = true
+        application.setTheme(R.style.Theme_BloomPlayer)
+        setTheme(R.style.Theme_BloomPlayer)
     }
 
     // Método para definir a reprodução normal da lista de músicas
@@ -233,10 +243,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         //randomizando = false
         // O ícone do botão muda para o ícone de reprodução normal
         binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_24)
-        // A cor é definida como a cor padrão dos botões do player
-        binding.btnRepetir.setColorFilter(resources.getColor(R.color.white))
         // E um toast é apresentado
-        Toast.makeText(this, "Reprodução normal", Toast.LENGTH_SHORT).show()
     }
 
     // Método para definir a repetição da música atual
@@ -246,10 +253,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         //randomizando = false
         // O ícone do botão muda para o ícone de reprodução de uma única música
         binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_one_24)
-        // A cor é definida como a cor roxa padrão o app, para indicar que a opção está ligada
-        binding.btnRepetir.setColorFilter(resources.getColor(R.color.purple_500))
         // E um toast é apresentado
-        Toast.makeText(this, "Repetir a música", Toast.LENGTH_SHORT).show()
     }
 
     /* Método para definir a reprodução randômica da lista de músicas
@@ -280,8 +284,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             tocando = true
             // E o ícone do botão será o de pausa, já que está tocando
             binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
-            // Chama o método para mostrar a barra de notificação da música
-            musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar)
+            // Chama o método para mostrar a barra de notificação da música com os devidos botões
+            setBtnsNotify()
             // Insere o texto do tempo decorrente formatado da seekBar, com base na posição atual da música no player
             binding.decTempoSeekBar.text = formatarDuracao(musicaService!!.mPlayer!!.currentPosition.toLong())
             // Insere o texto do tempo final formatado da Seek Bar, com base na duração total da música no player
@@ -293,6 +297,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             binding.seekBarMusica.max = musicaService!!.mPlayer!!.duration
             // Método que detecta se a música atual foi completada
             musicaService!!.mPlayer!!.setOnCompletionListener(this)
+            // Retorna o id da música atual para a variável
+            musicaAtual = filaMusica[posMusica].id
         } catch (e: Exception) {
             return
         }
@@ -300,9 +306,11 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
     // Método que carrega os dados da música e os coloca nas views do player
     private fun carregarMusica(){
+        // Passa o método e o id da música atual para checar se ela está favoritada
+        favIndex = checarFavoritos(filaMusica[posMusica].id)
         // Utilizando Glide, Procura na fila de músicas a posição da música em específico
         // e retorna sua imagem de álbum no lugar da ImageView da mesma
-        Glide.with(this)
+        Glide.with(applicationContext)
             // Carrega a posição da música e a uri da sua imagem
             .load(filaMusica[posMusica].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
@@ -311,7 +319,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             .into(binding.imgMusicaTpl)
 
         // Objeto que leva todas as transformações da imagem do background do player
-        val multiTransform = MultiTransformation<Bitmap>(
+        val multiTransform = MultiTransformation(
             // Efeito embaçado na imagem
             BlurTransformation(40, 5),
             // Filtro de cor escuro na imagem
@@ -320,7 +328,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         // Utilizando Glide, está sendo retornado a imagem da música e colocado como background do Player
         // O intuito desse código é apenas deixar a tela do player mais bonita e "profissional"
-        Glide.with(this)
+        Glide.with(applicationContext)
             // Carrega a posição da música e a uri da sua imagem
             .load(filaMusica[posMusica].imagemUri)
             // Faz a aplicação da imagem com as transformações e um placeholder caso a música não tenha nenhuma imagem
@@ -347,12 +355,17 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         // Se estiver com o timer ligado, a cor do botão continua alterada mesmo quando mudar a música
         if(min15 || min30 || min60) binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.teal_200))
+        if (favoritado) {
+            binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_24)
+        } else{
+            binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+        }
     }
 
     @SuppressLint("SetTextI18n")
     private fun iniciarLayout(){
-        // Texto do cabeçalho do player, mostrando ao usuário a quantidade total de músicas dele
-        binding.musicaAtualTotal.text = "Você tem ${MainActivity.ListaMusicaMain.size} músicas."
+        // Marca como selecionado a caixa de texto do nome da música, para fazer a animação de correr o texto
+        binding.tituloMusicaTpl.isSelected = true
 
         // Para reprodução das músicas
         // Recebe os dados enviados ao ser enviado a tela pela intent
@@ -364,6 +377,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // e então, será adicionado todas as músicas da lista de músicas da pesquisa feita a ela,
             // e o método para carregar os dados da música são chamados
             "Pesquisa" ->{
+                // Cria a intent com a classe MusicService
+                val bindIntent = Intent(this, MusicaService::class.java)
+                // Conecta o serviço ao player e automaticamente cria o serviço enquanto a conexão existir,
+                // essa conexão, define uma dependência do player ao serviço
+                bindService(bindIntent, this, BIND_AUTO_CREATE)
+                startService(bindIntent)
                 filaMusica = ArrayList()
                 filaMusica.addAll(MainActivity.listaMusicaPesquisa)
                 carregarMusica()
@@ -372,8 +391,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // e então, será adicionado todas as músicas da lista de músicas da tela principal a ela,
             // e o método para carregar os dados da música são chamados
             "Adapter" ->{
+                // Cria a intent com a classe MusicService
+                val bindIntent = Intent(this, MusicaService::class.java)
+                bindService(bindIntent, this, BIND_AUTO_CREATE)
+                startService(bindIntent)
                 filaMusica = ArrayList()
-                filaMusica.addAll(MainActivity.ListaMusicaMain)
+                filaMusica.addAll(MainActivity.listaMusicaMain)
                 carregarMusica()
             }
             // Caso o valor da string "classe" seja "Main", a fila de reprodução do player se torna um ArrayList
@@ -381,11 +404,63 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // pré-existente para os ArrayLists chamado "shuffle", que randomiza a lista.
             // e o método para carregar os dados da música são chamados
             "Main" ->{
+                // Cria a intent com a classe MusicService
+                val bindIntent = Intent(this, MusicaService::class.java)
+                bindService(bindIntent, this, BIND_AUTO_CREATE)
+                startService(bindIntent)
                 filaMusica = ArrayList()
-                filaMusica.addAll(MainActivity.ListaMusicaMain)
+                filaMusica.addAll(MainActivity.listaMusicaMain)
                 filaMusica.shuffle()
                 carregarMusica()
             }
+            // Caso o valor da string "classe" seja "Favoritos", a fila de reprodução do player se torna um ArrayList
+            // e então, será adicionado todas as músicas da lista de favoritos a ela,
+            // e o método para carregar os dados da música são chamados
+            "Favoritos" ->{
+                // Cria a intent com a classe MusicService
+                val bindIntent = Intent(this, MusicaService::class.java)
+                // Conecta o serviço ao player e automaticamente cria o serviço enquanto a conexão existir,
+                // essa conexão, define uma dependência do player ao serviço
+                bindService(bindIntent, this, BIND_AUTO_CREATE)
+                startService(bindIntent)
+                filaMusica = ArrayList()
+                filaMusica.addAll(FavoritosActivity.listaFavoritos)
+                carregarMusica()
+            }
+            // Caso o valor da string "classe" seja "FavoritosShuffle", a fila de reprodução do player se torna um ArrayList
+            // e então, será adicionado todas as músicas da lista de favoritos a ela junto de um método
+            // pré-existente para os ArrayLists chamado "shuffle", que randomiza a lista.
+            // e o método para carregar os dados da música são chamados
+            "FavoritosRandom" ->{
+                // Cria a intent com a classe MusicService
+                val bindIntent = Intent(this, MusicaService::class.java)
+                bindService(bindIntent, this, BIND_AUTO_CREATE)
+                startService(bindIntent)
+                filaMusica = ArrayList()
+                filaMusica.addAll(FavoritosActivity.listaFavoritos)
+                filaMusica.shuffle()
+                carregarMusica()
+            }
+            // Caso o valor da string "classe" seja "MiniPlayer", apenas carregue os dados da música,
+            // assim nenhuma alteração no media player é feito e o usuário é jogado para tela do player.
+            "MiniPlayer" ->{
+                reproducaoAtual()
+            }
+        }
+    }
+
+    private fun reproducaoAtual(){
+        carregarMusica()
+        binding.decTempoSeekBar.text =
+            formatarDuracao(musicaService!!.mPlayer!!.currentPosition.toLong())
+        binding.fimTempoSeekBar.text =
+                formatarDuracao(musicaService!!.mPlayer!!.duration.toLong())
+        binding.seekBarMusica.progress = musicaService!!.mPlayer!!.currentPosition
+        binding.seekBarMusica.max = musicaService!!.mPlayer!!.duration
+        if (tocando) {
+            binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
+        } else {
+            binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_play)
         }
     }
 
@@ -395,16 +470,25 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         if (tocando){
             // Troca o ícone para o ícone de play no player e na barra de notificação
             binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_play)
-            musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar)
+            if (favoritado){
+                musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
+            }else{
+                musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
+            }
             // Muda o valor da variável tocando para false
             tocando = false
             // E o player pausa a musica
+            musicaService!!.stopForeground(false)
             musicaService!!.mPlayer!!.pause()
-        // Caso contrário (se estiver pausada), toque a música
+            // Caso contrário (se estiver pausada), toque a música
         }else{
             // Troca o ícone para o ícone de pause no player e na barra de notificação
             binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
-            musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar)
+            if (favoritado){
+                musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
+            }else{
+                musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
+            }
             // Muda o valor da variável tocando para true
             tocando = true
             // E o player toca a musica
@@ -464,9 +548,13 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                         min15 = true
                         // Cria uma Thread a parte para funcionalidade do timer
                         // Ela fica em estado "sleep" no tempo definido abaixo em milisegundos
-                        Thread{ Thread.sleep(15 * 60000)
+                        Thread{ Thread.sleep((5000).toLong())
                             // Quando a Thread termina o "sleep", ela executa o código abaixo
-                            if (min15){exitProcess(1)}}.start()
+                            if (min15){
+                                pausarTimer()
+                                min15 = false
+                            }
+                        }.start()
                     }
                     "Bundle[{timer_opt=1}]" -> {
                         // Envia um toast dizendo que a música irá parar conforme o tempo escolhido
@@ -475,9 +563,13 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                         min30 = true
                         // Cria uma Thread a parte para funcionalidade do timer
                         // Ela fica em estado "sleep" no tempo definido abaixo em milisegundos
-                        Thread{ Thread.sleep(30 * 60000)
+                        Thread{ Thread.sleep((15 * 60000).toLong())
                             // Quando a Thread termina o "sleep", ela executa o código abaixo
-                            if (min30){exitProcess(1)}}.start()
+                            if (min30){
+                                pausarTimer()
+                                min30 = false
+                            }
+                        }.start()
                     }
                     "Bundle[{timer_opt=2}]" -> {
                         // Envia um toast dizendo que a música irá parar conforme o tempo escolhido
@@ -486,9 +578,13 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                         min60 = true
                         // Cria uma Thread a parte para funcionalidade do timer
                         // Ela fica em estado "sleep" no tempo definido abaixo em milisegundos
-                        Thread{ Thread.sleep(60 * 60000)
+                        Thread{ Thread.sleep((15 * 60000).toLong())
                             // Quando a Thread termina o "sleep", ela executa o código abaixo
-                            if (min60){exitProcess(1)}}.start()
+                            if (min60){
+                                pausarTimer()
+                                min60 = false
+                            }
+                        }.start()
                     }
                 }
             }
@@ -499,6 +595,23 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 dismiss()
             }
         }
+    }
+
+    private fun pausarTimer(){
+        musicaService!!.stopForeground(false)
+        musicaService!!.mPlayer!!.pause()
+        // Troca o ícone para o ícone de play no player, no miniplaer e na barra de notificação
+        binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_play)
+        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_baseline_play)
+        if(favoritado){
+            musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
+        }else{
+            musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
+        }
+        // Volta a cor padrão do botão timer
+        binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.white))
+        // E muda os valores das variáveis "min15" e "tocando" para false
+        tocando = false
     }
 
     // Método quando o serviço se conectar ao player
@@ -526,11 +639,20 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Também é chamado o método para requisição dos dados para reprodução da próxima música
         criarPlayer()
         // E por fim, carrega os dados de layout da música (título, artista, imagem, etc.)
-        try {
-            carregarMusica()
-        } catch (e: Exception){
-            return
-        }
+        carregarMusica()
+
+        MiniPlayerFragment.binding.tituloMusicaMp.isSelected = true
+        Glide.with(applicationContext)
+            // Carrega a posição da música e a uri da sua imagem
+            .load(filaMusica[posMusica].imagemUri)
+            // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+            .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+            // Alvo da aplicação da imagem
+            .into(MiniPlayerFragment.binding.imgMusicaMp)
+
+        // Carrega os dados corretos para a música atual sendo reproduzida
+        MiniPlayerFragment.binding.tituloMusicaMp.text = filaMusica[posMusica].titulo
+        MiniPlayerFragment.binding.artistaMusicaMp.text = filaMusica[posMusica].artista
     }
 
     // Uma classe que pode chamar APIs do tipo startActivityForResult sem ter que gerenciar códigos de solicitação

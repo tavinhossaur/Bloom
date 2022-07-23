@@ -12,7 +12,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -20,19 +20,22 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivityMainBinding
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding // binding é a variável do ViewBinding para ligar as views ao código
     private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
     private lateinit var setMenuDrawer : ActionBarDrawerToggle // Toggle do Drawer Layout
 
     // Declaração de objetos/classes estáticas para poder util
     companion object{
-        lateinit var ListaMusicaMain : ArrayList<Musica> // Lista de músicas da tela principal
+        lateinit var listaMusicaMain : ArrayList<Musica> // Lista de músicas da tela principal
         lateinit var listaMusicaPesquisa : ArrayList<Musica> // Lista de músicas que aparecerá na pesquisa
+        @SuppressLint("StaticFieldLeak")
+        lateinit var binding : ActivityMainBinding // binding é a variável do ViewBinding para ligar as views ao código
         var pesquisando : Boolean = false
     }
 
@@ -55,6 +58,16 @@ class MainActivity : AppCompatActivity() {
         // Checagem de permissões quando o usuário entrar na tela principal
         if(checarPermissoes()){
             iniciarLayout()
+
+            FavoritosActivity.listaFavoritos = ArrayList()
+            val editor = getSharedPreferences("Favoritos", MODE_PRIVATE)
+            val jsonString = editor.getString("Lista de favoritos", null)
+            val typeToken = object : TypeToken<ArrayList<Musica>>(){}.type
+
+            if (jsonString != null){
+                val data : ArrayList<Musica> = GsonBuilder().create().fromJson(jsonString, typeToken)
+                FavoritosActivity.listaFavoritos.addAll(data)
+            }
         }
 
         // Abrir a tela de playlists
@@ -75,7 +88,6 @@ class MainActivity : AppCompatActivity() {
             // Quando o usuário é levado a tela do player, também é enviado os dados da classe da MainActivity (String)
             mainIntent.putExtra("classe", "Main")
             startActivity(mainIntent)
-            // Toast.makeText(this, "Músicas randomizadas!", Toast.LENGTH_SHORT).show()
         }
 
         // Abrir a gaveta lateral de opções (Drawer)
@@ -88,15 +100,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // Muda a cor do ícone do drawer
         setMenuDrawer.drawerArrowDrawable.color = ContextCompat.getColor(this, R.color.white)
-
-        // Abrir a barra de pesquisa de músicas
-        //binding.btnSearch.setOnClickListener{openSearch()}
-
-        /* Abrir a tela do player clicando no miniplayer
-         binding.miniPlayerMain.setOnClickListener{
-             startActivity(Intent(this, PlayerActivity::class.java))
-             closeSearch()}
-        */
 
         /*  binding.navLayout.setNavigationItemSelectedListener {
               when(it.itemId){
@@ -141,7 +144,7 @@ class MainActivity : AppCompatActivity() {
     private fun iniciarLayout(){
         pesquisando = false
         // Lista de músicas
-        ListaMusicaMain = procurarMusicas()
+        listaMusicaMain = procurarMusicas()
         // Para otimização do RecyclerView, o seu tamanho é fixo,
         // mesmo quando itens são adicionados ou removidos.
         binding.musicasRv.setHasFixedSize(true)
@@ -154,7 +157,7 @@ class MainActivity : AppCompatActivity() {
 
         // Criando uma variável do Adapter com o contexto (tela) e a lista de músicas que será adicionada
         // ao RecyclerView por meio do mesmo Adapter
-        musicaAdapter = MusicaAdapter(this@MainActivity, ListaMusicaMain)
+        musicaAdapter = MusicaAdapter(this@MainActivity, listaMusicaMain)
         // Setando o Adapter para este RecyclerView
         binding.musicasRv.adapter = musicaAdapter
     }
@@ -231,10 +234,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Método para mostrar (inflar) o menu na action bar
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.pesquisa_menu, menu)
-        val pesquisaView = menu?.findItem(R.id.pesquisa_view)?.actionView as SearchView
+        val pesquisaView = menu.findItem(R.id.pesquisa_view)?.actionView as SearchView
         // Fica lendo o que o usuário está digitando na barra de pesquisa
+        pesquisaView.queryHint = "Procure por título, artista, álbum..."
+
+        pesquisaView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text).setHintTextColor(ContextCompat.getColor(this, R.color.grey3))
+
         pesquisaView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             // O texto é sempre enviado, com ou sem a confirmação de pesquisa do usuário
             // Dessa forma, a lista atualiza na hora com base na pesquisa do usuário
@@ -249,9 +256,9 @@ class MainActivity : AppCompatActivity() {
                     // Passa o texto dela para caixa baixa para pode encontrar a música de forma mais fácil
                     val pesquisa = textoPesquisa.lowercase()
                     // Para cada música na lista de músicas da tela principal
-                    for (musica in ListaMusicaMain)
-                        // Se o título da música, em caixa baixa conter o texto da pesquisa
-                        if (musica.titulo.contains(pesquisa) || musica.artista.contains(pesquisa) || musica.album.contains(pesquisa)){
+                    for (musica in listaMusicaMain)
+                        // Se o título, artista ou álbum da música, em caixa baixa conter o texto da pesquisa
+                        if (musica.titulo.lowercase().contains(pesquisa) || musica.artista.lowercase().contains(pesquisa) || musica.album.lowercase().contains(pesquisa)){
                             // Então adicione essa música a lista de pesquisa
                             listaMusicaPesquisa.add(musica)
                             // Defina pesquisando como true
@@ -264,5 +271,30 @@ class MainActivity : AppCompatActivity() {
             }
         })
         return super.onCreateOptionsMenu(menu)
+    }
+
+    // Método onDestroy, para encerrar o processo do aplicativo
+    override fun onDestroy() {
+        super.onDestroy()
+        // Se a música não estiver tocando e a reprodução de músicas for nula
+        if (!PlayerActivity.tocando && PlayerActivity.musicaService != null){
+            // Então chame o método para encerrar o processo inteiro do app.
+            encerrarProcesso()
+        }
+    }
+
+    // Método onResume, para quando o usuário volta a activity
+    override fun onResume() {
+        super.onResume()
+        // SharedPreferences, para salvar a lista de favoritos do usuário
+        val editor = getSharedPreferences("Favoritos", MODE_PRIVATE).edit()
+        val jsonString = GsonBuilder().create().toJson(FavoritosActivity.listaFavoritos)
+        editor.putString("Lista de favoritos", jsonString)
+        editor.apply()
+
+        // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
+        if(PlayerActivity.musicaService != null){
+            binding.miniPlayer.visibility = View.VISIBLE
+        }
     }
 }

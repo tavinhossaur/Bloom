@@ -16,7 +16,7 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Navigation bar color. -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <!-- Customize your theme here. -->
+        <!-- ActionBar style -->
         <item name="actionBarWidgetTheme">@style/ActionBarStyle</item>
     </style>
 
@@ -31,11 +31,27 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Turn off android dark mode -->
         <item name="android:forceDarkAllowed">false</item>
-        <!-- Status bar color. -->
+        <!-- Transparent status bar color. -->
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <!-- Navigation bar color. -->
+        <!-- Transparent navigation bar color. -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <!-- Customize your theme here. -->
+    </style>
+
+    <style name="Theme.BloomPlayer" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/black3</item>
+        <item name="colorPrimaryVariant">@color/purple2</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purple1</item>
+        <item name="colorSecondaryVariant">@color/purple2</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Turn off android dark mode -->
+        <item name="android:forceDarkAllowed">false</item>
+        <!-- Transparent status bar color. -->
+        <item name="android:windowTranslucentStatus">true</item>
+        <!-- Transparent navigation bar color. -->
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <!-- Texto da lista de itens do menu -->
@@ -54,6 +70,7 @@
 
     <!-- Sombra para o CardView -->
     <style name="CardViewShadow" parent="CardView">
+        <item name="cardBackgroundColor">@android:color/transparent</item>
         <item name="android:ambientShadowAlpha">1</item>
         <item name="android:spotShadowAlpha">1</item>
     </style>

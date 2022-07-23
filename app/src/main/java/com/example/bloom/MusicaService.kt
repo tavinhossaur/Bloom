@@ -45,7 +45,7 @@ class MusicaService : Service() {
 
     // Método da barra de notificação da música
     @SuppressLint("UnspecifiedImmutableFlag", "LaunchActivityFromNotification")
-    fun mostrarNotificacao(tocarPausarBtn : Int){
+    fun mostrarNotificacao(tocarPausarBtn : Int, favoritosBtn : Int){
 
         // Cria o objeto que contém a ação de randomizar a reprodução de músicas
         //val repetirIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.REPETIR)
@@ -84,22 +84,22 @@ class MusicaService : Service() {
         // Utiliza o método de Musica.kt para retornar a imagem da música com base no caminho da música da lista
         val imgMusica = retornarImgMusica(PlayerActivity.filaMusica[PlayerActivity.posMusica].caminho)
         val imagemNotificacao =
-        // Se o objeto imgMusica for diferente de nulo, então "imagemNotificação" será a decodificação do array de bytes da imagem da música
-        if(imgMusica != null){
-            BitmapFactory.decodeByteArray(imgMusica, 0, imgMusica.size)
-        // Caso contrário, será a imagem padrão definida abaixo
-        }else{
-            BitmapFactory.decodeResource(resources, R.drawable.bloom_lotus_icon_grey)
-        }
+            // Se o objeto imgMusica for diferente de nulo, então "imagemNotificação" será a decodificação do array de bytes da imagem da música
+            if(imgMusica != null){
+                BitmapFactory.decodeByteArray(imgMusica, 0, imgMusica.size)
+                // Caso contrário, será a imagem padrão definida abaixo
+            }else{
+                BitmapFactory.decodeResource(resources, R.drawable.bloom_lotus_icon_grey)
+            }
 
         // Criação da notificação
         val notificacao = NotificationCompat.Builder(baseContext, ClasseApplication.ID_CANAL)
             // Título da música na barra de notificação
             .setContentTitle(PlayerActivity.filaMusica[PlayerActivity.posMusica].titulo)
             // Artista da música na barra de notificação
-            .setContentText(PlayerActivity.filaMusica[PlayerActivity.posMusica].artista + " - " + PlayerActivity.filaMusica[PlayerActivity.posMusica].album)
-            // Ícone pequeno na barra de notificação
-            .setSmallIcon(R.drawable.ic_baseline_album_24)
+            .setContentText(PlayerActivity.filaMusica[PlayerActivity.posMusica].artista + " ● " + PlayerActivity.filaMusica[PlayerActivity.posMusica].album)
+            // Ícone pequeno da barra de notificação
+            .setSmallIcon(R.drawable.ic_baseline_favorite_notification_bar_24)
             // Ícone grande da logo do app na barra de notificação
             .setLargeIcon(imagemNotificacao)
             // Define o estilo da notificação, como o estilo padrão de notificações de um media player
@@ -116,15 +116,19 @@ class MusicaService : Service() {
             .addAction(R.drawable.ic_baseline_skip_previous_24, "Anterior", anteriorPendingIntent)
             .addAction(tocarPausarBtn, "Tocar/Pausar", tocarPendingIntent)
             .addAction(R.drawable.ic_baseline_skip_next_24, "Próximo", proximoPendingIntent)
-            .addAction(R.drawable.ic_baseline_favorite_border_24, "Favoritar", favoritarPendingIntent)
+            .addAction(favoritosBtn, "Favoritar", favoritarPendingIntent)
             // Retorna todas as configurações definidas acima e constrói a barra de notificação
             .build()
+        // Toda vez que ocorre a troca de músicas automáticamente, a verificação de favoritos ocorre para não
+        // dessincronizar o botão de favoritos da barra de notificação.
+        PlayerActivity.favIndex = checarFavoritos(PlayerActivity.filaMusica[PlayerActivity.posMusica].id)
         // Coloca a notificação em segundo plano e a inicia
         startForeground(13, notificacao)
     }
 
     // Método que cria o player da música
     fun criarPlayer() {
+        PlayerActivity.favIndex = checarFavoritos(PlayerActivity.filaMusica[PlayerActivity.posMusica].id)
         try {
             // Se a variável do player for nula, então ela se torna o MediaPlayer
             if (PlayerActivity.musicaService!!.mPlayer == null) PlayerActivity.musicaService!!.mPlayer = MediaPlayer()
@@ -137,7 +141,7 @@ class MusicaService : Service() {
             // E o ícone do botão será o de pausa, já que está tocando
             PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
             // Chama o método para mostrar a barra de notificação da música
-            PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar)
+            setBtnsNotify()
             // Insere o texto do tempo decorrente formatado da seekBar, com base na posição atual da música no player
             PlayerActivity.binding.decTempoSeekBar.text = formatarDuracao(mPlayer!!.currentPosition.toLong())
             // Insere o texto do tempo final formatado da Seek Bar, com base na duração total da música no player
@@ -147,6 +151,7 @@ class MusicaService : Service() {
             PlayerActivity.binding.seekBarMusica.progress = 0
             // O progresso máximo do indicador da Seek Bar é definido pela duração total da música
             PlayerActivity.binding.seekBarMusica.max = mPlayer!!.duration
+            PlayerActivity.musicaAtual = PlayerActivity.filaMusica[PlayerActivity.posMusica].id
         } catch (e: Exception) {
             return
         }
