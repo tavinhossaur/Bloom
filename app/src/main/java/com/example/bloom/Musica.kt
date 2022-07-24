@@ -47,10 +47,10 @@ fun checarFavoritos(id: String) : Int{
 // Metódo para sincronizar os botões do player na barra de notificação
 fun setBtnsNotify(){
     when{
-        PlayerActivity.favoritado && PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
-        !PlayerActivity.favoritado && PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
-        PlayerActivity.favoritado && !PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
-        !PlayerActivity.favoritado && !PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
+        PlayerActivity.favoritado && PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_24)
+        !PlayerActivity.favoritado && PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_border_24)
+        PlayerActivity.favoritado && !PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
+        !PlayerActivity.favoritado && !PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_border_24)
     }
 }
 

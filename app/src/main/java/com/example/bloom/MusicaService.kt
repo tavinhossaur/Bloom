@@ -99,7 +99,7 @@ class MusicaService : Service() {
             // Artista da música na barra de notificação
             .setContentText(PlayerActivity.filaMusica[PlayerActivity.posMusica].artista + " ● " + PlayerActivity.filaMusica[PlayerActivity.posMusica].album)
             // Ícone pequeno da barra de notificação
-            .setSmallIcon(R.drawable.ic_baseline_favorite_notification_bar_24)
+            .setSmallIcon(R.drawable.ic_round_favorite_24)
             // Ícone grande da logo do app na barra de notificação
             .setLargeIcon(imagemNotificacao)
             // Define o estilo da notificação, como o estilo padrão de notificações de um media player
@@ -113,9 +113,9 @@ class MusicaService : Service() {
             .setDeleteIntent(limparPendingIntent)
             // Adição dos botões de funcionalidades de controle da música na barra de notificação
             //.addAction(R.drawable.ic_baseline_repeat_24, "Repetir", repetirPendingIntent)
-            .addAction(R.drawable.ic_baseline_skip_previous_24, "Anterior", anteriorPendingIntent)
+            .addAction(R.drawable.ic_round_skip_previous_24, "Anterior", anteriorPendingIntent)
             .addAction(tocarPausarBtn, "Tocar/Pausar", tocarPendingIntent)
-            .addAction(R.drawable.ic_baseline_skip_next_24, "Próximo", proximoPendingIntent)
+            .addAction(R.drawable.ic_round_skip_next_24, "Próximo", proximoPendingIntent)
             .addAction(favoritosBtn, "Favoritar", favoritarPendingIntent)
             // Retorna todas as configurações definidas acima e constrói a barra de notificação
             .build()
@@ -139,7 +139,7 @@ class MusicaService : Service() {
             // .prepare = Coloca em estado de "prepared" (esperando pra ser iniciado ou parado)
             PlayerActivity.musicaService!!.mPlayer!!.prepare()
             // E o ícone do botão será o de pausa, já que está tocando
-            PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
+            PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_24)
             // Chama o método para mostrar a barra de notificação da música
             setBtnsNotify()
             // Insere o texto do tempo decorrente formatado da seekBar, com base na posição atual da música no player

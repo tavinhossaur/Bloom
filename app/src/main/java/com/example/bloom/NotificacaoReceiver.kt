@@ -60,8 +60,8 @@ class NotificacaoReceiver : BroadcastReceiver() {
         PlayerActivity.tocando = true
         PlayerActivity.musicaService!!.mPlayer!!.start()
         setBtnsNotify()
-        PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
-        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_baseline_pause)
+        PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
+        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
     }
 
     // Método para pausar a música pela barra de notificação
@@ -70,8 +70,8 @@ class NotificacaoReceiver : BroadcastReceiver() {
         PlayerActivity.tocando = false
         PlayerActivity.musicaService!!.mPlayer!!.pause()
         setBtnsNotify()
-        PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_play)
-        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_baseline_play)
+        PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
+        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
     }
 
     private fun favoritar(){
@@ -81,8 +81,8 @@ class NotificacaoReceiver : BroadcastReceiver() {
             // Então defina a variável favoritado para false
             PlayerActivity.favoritado = false
             // Mude o ícone para o coração vazio de desfavoritado
-            PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_border_24)
-            MiniPlayerFragment.binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_favorite_border_24,0)
+            PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_border_24)
+            MiniPlayerFragment.binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_border_miniplayer_24,0)
             setBtnsNotify()
             // E remova a música da lista de favoritos utilizando o indicador favIndex
             FavoritosActivity.listaFavoritos.removeAt(PlayerActivity.favIndex)
@@ -91,8 +91,8 @@ class NotificacaoReceiver : BroadcastReceiver() {
             // Então defina a variável favoritado para true
             PlayerActivity.favoritado = true
             // Mude o ícone para o coração cheio de favoritado
-            PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_24)
-            MiniPlayerFragment.binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_favorite_24,0)
+            PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_24)
+            MiniPlayerFragment.binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_miniplayer_24,0)
             setBtnsNotify()
             // E adicione a música atual a lista de favoritos
             FavoritosActivity.listaFavoritos.add(PlayerActivity.filaMusica[PlayerActivity.posMusica])
@@ -158,14 +158,14 @@ class NotificacaoReceiver : BroadcastReceiver() {
             // Checa se a música atual está favoritada
             PlayerActivity.favIndex = checarFavoritos(PlayerActivity.filaMusica[PlayerActivity.posMusica].id)
             if (PlayerActivity.favoritado){
-                PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_24)
-                MiniPlayerFragment.binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_favorite_24,0)
-                PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
+                PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_24)
+                MiniPlayerFragment.binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_miniplayer_24,0)
+                PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_24)
 
             }else{
-                PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_border_24)
-                MiniPlayerFragment.binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_favorite_border_24,0)
-                PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
+                PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_border_24)
+                MiniPlayerFragment.binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_border_miniplayer_24,0)
+                PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_border_24)
             }
         }
     }

@@ -13,11 +13,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivityMainBinding
 import com.google.gson.GsonBuilder
@@ -44,8 +46,11 @@ class MainActivity : AppCompatActivity() {
         modoEscuro()
         super.onCreate(savedInstanceState)
 
-        // Define o título da tela atual
-        supportActionBar?.title = "Todas as músicas"
+        installSplashScreen()
+
+        // Define o estilo customizado da action bar
+        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+        supportActionBar?.setCustomView(R.layout.action_bar_layout)
         // Elevação 0 na actionBar
         supportActionBar?.elevation = 0F
 

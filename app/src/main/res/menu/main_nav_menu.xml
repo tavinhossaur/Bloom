@@ -2,22 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/item_musicas"
-        android:icon="@drawable/ic_baseline_queue_music_24"
+        android:icon="@drawable/ic_round_queue_music_24"
         android:title="Todas as músicas" />
     <item
         android:id="@+id/item_albuns"
-        android:icon="@drawable/ic_baseline_album_24"
+        android:icon="@drawable/ic_round_album_24"
         android:title="Álbuns" />
     <item
         android:id="@+id/item_artistas"
-        android:icon="@drawable/ic_baseline_person_24"
+        android:icon="@drawable/ic_round_person_24"
         android:title="Artistas" />
     <item
         android:id="@+id/item_favoritos"
-        android:icon="@drawable/ic_baseline_favorite_24"
+        android:icon="@drawable/ic_round_favorite_24"
         android:title="Favoritos" />
     <item
         android:id="@+id/item_playlists"
-        android:icon="@drawable/ic_baseline_library_music_24"
+        android:icon="@drawable/ic_round_library_music_24"
         android:title="Playlists" />
 </menu>

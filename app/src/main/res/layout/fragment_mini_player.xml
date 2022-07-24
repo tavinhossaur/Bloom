@@ -11,10 +11,11 @@
     android:background="@color/black3"
     tools:context=".MiniPlayerFragment">
 
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            app:dividerColor="@color/black2" />
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/play_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        app:dividerColor="@color/purple1" />
 
         <!-- CardView da imagem da música (Moldura) -->
         <androidx.cardview.widget.CardView
@@ -58,7 +59,7 @@
                 android:text="In Bloom"
                 android:textColor="@color/white"
                 android:textSize="16sp"
-                app:drawableEndCompat="@drawable/ic_baseline_favorite_border_notification_bar_24"
+                app:drawableEndCompat="@drawable/ic_round_favorite_border_miniplayer_24"
                 app:drawableTint="@color/white" />
 
             <!-- Artista da música no mini-player -->
@@ -88,31 +89,19 @@
 
             <!-- Botão "previous" (Voltar/Anterior) do mini-player -->
             <ImageView
-                android:id="@+id/btn_fav_mp"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                android:visibility="gone"
-                android:src="@drawable/ic_baseline_favorite_border_24"
-                app:tint="@color/white" />
-
-            <!-- Botão "previous" (Voltar/Anterior) do mini-player -->
-            <ImageView
                 android:id="@+id/btn_ante_mp"
                 android:layout_width="35dp"
                 android:layout_height="55dp"
-                android:src="@drawable/ic_baseline_skip_previous_24"
+                android:src="@drawable/ic_round_skip_previous_24"
                 app:tint="@color/white" />
 
             <!-- Botão reproduzir/pausar (Play/Pause) do mini-player -->
             <ImageView
                 android:id="@+id/btn_pp_mp"
-                android:layout_width="20dp"
+                android:layout_width="35dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="10dp"
-                android:src="@drawable/ic_baseline_play"
+                android:src="@drawable/ic_round_play_circle_24"
                 app:tint="@color/white" />
 
             <!-- Botão "next" (Pular/Próximo) do mini-player -->
@@ -120,7 +109,7 @@
                 android:id="@+id/btn_prox_mp"
                 android:layout_width="35dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_baseline_skip_next_24"
+                android:src="@drawable/ic_round_skip_next_24"
                 app:tint="@color/white" />
 
         </LinearLayout>

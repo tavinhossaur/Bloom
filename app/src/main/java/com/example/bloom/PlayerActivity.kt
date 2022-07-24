@@ -79,7 +79,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 // Então defina a variável favoritado para false
                 favoritado = false
                 // Mude o ícone para o coração vazio de desfavoritado
-                binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+                binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_border_24)
                 setBtnsNotify()
                 // E remova a música da lista de favoritos utilizando o indicador favIndex
                 FavoritosActivity.listaFavoritos.removeAt(favIndex)
@@ -88,7 +88,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 // Então defina a variável favoritado para true
                 favoritado = true
                 // Mude o ícone para o coração cheio de favoritado
-                binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_24)
+                binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_24)
                 setBtnsNotify()
                 // E adicione a música atual a lista de favoritos
                 FavoritosActivity.listaFavoritos.add(filaMusica[posMusica])
@@ -139,7 +139,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                         min30 = false
                         min60 = false
                         // Altera a cor do botão de timer para a cor padrão
-                        binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.white))
+                        binding.btnTimer.setImageResource(R.drawable.ic_baseline_timer_24)
                         // E abre o timerSheet novamente
                         timerSheet()
                     }
@@ -153,7 +153,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                         min30 = false
                         min60 = false
                         // Altera a cor do botão de timer para a cor padrão
-                        binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.white))
+                        binding.btnTimer.setImageResource(R.drawable.ic_baseline_timer_24)
                         // Toast indicando que o timer foi encerrado
                         Toast.makeText(this@PlayerActivity, "Timer encerrado", Toast.LENGTH_SHORT).show()
                     }
@@ -242,7 +242,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         repetindo = false
         //randomizando = false
         // O ícone do botão muda para o ícone de reprodução normal
-        binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_24)
+        binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_24)
         // E um toast é apresentado
     }
 
@@ -252,7 +252,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         repetindo = true
         //randomizando = false
         // O ícone do botão muda para o ícone de reprodução de uma única música
-        binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_one_24)
+        binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_one_24)
         // E um toast é apresentado
     }
 
@@ -283,7 +283,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // ela vai tocar
             tocando = true
             // E o ícone do botão será o de pausa, já que está tocando
-            binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
+            binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
             // Chama o método para mostrar a barra de notificação da música com os devidos botões
             setBtnsNotify()
             // Insere o texto do tempo decorrente formatado da seekBar, com base na posição atual da música no player
@@ -356,9 +356,9 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Se estiver com o timer ligado, a cor do botão continua alterada mesmo quando mudar a música
         if(min15 || min30 || min60) binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.teal_200))
         if (favoritado) {
-            binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_24)
+            binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_24)
         } else{
-            binding.btnFavTpl.setImageResource(R.drawable.ic_baseline_favorite_border_24)
+            binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_border_24)
         }
     }
 
@@ -458,9 +458,9 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         binding.seekBarMusica.progress = musicaService!!.mPlayer!!.currentPosition
         binding.seekBarMusica.max = musicaService!!.mPlayer!!.duration
         if (tocando) {
-            binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
+            binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
         } else {
-            binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_play)
+            binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
         }
     }
 
@@ -469,11 +469,11 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Se estiver tocando, então pause a música
         if (tocando){
             // Troca o ícone para o ícone de play no player e na barra de notificação
-            binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_play)
+            binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
             if (favoritado){
-                musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
+                musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
             }else{
-                musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
+                musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_border_24)
             }
             // Muda o valor da variável tocando para false
             tocando = false
@@ -483,11 +483,11 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Caso contrário (se estiver pausada), toque a música
         }else{
             // Troca o ícone para o ícone de pause no player e na barra de notificação
-            binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
+            binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
             if (favoritado){
-                musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
+                musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_24)
             }else{
-                musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_pause_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
+                musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_border_24)
             }
             // Muda o valor da variável tocando para true
             tocando = true
@@ -538,7 +538,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Botão confirmar do BottomSheet
             onPositive("Confirmar") { result ->
                 // Altera a cor do botão do timer para uma cor que indique que ele está ligado
-                binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.teal_200))
+                binding.btnTimer.setImageResource(R.drawable.ic_round_timer_24)
                 // Quando o resultado, convertido para String for igual as strings abaixo
                 when(result.toString()){
                     "Bundle[{timer_opt=0}]" -> {
@@ -548,7 +548,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                         min15 = true
                         // Cria uma Thread a parte para funcionalidade do timer
                         // Ela fica em estado "sleep" no tempo definido abaixo em milisegundos
-                        Thread{ Thread.sleep((5000).toLong())
+                        Thread{ Thread.sleep((15 * 60000).toLong())
                             // Quando a Thread termina o "sleep", ela executa o código abaixo
                             if (min15){
                                 pausarTimer()
@@ -563,7 +563,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                         min30 = true
                         // Cria uma Thread a parte para funcionalidade do timer
                         // Ela fica em estado "sleep" no tempo definido abaixo em milisegundos
-                        Thread{ Thread.sleep((15 * 60000).toLong())
+                        Thread{ Thread.sleep((30 * 60000).toLong())
                             // Quando a Thread termina o "sleep", ela executa o código abaixo
                             if (min30){
                                 pausarTimer()
@@ -578,7 +578,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                         min60 = true
                         // Cria uma Thread a parte para funcionalidade do timer
                         // Ela fica em estado "sleep" no tempo definido abaixo em milisegundos
-                        Thread{ Thread.sleep((15 * 60000).toLong())
+                        Thread{ Thread.sleep((60 * 60000).toLong())
                             // Quando a Thread termina o "sleep", ela executa o código abaixo
                             if (min60){
                                 pausarTimer()
@@ -601,15 +601,15 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         musicaService!!.stopForeground(false)
         musicaService!!.mPlayer!!.pause()
         // Troca o ícone para o ícone de play no player, no miniplaer e na barra de notificação
-        binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_play)
-        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_baseline_play)
+        binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
+        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
         if(favoritado){
-            musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_notification_bar_24)
+            musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
         }else{
-            musicaService!!.mostrarNotificacao(R.drawable.ic_baseline_play_notification_bar, R.drawable.ic_baseline_favorite_border_notification_bar_24)
+            musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_border_24)
         }
         // Volta a cor padrão do botão timer
-        binding.btnTimer.setColorFilter(ContextCompat.getColor(this@PlayerActivity, R.color.white))
+        binding.btnTimer.setImageResource(R.drawable.ic_baseline_timer_24)
         // E muda os valores das variáveis "min15" e "tocando" para false
         tocando = false
     }

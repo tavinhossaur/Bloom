@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.025"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_marginHorizontal="10dp"
         android:gravity="center"
         android:orientation="horizontal">
@@ -24,10 +24,10 @@
         <!-- Botão para fechar o player -->
         <ImageView
             android:id="@+id/btn_fechar_tpl"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:rotation="180"
-            android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
+            android:src="@drawable/ic_round_keyboard_arrow_up_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white" />
 
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textColor="@color/white"
             android:forceDarkAllowed="false"
             tools:ignore="NestedWeights" />
@@ -46,8 +46,8 @@
         <!-- Botão de opções extras -->
         <ImageView
             android:id="@+id/btn_extra_tpl"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:src="@drawable/ic_baseline_more_vert_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white" />
@@ -154,7 +154,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="20dp"
             android:forceDarkAllowed="false"
-            android:src="@drawable/ic_baseline_favorite_border_24"
+            android:src="@drawable/ic_round_favorite_border_24"
             app:tint="@color/white" />
 
     </RelativeLayout>
@@ -175,7 +175,7 @@
             android:layout_width="27dp"
             android:layout_height="27dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_share_24"
+            android:src="@drawable/ic_round_share_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white"
             tools:ignore="NestedWeights"/>
@@ -196,7 +196,7 @@
             android:layout_width="27dp"
             android:layout_height="27dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_equalizer_24"
+            android:src="@drawable/ic_round_equalizer_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 
@@ -206,7 +206,7 @@
             android:layout_width="27dp"
             android:layout_height="27dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_playlist_add_24"
+            android:src="@drawable/ic_round_playlist_add_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 
@@ -276,7 +276,7 @@
             android:layout_width="65dp"
             android:layout_height="35dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_queue_music_24"
+            android:src="@drawable/ic_round_queue_music_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white"
             tools:ignore="NestedWeights" />
@@ -285,20 +285,20 @@
         <ImageView
             android:id="@+id/btn_ante"
             android:layout_width="65dp"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_weight="1"
             android:rotation="180"
-            android:src="@drawable/ic_baseline_skip_next_24"
+            android:src="@drawable/ic_round_skip_next_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 
         <!-- Botão reproduzir/pausar (Play/Pause) -->
         <ImageView
             android:id="@+id/btn_pp_tpl"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="65dp"
+            android:layout_height="60dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_pause"
+            android:src="@drawable/ic_round_pause_circle_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 
@@ -306,9 +306,9 @@
         <ImageView
             android:id="@+id/btn_prox"
             android:layout_width="65dp"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_skip_next_24"
+            android:src="@drawable/ic_round_skip_next_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 
@@ -318,7 +318,7 @@
             android:layout_width="65dp"
             android:layout_height="35dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_repeat_24"
+            android:src="@drawable/ic_round_repeat_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 

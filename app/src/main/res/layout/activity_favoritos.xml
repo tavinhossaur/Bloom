@@ -16,44 +16,56 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="18dp"
             android:orientation="horizontal">
 
-        <!-- Barra de título -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/btn_voltar_fav"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
-        <!-- Título -->
-        <TextView
-            android:id="@+id/bar_title_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_gravity="center"
-            android:text="Favoritos"
-            android:textColor="@color/grey3"
-            android:textSize="18sp"
-            android:textStyle="italic" />
-
-    </LinearLayout>
-
-        <!-- Botão para voltar à tela principal -->
+            <!-- Botão para voltar à tela principal -->
             <ImageView
                 android:id="@+id/btn_voltar_fav"
                 android:layout_width="35dp"
-                android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
+                android:layout_height="35dp"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
                 android:rotation="270"
-                android:src="@drawable/ic_baseline_keyboard_arrow_up_24"
+                android:src="@drawable/ic_round_keyboard_arrow_up_24"
                 app:tint="@color/white" />
 
-    </RelativeLayout>
+                <!-- Barra de título -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/btn_voltar_fav"
+                    android:layout_toStartOf="@id/btn"
+                    android:orientation="horizontal"
+                    android:paddingTop="0dp">
+
+                    <!-- Título -->
+                    <TextView
+                        android:id="@+id/bar_title_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="0dp"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        android:text="Favoritos"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="18sp"/>
+
+                </LinearLayout>
+
+            <!-- Botão para voltar à tela principal -->
+            <ImageView
+                android:id="@+id/btn"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,11 +80,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:layout_weight="1"
+                android:textAlignment="textStart"
                 android:background="@drawable/button_style"
+                android:elevation="8dp"
                 android:ellipsize="end"
+                android:clickable="false"
                 android:maxLines="1"
                 android:text="Suas favoritas"
-                android:textAlignment="viewStart"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -84,8 +98,9 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0.13"
                 android:background="@drawable/button_style"
-                android:drawableEnd="@drawable/ic_baseline_swap_vert_24"
+                android:drawableEnd="@drawable/ic_round_swap_vert_24"
                 android:drawableTint="@color/white"
+                android:elevation="8dp"
                 android:textAllCaps="false"
                 android:textSize="14sp"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
@@ -116,7 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:backgroundTint="@color/black3"
-                app:icon="@drawable/ic_baseline_shuffle_24"
+                app:icon="@drawable/ic_round_shuffle_24"
                 app:iconSize="35dp"
                 app:iconTint="@color/purple1"
                 app:strokeColor="@color/purple1"

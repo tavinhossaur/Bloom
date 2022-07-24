@@ -50,7 +50,7 @@ class MiniPlayerFragment : Fragment(){
                 // Então defina a variável favoritado para false
                 favoritado = false
                 // Mude o ícone para o coração vazio de desfavoritado
-                binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_favorite_border_24,0)
+                binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_border_miniplayer_24,0)
                 setBtnsNotify()
                 // E remova a música da lista de favoritos utilizando o indicador favIndex
                 FavoritosActivity.listaFavoritos.removeAt(PlayerActivity.favIndex)
@@ -59,7 +59,7 @@ class MiniPlayerFragment : Fragment(){
                 // Então defina a variável favoritado para true
                 favoritado = true
                 // Mude o ícone para o coração cheio de favoritado
-                binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_favorite_24,0)
+                binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_miniplayer_24,0)
                 setBtnsNotify()
                 // E adicione a música atual a lista de favoritos
                 FavoritosActivity.listaFavoritos.add(PlayerActivity.filaMusica[PlayerActivity.posMusica])
@@ -117,11 +117,11 @@ class MiniPlayerFragment : Fragment(){
             // Se estiver tocando
             if (PlayerActivity.tocando){
                 // Ícone de pausa
-                binding.btnPpMp.setImageResource(R.drawable.ic_baseline_pause)
+                binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
                 // Caso contrário (se não estiver tocando)
             }else{
                 // Ícone de play
-                binding.btnPpMp.setImageResource(R.drawable.ic_baseline_play)
+                binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
             }
         }
     }
@@ -142,9 +142,9 @@ class MiniPlayerFragment : Fragment(){
         binding.artistaMusicaMp.text = PlayerActivity.filaMusica[PlayerActivity.posMusica].artista
 
         if (favoritado) {
-            binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_favorite_24,0)
+            binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_miniplayer_24,0)
         } else{
-            binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_baseline_favorite_border_24,0)
+            binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_border_miniplayer_24,0)
         }
     }
 
@@ -154,8 +154,8 @@ class MiniPlayerFragment : Fragment(){
         PlayerActivity.tocando = true
         PlayerActivity.musicaService!!.mPlayer!!.start()
         setBtnsNotify()
-        PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_pause)
-        binding.btnPpMp.setImageResource(R.drawable.ic_baseline_pause)
+        PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
+        binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
     }
 
     // Método para pausar a música pela barra de notificação
@@ -164,8 +164,8 @@ class MiniPlayerFragment : Fragment(){
         PlayerActivity.tocando = false
         PlayerActivity.musicaService!!.mPlayer!!.pause()
         setBtnsNotify()
-        PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_baseline_play)
-        binding.btnPpMp.setImageResource(R.drawable.ic_baseline_play)
+        PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
+        binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
     }
 
 }

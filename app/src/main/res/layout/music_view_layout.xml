@@ -4,7 +4,7 @@
     android:id="@+id/viewMusica"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:background="@color/black3"
+    android:background="@color/black5"
     android:gravity="center">
 
     <!-- Card que contém a foto de capa da música -->
@@ -70,7 +70,7 @@
         android:layout_marginStart="5dp"
         android:layout_toStartOf="@id/tempo_musica_view"
         android:gravity="center"
-        android:src="@drawable/ic_baseline_graphic_eq_24"
+        android:src="@drawable/ic_round_equalizer_24"
         android:visibility="gone"
         app:tint="@color/purple1" />
 

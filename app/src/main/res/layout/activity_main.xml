@@ -15,8 +15,6 @@
         android:layout_height="match_parent"
         android:background="@color/black3">
 
-        <!-- Escopo "primário", desconsiderando o escopo do DrawerLayout -->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -27,11 +25,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <!-- Barra dos botões playlist, favoritos e randomizar -->
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="15dp"
+                android:layout_height="85dp"
+                android:gravity="center"
+                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
@@ -43,11 +41,10 @@
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:backgroundTint="@color/black4"
-                    android:drawableTop="@drawable/ic_baseline_library_music_24"
+                    android:drawableTop="@drawable/ic_round_library_music_24"
                     android:drawablePadding="15dp"
                     android:drawableTint="@color/purple1"
-                    android:elevation="10dp"
+                    android:elevation="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="Playlists"
@@ -63,11 +60,10 @@
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:backgroundTint="@color/black4"
-                    android:drawableTop="@drawable/ic_baseline_favorite_notification_bar_24"
+                    android:drawableTop="@drawable/ic_round_favorite_24"
                     android:drawablePadding="15dp"
                     android:drawableTint="@color/purple1"
-                    android:elevation="10dp"
+                    android:elevation="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="Favoritos"
@@ -82,11 +78,10 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:backgroundTint="@color/black4"
-                    android:drawableTop="@drawable/ic_baseline_shuffle_24"
+                    android:drawableTop="@drawable/ic_round_shuffle_24"
                     android:drawablePadding="15dp"
                     android:drawableTint="@color/purple1"
-                    android:elevation="10dp"
+                    android:elevation="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="Randomizar"
@@ -130,9 +125,10 @@
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:drawableStart="@drawable/ic_baseline_play_circle_outline_24"
+                    android:drawableStart="@drawable/ic_round_play_circle_24"
                     android:drawablePadding="5dp"
                     android:drawableTint="@color/purple1"
+                    android:elevation="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="Reprodução aleatória"
@@ -148,13 +144,22 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="0.13"
                     android:background="@drawable/button_style"
-                    android:drawableEnd="@drawable/ic_baseline_swap_vert_24"
+                    android:drawableEnd="@drawable/ic_round_swap_vert_24"
                     android:drawableTint="@color/white"
+                    android:elevation="8dp"
                     android:textAllCaps="false"
                     android:textSize="14sp"
                     tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             </LinearLayout>
+
+            <!-- Linha divisória -->
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="8dp"
+                app:dividerColor="@color/black3"
+                app:dividerThickness="3dp" />
 
             <!-- Lista de músicas -->
             <androidx.recyclerview.widget.RecyclerView
@@ -163,6 +168,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/black3"
                 android:fadingEdge="vertical"
+                android:fadingEdgeLength="5dp"
                 android:requiresFadingEdge="vertical"
                 android:scrollbarAlwaysDrawVerticalTrack="true"
                 android:scrollbarThumbVertical="@drawable/ic_baseline_scrollbar_24"

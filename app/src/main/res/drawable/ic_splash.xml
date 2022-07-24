@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Your product logo - 144dp color version of your app icon -->
+    <item
+        android:drawable="@drawable/bloom_logo_app"
+        android:height="200dp"
+        android:width="200dp"
+        android:bottom="100dp"
+        android:gravity="center">
+    </item>
+</layer-list>
