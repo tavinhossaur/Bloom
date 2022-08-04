@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/add_musicas"
+        android:icon="@drawable/ic_round_playlist_add_24"
+        android:title="Adicionar músicas" />
+    <item
+        android:id="@+id/edit_playlist"
+        android:icon="@drawable/ic_round_edit_note_24"
+        android:title="Editar playlist" />
+    <item
+        android:id="@+id/clear_playlist"
+        android:icon="@drawable/ic_round_clear_all_24"
+        android:title="Limpar músicas" />
+</menu>

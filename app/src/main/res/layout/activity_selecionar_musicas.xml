@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black3"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    tools:context=".SelecionarMusicasActivity">
+
+    <!-- Cabeçalho da barra de pesquisa, botão de menu e título -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="18dp"
+        android:orientation="horizontal">
+
+        <!-- Botão para voltar à tela principal -->
+        <ImageView
+            android:id="@+id/btn_voltar_slc"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:rotation="180"
+            android:src="@drawable/ic_round_keyboard_arrow_up_24"
+            app:tint="@color/white" />
+
+        <!-- Barra de título -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/btn_voltar_slc"
+            android:layout_toStartOf="@id/btn_info"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/pesquisa_view_slc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                app:iconifiedByDefault="false"
+                app:queryBackground="@color/black3"
+                app:searchIcon="@drawable/ic_round_search_24"/>
+
+        </LinearLayout>
+
+        <!-- Botão para voltar à tela principal -->
+        <ImageView
+            android:id="@+id/btn_info"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_round_info_24"
+            app:tint="@color/white" />
+
+    </RelativeLayout>
+
+    <!-- ConstraintLayout para fazer o FAB -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black3">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/aviso_favoritas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="Para favoritar as músicas, clique no "
+            android:textAlignment="center"
+            android:textColor="@color/grey3"
+            android:textSize="20sp"
+            android:visibility="visible"
+            android:drawableEnd="@drawable/ic_round_favorite_border_24"
+            android:drawableTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/slc_musica_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:background="@color/black3"
+            android:fadingEdge="vertical"
+            android:requiresFadingEdge="vertical"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbarThumbVertical="@drawable/ic_baseline_scrollbar_24"
+            android:scrollbars="vertical"/>
+
+        <!--
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/mini_player"
+            android:name="com.example.bloom.MiniPlayerFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout="@layout/fragment_mini_player"/>
+        -->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

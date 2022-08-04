@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black3"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    tools:context=".ConteudoPlaylistActivity">
+
+    <!-- Cabeçalho da barra de pesquisa, botão de menu e título -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:paddingTop="4dp"
+        android:orientation="horizontal">
+
+        <!-- Botão para voltar à tela principal -->
+        <ImageView
+            android:id="@+id/btn_voltar_cpl"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:rotation="270"
+            android:src="@drawable/ic_round_keyboard_arrow_up_24"
+            app:tint="@color/white" />
+
+        <!-- Barra de título -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/btn_voltar_cpl"
+            android:layout_toStartOf="@id/btn_extra_cpl"
+            android:orientation="vertical">
+
+            <!-- Título -->
+            <TextView
+                android:id="@+id/nome_playlist_cpl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="Nome da playlist"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
+
+            <!-- Título -->
+            <TextView
+                android:id="@+id/nome_criador_cpl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="por Usuário"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/btn_extra_cpl"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/ic_baseline_more_vert_24"
+            android:backgroundTint="@color/white" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/black3"
+        android:orientation="vertical">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            app:cardElevation="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardPreventCornerOverlap="false">
+
+            <!-- Botão para mudar a imagem da playlist
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_img_playlist"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:layout_gravity="end|bottom"
+                android:background="@drawable/ic_twotone_image_24"
+                android:backgroundTint="@color/black3"/>
+            -->
+
+            <ImageView
+                android:id="@+id/playlist_img_cpl"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/black6"
+                app:srcCompat="@drawable/bloom_lotus_icon_grey"
+                android:scaleType="centerCrop" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <!-- ConstraintLayout para fazer o FAB -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black3">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/aviso_cpl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="Esta playlist não possui músicas 🥺"
+            android:textAlignment="center"
+            android:textColor="@color/grey3"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_add_musicas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Adicionar músicas"
+            android:textAllCaps="false"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:background="@drawable/button_style"
+            android:drawableEnd="@drawable/ic_round_playlist_add_24"
+            android:drawablePadding="5dp"
+            android:drawableTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/aviso_cpl" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/musicas_playlist_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black3"
+            android:visibility="invisible"
+            android:fadingEdge="vertical"
+            android:requiresFadingEdge="vertical"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:scrollbars="vertical" />
+
+        <!-- FAB - Floating Action Button (Botão de Ação Flutuante) para criar uma nova playlist-->
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab_random_cpl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:backgroundTint="@color/black3"
+            app:icon="@drawable/ic_round_shuffle_24"
+            app:iconSize="35dp"
+            app:iconTint="@color/purple1"
+            app:strokeColor="@color/purple1"
+            app:strokeWidth="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="35dp"
+            android:layout_marginBottom="35dp"
+            tools:ignore="MissingConstraints" />
+
+        <!--
+        <androidx.fragment.app.FragmentContainerView
+             android:id="@+id/mini_player"
+             android:name="com.example.bloom.MiniPlayerFragment"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintStart_toStartOf="parent"
+             tools:layout="@layout/fragment_mini_player"/>
+        -->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

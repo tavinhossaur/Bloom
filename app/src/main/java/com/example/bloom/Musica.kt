@@ -1,6 +1,7 @@
 package com.example.bloom
 
 import android.media.MediaMetadataRetriever
+import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
@@ -44,12 +45,23 @@ fun checarFavoritos(id: String) : Int{
     return -1
 }
 
+class Playlist {
+    lateinit var nome : String
+    lateinit var playlist : ArrayList<Musica>
+    lateinit var criador : String
+    lateinit var imagemUri: String
+}
+
+class ModeloPlaylist{
+    var modelo : ArrayList<Playlist> = ArrayList()
+}
+
 // Metódo para sincronizar os botões do player na barra de notificação
 fun setBtnsNotify(){
     when{
         PlayerActivity.favoritado && PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_24)
         !PlayerActivity.favoritado && PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_border_24)
-        PlayerActivity.favoritado && !PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
+        !PlayerActivity.tocando && PlayerActivity.favoritado -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
         !PlayerActivity.favoritado && !PlayerActivity.tocando -> PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_border_24)
     }
 }
@@ -61,6 +73,18 @@ fun retornarImgMusica(caminho: String): ByteArray?{
     procurador.setDataSource(caminho)
     // Retorna a imagem do caminho passado em um array de bytes
     return procurador.embeddedPicture
+}
+
+// Método que checa se uma música que foi excluída está presente em alguma playlist, e apaga ela
+// esse código é necessário pois o SharedPreferences mantém os dados da música mesmo ela tendo sido excluída.
+fun checarMusicasApagadas(playlist: ArrayList<Musica>) : ArrayList<Musica>{
+    playlist.forEachIndexed { index, musica ->
+        val arquivo = File(musica.caminho)
+        if (!arquivo.exists()){
+            playlist.removeAt(index)
+        }
+    }
+    return playlist
 }
 
 // Método para alterar a posição da música e o modo de reprodução de forma correta evitando crashes e bugs

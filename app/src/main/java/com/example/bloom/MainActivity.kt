@@ -13,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -32,13 +33,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
     private lateinit var setMenuDrawer : ActionBarDrawerToggle // Toggle do Drawer Layout
 
-    // Declaração de objetos/classes estáticas para poder util
+    // Declaração de objetos/classes estáticas para poder utilizar
     companion object{
         lateinit var listaMusicaMain : ArrayList<Musica> // Lista de músicas da tela principal
         lateinit var listaMusicaPesquisa : ArrayList<Musica> // Lista de músicas que aparecerá na pesquisa
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityMainBinding // binding é a variável do ViewBinding para ligar as views ao código
-        var pesquisando : Boolean = false
+        var pesquisando : Boolean = false // Variável para indentificar se o usuário está fazendo uma pesquisa de músicas
     }
 
     // Método chamado quando o aplicativo é iniciado
@@ -64,14 +65,24 @@ class MainActivity : AppCompatActivity() {
         if(checarPermissoes()){
             iniciarLayout()
 
+            // Para retornar os dados do usuário das músicas favoritas
             FavoritosActivity.listaFavoritos = ArrayList()
-            val editor = getSharedPreferences("Favoritos", MODE_PRIVATE)
-            val jsonString = editor.getString("Lista de favoritos", null)
-            val typeToken = object : TypeToken<ArrayList<Musica>>(){}.type
+            val editor= getSharedPreferences("Favoritos", MODE_PRIVATE)
+            val jsonStringFavoritos = editor.getString("Lista de favoritos", null)
+            val typeTokenFavoritos = object : TypeToken<ArrayList<Musica>>(){}.type
 
-            if (jsonString != null){
-                val data : ArrayList<Musica> = GsonBuilder().create().fromJson(jsonString, typeToken)
-                FavoritosActivity.listaFavoritos.addAll(data)
+            if (jsonStringFavoritos != null){
+                val dataFavoritos : ArrayList<Musica> = GsonBuilder().create().fromJson(jsonStringFavoritos, typeTokenFavoritos)
+                FavoritosActivity.listaFavoritos.addAll(dataFavoritos)
+            }
+
+            // Para retornar os dados do usuário das playlists criadas
+            PlaylistsActivity.playlists = ModeloPlaylist()
+            val jsonStringPlaylists = editor.getString("Lista de playlists", null)
+
+            if (jsonStringPlaylists != null){
+                val dataPlaylists : ModeloPlaylist = GsonBuilder().create().fromJson(jsonStringPlaylists, ModeloPlaylist::class.java)
+                PlaylistsActivity.playlists = dataPlaylists
             }
         }
 
@@ -87,12 +98,19 @@ class MainActivity : AppCompatActivity() {
 
         // Randomizar as músicas
         binding.randomBtn.setOnClickListener {
+            // A lista de músicas precisa conter pelo menos uma música para funcionar
+            if (listaMusicaMain.size < 1){
+                // Criação de um toast para informar o usuário de que ele não possui músicas suficientes para utilizar a funcionalidade
+                Toast.makeText(this, "Você não possui músicas!", Toast.LENGTH_SHORT).show()
+            }else{
+            // Se houver uma ou mais músicas, leve o usuário para o player com os dados para randomizá-la
             val mainIntent = Intent(this@MainActivity, PlayerActivity::class.java)
             // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
             mainIntent.putExtra("indicador", 0)
             // Quando o usuário é levado a tela do player, também é enviado os dados da classe da MainActivity (String)
             mainIntent.putExtra("classe", "Main")
             startActivity(mainIntent)
+            }
         }
 
         // Abrir a gaveta lateral de opções (Drawer)
@@ -150,6 +168,13 @@ class MainActivity : AppCompatActivity() {
         pesquisando = false
         // Lista de músicas
         listaMusicaMain = procurarMusicas()
+        if(listaMusicaMain.size < 1){
+            binding.avisoMusicas.visibility = View.VISIBLE
+            binding.musicasRv.visibility = View.GONE
+        }else{
+            binding.avisoMusicas.visibility = View.GONE
+            binding.musicasRv.visibility = View.VISIBLE
+        }
         // Para otimização do RecyclerView, o seu tamanho é fixo,
         // mesmo quando itens são adicionados ou removidos.
         binding.musicasRv.setHasFixedSize(true)
@@ -242,11 +267,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.pesquisa_menu, menu)
         val pesquisaView = menu.findItem(R.id.pesquisa_view)?.actionView as SearchView
-        // Fica lendo o que o usuário está digitando na barra de pesquisa
+        // Texto da hint
         pesquisaView.queryHint = "Procure por título, artista, álbum..."
-
+        // Muda a cor da hint da textView da pesquisa
         pesquisaView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text).setHintTextColor(ContextCompat.getColor(this, R.color.grey3))
 
+        // Fica lendo o que o usuário está digitando na barra de pesquisa
         pesquisaView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             // O texto é sempre enviado, com ou sem a confirmação de pesquisa do usuário
             // Dessa forma, a lista atualiza na hora com base na pesquisa do usuário
@@ -293,8 +319,11 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         // SharedPreferences, para salvar a lista de favoritos do usuário
         val editor = getSharedPreferences("Favoritos", MODE_PRIVATE).edit()
-        val jsonString = GsonBuilder().create().toJson(FavoritosActivity.listaFavoritos)
-        editor.putString("Lista de favoritos", jsonString)
+        val jsonStringFavoritos = GsonBuilder().create().toJson(FavoritosActivity.listaFavoritos)
+        editor.putString("Lista de favoritos", jsonStringFavoritos)
+        // SharedPreferences, para salvar a lista de playlists do usuário
+        val jsonStringPlaylists = GsonBuilder().create().toJson(PlaylistsActivity.playlists)
+        editor.putString("Lista de playlists", jsonStringPlaylists)
         editor.apply()
 
         // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.

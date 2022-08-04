@@ -12,7 +12,6 @@ import android.os.IBinder
 import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
-import java.security.AccessController.getContext
 
 // Um service é um componente do aplicativo que pode realizar operações longas e não fornece uma interface do usuário.
 // É utilizado para serviços vinculados, como esse.

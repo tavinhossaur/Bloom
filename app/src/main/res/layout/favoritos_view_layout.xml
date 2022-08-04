@@ -4,7 +4,7 @@
     android:id="@+id/viewFavoritos"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:background="@color/black3"
+    android:background="@drawable/music_view_style"
     android:gravity="center">
 
     <!-- Card que contém a foto de capa da música -->

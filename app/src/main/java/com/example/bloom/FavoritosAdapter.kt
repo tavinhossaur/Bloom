@@ -12,7 +12,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.bloom.databinding.FavoritosViewLayoutBinding
 
 // Classe do Adapter que liga a lista de músicas aos itens do RecyclerView
-class FavoritosAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>) : RecyclerView.Adapter<FavoritosAdapter.Holder>() {
+class FavoritosAdapter(private val context: Context, private var listaFavoritos: ArrayList<Musica>) : RecyclerView.Adapter<FavoritosAdapter.Holder>() {
     class Holder(binding: FavoritosViewLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val titulo = binding.tituloMusicafavView    // Título da música
         val artista = binding.artistaMusicafavView  // Artista da música
@@ -20,7 +20,7 @@ class FavoritosAdapter(private val context: Context, private var listaMusicas: A
         val duracao = binding.tempoMusicafavView    // Duração da música
 
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
-        // no caso, a MusicViewLayoutBinding (music_view_layout)
+        // no caso, a FavoritosViewLayoutBinding (favoritos_view_layout)
         val root = binding.root
     }
 
@@ -31,18 +31,18 @@ class FavoritosAdapter(private val context: Context, private var listaMusicas: A
 
     override fun onBindViewHolder(holder: Holder, posicao: Int) {
         // Procura na lista de músicas a posição da música em específico e retorna seu título no lugar da caixa de texto da mesma
-        holder.titulo.text = listaMusicas[posicao].titulo
+        holder.titulo.text = listaFavoritos[posicao].titulo
         // Procura na lista de músicas a posição da música em específico e retorna seu artista no lugar da caixa de texto da mesma
-        holder.artista.text = listaMusicas[posicao].artista
+        holder.artista.text = listaFavoritos[posicao].artista
         // Procura na lista de músicas a posição da música em específico e retorna sua duração no lugar da caixa de texto da mesma
         // e também faz a formatação da duração da músicas
-        holder.duracao.text = formatarDuracao(listaMusicas[posicao].duracao)
+        holder.duracao.text = formatarDuracao(listaFavoritos[posicao].duracao)
 
         // Utilizando Glide, Procura na lista de músicas a posição da música em específico
         // e retorna sua imagem de álbum no lugar da ImageView da mesma
         Glide.with(context)
             // Carrega a posição da música e a uri da sua imagem
-            .load(listaMusicas[posicao].imagemUri)
+            .load(listaFavoritos[posicao].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
             .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
             // Alvo da aplicação da imagem
@@ -61,14 +61,14 @@ class FavoritosAdapter(private val context: Context, private var listaMusicas: A
 
     // Retorna a quantidade total das músicas na lista de músicas
     override fun getItemCount(): Int {
-        return listaMusicas.size
+        return listaFavoritos.size
     }
 
     // Método para atualizar a lista de músicas
     @SuppressLint("NotifyDataSetChanged")
     fun atualizarLista(listaPesquisa : ArrayList<Musica>){
-        listaMusicas = ArrayList()
-        listaMusicas.addAll(listaPesquisa)
+        listaFavoritos = ArrayList()
+        listaFavoritos.addAll(listaPesquisa)
         notifyDataSetChanged()
     }
 }

@@ -6,8 +6,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission
-        android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".ClasseApplication"
@@ -16,59 +15,77 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_bloom_app"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_bloom_app_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bloom"
-        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
         <activity
-            android:name=".PermissaoActivity"
+            android:name=".SelecionarMusicasActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ConteudoPlaylistActivity"
+            android:exported="false"
             android:launchMode="singleTask"
-            tools:ignore="LockedOrientationActivity"
-            android:exported="false" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".PermissaoActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".PlaylistsActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            android:configChanges="uiMode"
-            android:launchMode="singleTask"
-            tools:ignore="LockedOrientationActivity"
-            android:exported="false" />
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".PlayerActivity"
+            android:configChanges="uiMode"
+            android:exported="true"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            android:configChanges="uiMode"
-            android:launchMode="singleTask"
-            tools:ignore="LockedOrientationActivity"
-            android:exported="true" />
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".FavoritosActivity"
+            android:configChanges="uiMode"
+            android:exported="false"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
-            android:configChanges="uiMode"
-            android:launchMode="singleTask"
-            tools:ignore="LockedOrientationActivity"
-            android:exported="false" />
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".MainActivity"
-            android:theme="@style/SplashScreen"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
             android:configChanges="uiMode"
+            android:exported="true"
             android:launchMode="singleTask"
-            tools:ignore="LockedOrientationActivity"
-            android:exported="true">
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashScreen"
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".MusicaService"/>
-        <receiver android:name=".NotificacaoReceiver"
-            android:enabled="true"/>
+
+        <service android:name=".MusicaService" />
+
+        <receiver
+            android:name=".NotificacaoReceiver"
+            android:enabled="true" />
     </application>
 
 </manifest>

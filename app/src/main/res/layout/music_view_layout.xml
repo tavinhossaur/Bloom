@@ -4,7 +4,7 @@
     android:id="@+id/viewMusica"
     android:layout_width="match_parent"
     android:layout_height="75dp"
-    android:background="@color/black5"
+    android:background="@drawable/music_view_style"
     android:gravity="center">
 
     <!-- Card que contém a foto de capa da música -->
@@ -16,7 +16,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="7dp"
-        app:cardElevation="1dp"
+        app:cardElevation="2dp"
         app:cardCornerRadius="8dp">
 
         <!-- Imagem da música -->

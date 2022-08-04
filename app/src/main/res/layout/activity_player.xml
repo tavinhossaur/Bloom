@@ -81,7 +81,7 @@
                 android:layout_height="match_parent" />
 
             <!-- Botão para acessar as letras da música
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_letras_tpl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,8 +91,8 @@
                 android:textSize="12sp"
                 android:text="Letras"
                 android:textAllCaps="false"
-                android:textColor="@color/black1"
-                android:drawableEnd="@drawable/ic_baseline_menu_24"
+                android:textColor="@color/grey3"
+                android:drawableStart="@drawable/ic_round_clear_all_24"
                 android:drawableTint="@color/purple1"
                 app:strokeWidth="0dp"
                 style="@style/Widget.Material3.Button.OutlinedButton"/>

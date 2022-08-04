@@ -43,14 +43,14 @@ class MiniPlayerFragment : Fragment(){
 
         // FUNÇÕES DE CONTROLE DO MINIPLAYER
         // Ao clicar no botão de favorito, favorita a música atual do player
-        binding.tituloMusicaMp.setOnClickListener {
+        binding.btnFavMp.setOnClickListener {
             PlayerActivity.favIndex = checarFavoritos(PlayerActivity.filaMusica[PlayerActivity.posMusica].id)
             // Se a música já estiver favoritada
             if (favoritado){
                 // Então defina a variável favoritado para false
                 favoritado = false
                 // Mude o ícone para o coração vazio de desfavoritado
-                binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_border_miniplayer_24,0)
+                binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_border_miniplayer_24)
                 setBtnsNotify()
                 // E remova a música da lista de favoritos utilizando o indicador favIndex
                 FavoritosActivity.listaFavoritos.removeAt(PlayerActivity.favIndex)
@@ -59,7 +59,7 @@ class MiniPlayerFragment : Fragment(){
                 // Então defina a variável favoritado para true
                 favoritado = true
                 // Mude o ícone para o coração cheio de favoritado
-                binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_miniplayer_24,0)
+                binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_miniplayer_24)
                 setBtnsNotify()
                 // E adicione a música atual a lista de favoritos
                 FavoritosActivity.listaFavoritos.add(PlayerActivity.filaMusica[PlayerActivity.posMusica])
@@ -76,17 +76,6 @@ class MiniPlayerFragment : Fragment(){
             }else{
                 tocar()
             }
-        }
-
-        // Ao clicar no botão "previous", chama o método trocar música
-        // com valor "false" para o Boolean "proximo"
-        binding.btnAnteMp.setOnClickListener {
-            mudarPosMusica(adicionar = false)
-            PlayerActivity.musicaService!!.criarPlayer()
-            carregarMusica()
-            // Muda o ícone da barra de notificação
-            setBtnsNotify()
-            tocar()
         }
 
         // Ao clicar no botão "next", chama o método trocar música
@@ -109,6 +98,8 @@ class MiniPlayerFragment : Fragment(){
         if (PlayerActivity.musicaService != null){
             // Mostre o miniplayer
             binding.root.visibility = View.VISIBLE
+            // Muda o tamanho da fading edge do recyler view
+            MainActivity.binding.musicasRv.setFadingEdgeLength(250)
             // Seleciona o título da música para título se mover
             binding.tituloMusicaMp.isSelected = true
             // e carregue os dados da música nele
@@ -142,9 +133,9 @@ class MiniPlayerFragment : Fragment(){
         binding.artistaMusicaMp.text = PlayerActivity.filaMusica[PlayerActivity.posMusica].artista
 
         if (favoritado) {
-            binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_miniplayer_24,0)
+            binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_miniplayer_24)
         } else{
-            binding.tituloMusicaMp.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_round_favorite_border_miniplayer_24,0)
+            binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_border_miniplayer_24)
         }
     }
 
@@ -152,8 +143,13 @@ class MiniPlayerFragment : Fragment(){
     private fun tocar(){
         // Toca a música e muda o ícone do botão na barra e no player
         PlayerActivity.tocando = true
+        checarFavoritos(PlayerActivity.filaMusica[PlayerActivity.posMusica].id)
         PlayerActivity.musicaService!!.mPlayer!!.start()
-        setBtnsNotify()
+        if (favoritado) {
+            PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_24)
+        } else{
+            PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_border_24)
+        }
         PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
         binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
     }
@@ -162,8 +158,13 @@ class MiniPlayerFragment : Fragment(){
     private fun pausar(){
         // Pausa a música e muda o ícone do botão na barra e no player
         PlayerActivity.tocando = false
+        checarFavoritos(PlayerActivity.filaMusica[PlayerActivity.posMusica].id)
         PlayerActivity.musicaService!!.mPlayer!!.pause()
-        setBtnsNotify()
+        if (favoritado) {
+            PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
+        } else{
+            PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_border_24)
+        }
         PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
         binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
     }

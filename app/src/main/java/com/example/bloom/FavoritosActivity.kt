@@ -19,8 +19,8 @@ import com.example.bloom.databinding.ActivityFavoritosBinding
 class FavoritosActivity : AppCompatActivity() {
 
 
-    private lateinit var binding : ActivityFavoritosBinding   // Variável usada para ligar os componentes da tela
-    private lateinit var favoritosAdapter : FavoritosAdapter
+    private lateinit var binding : ActivityFavoritosBinding // binding é a variável do ViewBinding para ligar as views ao código
+    private lateinit var favoritosAdapter : FavoritosAdapter // Variável que leva a classe FavoritosAdapter
 
     companion object{
         var listaFavoritos : ArrayList<Musica> = ArrayList()
@@ -36,6 +36,8 @@ class FavoritosActivity : AppCompatActivity() {
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
         // no caso, a ActivityFavoritosBinding (activity_favoritos.xml)
         setContentView(binding.root)
+
+        listaFavoritos = checarMusicasApagadas(listaFavoritos)
 
         // Para otimização do RecyclerView, o seu tamanho é fixo,
         // mesmo quando itens são adicionados ou removidos.
@@ -56,8 +58,14 @@ class FavoritosActivity : AppCompatActivity() {
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
         binding.btnVoltarFav.setOnClickListener {finish()}
 
-        if (listaFavoritos.size <= 1){
+        // Caso não tenha nenhuma música favoritada ainda
+        if (listaFavoritos.size < 1){
+            // Esconde o botão de randomizar as músicas favoritas
             binding.fabFavRandom.visibility = View.INVISIBLE
+            // Esconde o RecyclerView das músicas favoritas
+            binding.favoritosRv.visibility = View.GONE
+            // E mostra o aviso dizendo que não há músicas favoritas
+            binding.avisoFavoritas.visibility = View.VISIBLE
         }
 
         binding.fabFavRandom.setOnClickListener {

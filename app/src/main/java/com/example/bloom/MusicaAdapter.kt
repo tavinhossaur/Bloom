@@ -1,28 +1,29 @@
 package com.example.bloom
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.bloom.databinding.MusicViewLayoutBinding
+import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
-import com.maxkeppeler.sheets.input.InputSheet
 
 // Classe do Adapter que liga a lista de músicas aos itens do RecyclerView
-class MusicaAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>) : RecyclerView.Adapter<MusicaAdapter.Holder>() {
+class MusicaAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>, private val conteudoPlaylist : Boolean = false, private val activitySelecionar : Boolean = false) : RecyclerView.Adapter<MusicaAdapter.Holder>() {
     class Holder(binding: MusicViewLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val titulo = binding.tituloMusicaView    // Título da música
         val artista = binding.artistaMusicaView  // Artista da música
         val imagem = binding.imgMusicaView       // Imagem da música
         val duracao = binding.tempoMusicaView    // Duração da música
+        val selecionado = binding.btnExtraView        // Botão de opções extras
 
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
         // no caso, a MusicViewLayoutBinding (music_view_layout)
@@ -54,15 +55,35 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
             // Alvo da aplicação da imagem
             .into(holder.imagem)
 
-        // Quando clicado na view da música no RecyclerView, o usuário é levado para o player
-        holder.root.setOnClickListener {
-            when{
-                // Quando pesquisando for true, chame o método irParaMusica e passe a referência: "Pesquisa", e a posição da música
-                MainActivity.pesquisando -> irParaMusica("Pesquisa", posicao)
-                // Quando a música que for selecionada já estiver tocando, chame o método irParaMusica e passe a referência: "MiniPlayer", e a posição da música no Player
-                listaMusicas[posicao].id == PlayerActivity.musicaAtual -> irParaMusica("MiniPlayer", PlayerActivity.posMusica)
-                // Em qualquer outro caso, chame o método irParaMusica e passe a referência: "Adapter" e a posição da música
-                else -> irParaMusica("Adapter", posicao)
+        when{
+            conteudoPlaylist -> {
+                holder.root.setOnClickListener {
+                    irParaMusica("ConteudoPlaylist", posicao)
+                }
+            }
+            activitySelecionar -> {
+                holder.selecionado.visibility = View.INVISIBLE
+                holder.selecionado.setImageResource(R.drawable.ic_round_check_circle_24)
+                holder.root.setOnClickListener{
+                    if (adicionarMusica(listaMusicas[posicao])){
+                        holder.selecionado.visibility = View.VISIBLE
+                    }else{
+                        holder.selecionado.visibility = View.INVISIBLE
+                    }
+                }
+            }
+            else -> {
+                // Quando clicado na view da música no RecyclerView, o usuário é levado para o player
+                holder.root.setOnClickListener {
+                    when{
+                        // Quando pesquisando for true, chame o método irParaMusica e passe a referência: "Pesquisa", e a posição da música
+                        MainActivity.pesquisando -> irParaMusica("Pesquisa", posicao)
+                        // Quando a música que for selecionada já estiver tocando, chame o método irParaMusica e passe a referência: "MiniPlayer", e a posição da música no Player
+                        listaMusicas[posicao].id == PlayerActivity.musicaAtual -> irParaMusica("MiniPlayer", PlayerActivity.posMusica)
+                        // Em qualquer outro caso, chame o método irParaMusica e passe a referência: "Adapter" e a posição da música
+                        else -> irParaMusica("Adapter", posicao)
+                    }
+                }
             }
         }
     }
@@ -88,5 +109,24 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
         listaMusicas = ArrayList()
         listaMusicas.addAll(listaPesquisa)
         notifyDataSetChanged()
+    }
+
+    // Método para atualizar a lista de playlists
+    @SuppressLint("NotifyDataSetChanged")
+    fun atualizarPlaylists(){
+        listaMusicas = ArrayList()
+        listaMusicas = PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist
+        notifyDataSetChanged()
+    }
+
+    fun adicionarMusica(musica : Musica) : Boolean{
+        PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.forEachIndexed { index, musicas ->
+            if (musica.id == musicas.id){
+                PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.removeAt(index)
+                return false
+            }
+        }
+        PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.add(musica)
+        return true
     }
 }

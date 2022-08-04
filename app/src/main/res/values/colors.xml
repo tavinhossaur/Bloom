@@ -10,16 +10,13 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- minhas cores -->
-    <color name="end_gradient">#220b56</color>
-    <color name="start_gradient">#121212</color>
-    <color name="purple1">#7574e8</color>
+    <color name="purple1">#8280FF</color>
     <color name="purple2">#494991</color>
-    <color name="black1">#413e4f</color>
     <color name="black2">#404040</color>
     <color name="black3">#202020</color>
     <color name="black4">#303030</color>
     <color name="black5">#252525</color>
-    <color name="grey1">#8379a6</color>
+    <color name="black6">#151515</color>
     <color name="grey2">#e7e6eb</color>
     <color name="grey3">#a3a2a2</color>
 
