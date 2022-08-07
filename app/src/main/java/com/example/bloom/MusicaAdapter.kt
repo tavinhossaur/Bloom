@@ -119,13 +119,18 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
         notifyDataSetChanged()
     }
 
+    // Método para adição de músicas na playlist
     fun adicionarMusica(musica : Musica) : Boolean{
+        // Pra cada música clicada
         PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.forEachIndexed { index, musicas ->
+            // Verifique se ela já foi selecionada
             if (musica.id == musicas.id){
+                // Se já tiver sido selecionada, remova da lista
                 PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.removeAt(index)
                 return false
             }
         }
+        // Se não foi selecionada, adicione ela a lista
         PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.add(musica)
         return true
     }

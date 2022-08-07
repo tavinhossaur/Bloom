@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.Handler
@@ -15,7 +16,7 @@ import androidx.core.app.NotificationCompat
 
 // Um service é um componente do aplicativo que pode realizar operações longas e não fornece uma interface do usuário.
 // É utilizado para serviços vinculados, como esse.
-class MusicaService : Service() {
+class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
     // Variável da vinculação do serviço
     private var appBinder = AppBinder()
     // Variável do player das músicas
@@ -25,6 +26,8 @@ class MusicaService : Service() {
     private lateinit var sessaoMusica : MediaSessionCompat
     // Objeto Runnable que recebe código para ser executado enquanto estiver ativo
     private lateinit var seekBarRun : Runnable
+    // Gerenciador de áudio do celular
+    lateinit var audioManager: AudioManager
 
     // Método callback onBind, método que espera a requisição do usuário pra um serviço
     // IBinder é a parte central para um melhor desempenho de chamadas em processo e interação com um objeto remoto
@@ -51,9 +54,10 @@ class MusicaService : Service() {
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
         //val repetirPendingIntent = PendingIntent.getBroadcast(baseContext, 0, repetirIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        //val notifyIntent = Intent(baseContext, PlayerActivity::class.java)
-        //notifyIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        //val notifyPendingIntent = PendingIntent.getActivity(baseContext, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        // Cria o objeto que contém a ação de abrir o app na tela principal
+        val notifyPlayerIntent = Intent(baseContext, MainActivity::class.java)
+        // Leva o usuário para a tela principal ao clicar na notificação
+        val notifyContentIntent = PendingIntent.getActivity(this, 0, notifyPlayerIntent, 0)
 
         // Cria o objeto que contém a ação de voltar a música
         val anteriorIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.ANTERIOR)
@@ -107,7 +111,7 @@ class MusicaService : Service() {
             // Visibilidade da notificação, utilizado para mostrar a notificação até quando estiver na tela de bloqueio
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             // Fornece uma intent pendente para quando a barra de notificação for clicada pelo usuário
-            //.setContentIntent(notifyPendingIntent)
+            .setContentIntent(notifyContentIntent)
             // Fornece uma intent pendente para quando a barra de notificação for limpa pelo usuário
             .setDeleteIntent(limparPendingIntent)
             // Adição dos botões de funcionalidades de controle da música na barra de notificação
@@ -167,7 +171,7 @@ class MusicaService : Service() {
     // Método para configuração da Seek Bar, para que ela percorra juntamente do progresso da música
     fun carregarSeekBar(){
         seekBarRun = Runnable{
-            // // Insere o texto do tempo decorrente formatado da seekBar, com base na posição atual da música no player
+            // Insere o texto do tempo decorrente formatado da seekBar, com base na posição atual da música no player
             PlayerActivity.binding.decTempoSeekBar.text = formatarDuracao(mPlayer!!.currentPosition.toLong())
             // O progresso da Seek Bar é definido como a posição atual da música
             PlayerActivity.binding.seekBarMusica.progress = mPlayer!!.currentPosition
@@ -177,4 +181,33 @@ class MusicaService : Service() {
         Handler(Looper.getMainLooper()).postDelayed(seekBarRun, 0)
     }
 
+    // Metodo que verifica se o foco do áudio do celular foi mudado
+    // Essa mudança ocorre quando há uma ligação, execução de outro áudio e notificações (sem modo silencioso)
+    override fun onAudioFocusChange(foco: Int) {
+        // Se o foco mudar
+        if (foco <= 0){
+            // Então pause a música
+            PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
+            MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
+            if(PlayerActivity.favoritado){
+                mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
+            }else{
+                mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_border_24)
+            }
+            PlayerActivity.tocando = false
+            mPlayer!!.pause()
+        // Caso contrário (foco não mudou, ou voltou para o foco normal depois de ter tocado outro áudio, ou uma chamada tenha sido encerrada)
+        }else{
+            // Então retorne a música
+            PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
+            MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
+            if(PlayerActivity.favoritado){
+                mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_24)
+            }else{
+                mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_border_24)
+            }
+            PlayerActivity.tocando = true
+            mPlayer!!.start()
+        }
+    }
 }

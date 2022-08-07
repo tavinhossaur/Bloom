@@ -54,7 +54,7 @@ class SelecionarMusicasActivity : AppCompatActivity() {
                 // Cor do título
                 titleColorRes(R.color.purple1)
                 // Mensagem do AlertDialog
-                content("Para adicionar as músicas, basta clicar em uma delas e ela será automáticamente adicionada. Caso você deseje remover a música adicionada, basta clicar novamente na mesma.")
+                content("Para adicionar, basta clicar na música e ela será automaticamente adicionada. Caso você deseje remover a música adicionada, basta clicar novamente na mesma.")
 
                 // Botão positivo que exclui a playlist em questão
                 positiveButtonColorRes(R.color.purple1)
@@ -67,8 +67,12 @@ class SelecionarMusicasActivity : AppCompatActivity() {
         }
 
         val pesquisaView = binding.pesquisaViewSlc
+        // Hint da pesquisa
         pesquisaView.queryHint = "Procure por título, artista, álbum..."
+        // Cor da hint
         pesquisaView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text).setHintTextColor(ContextCompat.getColor(this@SelecionarMusicasActivity, R.color.grey3))
+        // Cor do texto digitado pelo usuário
+        pesquisaView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text).setTextColor(ContextCompat.getColor(this@SelecionarMusicasActivity, R.color.white))
 
         // Para pesquisas de músicas
         binding.pesquisaViewSlc.setOnQueryTextListener(object : SearchView.OnQueryTextListener{

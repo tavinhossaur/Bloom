@@ -26,6 +26,7 @@ fun formatarDuracao(duracao: Long) : String{
 // Metódo para encerrar o aplicativo
 fun encerrarProcesso(){
     if (!PlayerActivity.tocando && PlayerActivity.musicaService!!.mPlayer != null){
+        PlayerActivity.musicaService!!.audioManager.abandonAudioFocus { PlayerActivity.musicaService }
         PlayerActivity.musicaService!!.stopForeground(true)
         PlayerActivity.musicaService!!.mPlayer!!.release()
         PlayerActivity.musicaService = null

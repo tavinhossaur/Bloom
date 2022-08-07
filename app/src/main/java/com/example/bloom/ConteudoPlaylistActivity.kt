@@ -50,6 +50,21 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
             PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist = checarMusicasApagadas(PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist)
         }catch (E: Exception){return}
 
+        // Para otimização do RecyclerView, o seu tamanho é fixo,
+        // mesmo quando itens são adicionados ou removidos.
+        binding.musicasPlaylistRv.setHasFixedSize(true)
+        // Para otimização do RecyclerView, 10 itens fora da tela serão "segurados"
+        // para depois potencialmente usá-los de novo (Reciclagem de itens).
+        binding.musicasPlaylistRv.setItemViewCacheSize(10)
+        // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
+        // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
+        binding.musicasPlaylistRv.layoutManager = LinearLayoutManager(this@ConteudoPlaylistActivity)
+        // Criando uma variável do Adapter com o contexto (tela) e a lista de músicas que será adicionada
+        // ao RecyclerView por meio do mesmo Adapter
+        musicaAdapter = MusicaAdapter(this, PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist, conteudoPlaylist = true)
+        // Setando o Adapter para este RecyclerView
+        binding.musicasPlaylistRv.adapter = musicaAdapter
+
         // Ao clicar no botão voltar, encerra a activity
         binding.btnVoltarCpl.setOnClickListener { finish() }
 
@@ -172,31 +187,6 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
             // Mostra o menu popup
             popup.show()
         }
-
-        // Para otimização do RecyclerView, o seu tamanho é fixo,
-        // mesmo quando itens são adicionados ou removidos.
-        binding.musicasPlaylistRv.setHasFixedSize(true)
-        // Para otimização do RecyclerView, 10 itens fora da tela serão "segurados"
-        // para depois potencialmente usá-los de novo (Reciclagem de itens).
-        binding.musicasPlaylistRv.setItemViewCacheSize(10)
-        // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
-        // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
-        binding.musicasPlaylistRv.layoutManager = LinearLayoutManager(this@ConteudoPlaylistActivity)
-        // Criando uma variável do Adapter com o contexto (tela) e a lista de músicas que será adicionada
-        // ao RecyclerView por meio do mesmo Adapter
-        musicaAdapter = MusicaAdapter(this@ConteudoPlaylistActivity, PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist, conteudoPlaylist = true)
-        // Setando o Adapter para este RecyclerView
-        binding.musicasPlaylistRv.adapter = musicaAdapter
-    }
-
-    // Método para deixar o aplicativo no seu modo padrão
-    private fun modoEscuro(){
-        application.setTheme(R.style.Theme_BloomNoActionBar)
-        setTheme(R.style.Theme_BloomNoActionBar)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
     }
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
@@ -204,6 +194,9 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         super.onResume()
         binding.nomePlaylistCpl.text = PlaylistsActivity.playlists.modelo[posPlaylistAtual].nome
         binding.nomeCriadorCpl.text = "por ${PlaylistsActivity.playlists.modelo[posPlaylistAtual].criador}"
+
+        musicaAdapter = MusicaAdapter(this, PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist, conteudoPlaylist = true)
+        binding.musicasPlaylistRv.adapter = musicaAdapter
 
         if (musicaAdapter.itemCount > 0){
             // Utilizando Glide, Procura na lista de músicas a posição da música em específico
@@ -228,5 +221,15 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         val jsonStringPlaylists = GsonBuilder().create().toJson(PlaylistsActivity.playlists)
         editor.putString("Lista de playlists", jsonStringPlaylists)
         editor.apply()
+    }
+
+    // Método para deixar o aplicativo no seu modo padrão
+    private fun modoEscuro(){
+        application.setTheme(R.style.Theme_BloomNoActionBar)
+        setTheme(R.style.Theme_BloomNoActionBar)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
     }
 }

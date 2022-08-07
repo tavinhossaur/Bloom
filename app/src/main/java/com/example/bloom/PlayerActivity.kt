@@ -3,10 +3,12 @@ package com.example.bloom
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
 import android.net.Uri
@@ -651,6 +653,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         criarPlayer()
         // O Service chama o método para carregar a SeekBar com as devidas definições
         musicaService!!.carregarSeekBar()
+
+        // Retorna o serviço do sistema "AUDIO_SERVICE" como o administrador de áudio
+        musicaService!!.audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        // Passa o método para requisitar o foco de áudio, passando como parâmetro a classe do listener (musicaService)
+        // o tipo de streaming (STREAM_MUSIC), e a operação a ser feita (AUDIOFOCUS_GAIN).
+        musicaService!!.audioManager.requestAudioFocus(musicaService, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
     }
 
     // Método quando o serviço estiver desconectado ao Player
@@ -669,6 +677,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // E por fim, carrega os dados de layout da música (título, artista, imagem, etc.)
         carregarMusica()
 
+        // Seleciona o texto do título para fazê-lo se movimentar e mostrar o texto inteiro
         MiniPlayerFragment.binding.tituloMusicaMp.isSelected = true
         Glide.with(applicationContext)
             // Carrega a posição da música e a uri da sua imagem
