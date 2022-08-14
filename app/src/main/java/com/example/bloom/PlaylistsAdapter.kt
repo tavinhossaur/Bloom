@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.bloom.databinding.PlaylistViewLayoutBinding
+import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.input.InputSheet
@@ -76,6 +77,8 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                         InputSheet().show(context) {
                             // Estilo do sheet (BottomSheet)
                             style(SheetStyle.BOTTOM_SHEET)
+                            // Altera o botão de fechar o dialogo
+                            closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                             // Título do BottomSheetDialog
                             title("Editar a playlist")
                             // Cor do título
@@ -116,13 +119,21 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                             // Cor do título
                             titleColorRes(R.color.purple1)
                             // Mensagem do AlertDialog
-                            content("Excluir a playlist ${PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].nome}?")
-
+                            content("Excluir a playlist \"${listaPlaylists[posicao].nome}\"?")
                             // Botão positivo que exclui a playlist em questão
                             positiveButtonColorRes(R.color.purple1)
                             onPositive("Sim, excluir") {
+                                // Remove a playlist da lista
                                 PlaylistsActivity.playlists.modelo.removeAt(posicao)
+                                // Atualiza a lista de playlists
                                 atualizarLista()
+                                // Notifica que a playlist foi removida
+                                notifyItemRemoved(posicao)
+                                // Verifica se essa exclusão fez com que ficassem 0 itens na lista de playlists
+                                if (itemCount == 0) {
+                                    PlaylistsActivity.binding.playlistsRv.visibility = View.GONE
+                                    PlaylistsActivity.binding.avisoPlaylists.visibility = View.VISIBLE
+                                }
                             }
                             // Botão negativo que apenas fecha o diálogo
                             negativeButtonColorRes(R.color.grey3)

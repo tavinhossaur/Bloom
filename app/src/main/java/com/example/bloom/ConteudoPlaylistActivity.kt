@@ -17,19 +17,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.bloom.databinding.ActivityConteudoPlaylistBinding
 import com.google.gson.GsonBuilder
+import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputEditText
 
-
 class ConteudoPlaylistActivity : AppCompatActivity() {
 
-    lateinit var binding : ActivityConteudoPlaylistBinding // binding é a variável do ViewBinding para ligar as views ao código
     private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
 
     companion object {
         var posPlaylistAtual : Int = -1 // Posição da playlist selecionada
+        @SuppressLint("StaticFieldLeak")
+        lateinit var binding : ActivityConteudoPlaylistBinding // binding é a variável do ViewBinding para ligar as views ao código
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +65,8 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         musicaAdapter = MusicaAdapter(this, PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist, conteudoPlaylist = true)
         // Setando o Adapter para este RecyclerView
         binding.musicasPlaylistRv.adapter = musicaAdapter
+        // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
+        binding.musicasPlaylistRv.isMotionEventSplittingEnabled = false
 
         // Ao clicar no botão voltar, encerra a activity
         binding.btnVoltarCpl.setOnClickListener { finish() }
@@ -85,12 +88,16 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
 
         // Quando clicado no botão de opções extra mostra um popup menu
         binding.btnExtraCpl.setOnClickListener {
+            // Previne que o usuário crie dois menus ao dar dois cliques rápidos
+            binding.btnExtraCpl.isEnabled = false
             // Cria o popup menu
             val contexto: Context = ContextThemeWrapper(this, R.style.PopupMenuStyle)
             val popup = PopupMenu(contexto, binding.btnExtraCpl, Gravity.CENTER)
             popup.setForceShowIcon(true)
             // Infla o menu do card
             popup.inflate(R.menu.playlist_menu)
+            // Torna o objeto clicável novamente quando o diálogo for fechado
+            popup.setOnDismissListener { binding.btnExtraCpl.isEnabled = true }
             // Adicionando o listener das opções do menu
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
@@ -106,6 +113,8 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
                         InputSheet().show(this) {
                             // Estilo do sheet (BottomSheet)
                             style(SheetStyle.BOTTOM_SHEET)
+                            // Altera o botão de fechar o dialogo
+                            closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                             // Título do BottomSheetDialog
                             title("Editar a playlist")
                             // Cor do título
@@ -145,7 +154,6 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
                             titleColorRes(R.color.purple1)
                             // Mensagem do AlertDialog
                             content("Remover todas as músicas da playlist ${PlaylistsActivity.playlists.modelo[posPlaylistAtual].nome}?")
-
                             // Botão positivo que exclui a playlist em questão
                             positiveButtonColorRes(R.color.purple1)
                             onPositive("Sim, limpar") {

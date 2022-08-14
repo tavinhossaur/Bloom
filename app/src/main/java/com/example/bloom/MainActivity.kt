@@ -190,6 +190,8 @@ class MainActivity : AppCompatActivity() {
         musicaAdapter = MusicaAdapter(this@MainActivity, listaMusicaMain)
         // Setando o Adapter para este RecyclerView
         binding.musicasRv.adapter = musicaAdapter
+        // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
+        binding.musicasRv.isMotionEventSplittingEnabled = false
     }
 
     // Método que faz a procura de músicas pelos arquivos do celular

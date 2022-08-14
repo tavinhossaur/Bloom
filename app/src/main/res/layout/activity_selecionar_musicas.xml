@@ -34,7 +34,6 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/btn_voltar_slc"
-            android:layout_toStartOf="@id/btn_info"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.SearchView
@@ -48,17 +47,6 @@
                 app:searchIcon="@drawable/ic_round_search_24"/>
 
         </LinearLayout>
-
-        <!-- Botão para voltar à tela principal -->
-        <ImageView
-            android:id="@+id/btn_info"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_round_info_24"
-            app:tint="@color/white" />
 
     </RelativeLayout>
 

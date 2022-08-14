@@ -156,18 +156,6 @@
                 app:strokeWidth="3dp"
                 tools:ignore="MissingConstraints,SpeakableTextPresentCheck" />
 
-            <!--
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/mini_player"
-                android:name="com.example.bloom.MiniPlayerFragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:layout="@layout/fragment_mini_player"/>
-            -->
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

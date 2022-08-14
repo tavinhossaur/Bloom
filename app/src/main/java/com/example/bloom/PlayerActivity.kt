@@ -24,6 +24,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.bloom.databinding.ActivityPlayerBinding
+import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.input.InputSheet
@@ -124,16 +125,21 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 timerSheet()
                 // Caso contrário, diga que o timer já está ativado a partir de um novo BottomSheetBar
             }else{
+                // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
+                binding.btnTimer.isEnabled = false
                 val permSheet = InfoSheet().build(this) {
                     // Estilo do sheet (BottomSheet)
                     style(SheetStyle.BOTTOM_SHEET)
+                    // Altera o botão de fechar o dialogo
+                    closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                     // Cor do título
                     titleColorRes(R.color.purple1)
                     // Título do BottomSheetDialog
                     title("O timer já está ativado!")
                     // Mensagem do BottomSheetDialog
                     content("Deseja parar ou alterar o timer?")
-
+                    // Torna o objeto clicável novamente quando o diálogo for fechado
+                    onClose { binding.btnTimer.isEnabled = true }
                     // Botão positivo que redireciona o usuário para a tela de configurações e detalhes do aplicativo
                     positiveButtonColorRes(R.color.purple1)
                     // Se o usuário quiser parar o timer e alterará-lo
@@ -170,6 +176,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Quando clicado no botão de equalizador, ele tentará levar o usuário
         // para o painel de controle de equalizador de som padrão do Android.
         binding.btnEqual.setOnClickListener {
+            // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
+            binding.btnEqual.isEnabled = false
             try {
                 // Intent recebendo a activity alvo dela (ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                 val equalizadorIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
@@ -182,9 +190,13 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 equalizadorIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
                 // Lança a intent junto do método para retornar resultados da mesma.
                 resultadoIntent.launch(equalizadorIntent)
+                // Torna o objeto clicável novamente
+                binding.btnEqual.isEnabled = true
             }catch (e: Exception){
                 // Se por algum motivo, o smartphone não for capaz de acessar o equalizador, o toast abaixo é apresentado
                 Toast.makeText(this, "Equalizador não suportado", Toast.LENGTH_SHORT).show()
+                // Torna o objeto clicável novamente
+                binding.btnEqual.isEnabled = true
             }
         }
 
@@ -357,11 +369,14 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         // Se estiver com o timer ligado, o botão permanece "ligado"
         if(min15 || min30 || min60) binding.btnTimer.setImageResource(R.drawable.ic_round_timer_24)
+
         if (favoritado) {
             binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_24)
         } else{
             binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_border_24)
         }
+
+        if (repetindo) binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_one_24)
     }
 
     @SuppressLint("SetTextI18n")
@@ -545,10 +560,14 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
     // Método para poder chamar o BottomSheetDialog ao botão do timer ser clicado
     private fun timerSheet(){
+        // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
+        binding.btnTimer.isEnabled = false
         // Cria e mostra a InputSheet
         InputSheet().show(this@PlayerActivity) {
             // Estilo do sheet (BottomSheet)
             style(SheetStyle.BOTTOM_SHEET)
+            // Altera o botão de fechar o dialogo
+            closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
             // Título do BottomSheetDialog
             title("Timer da música")
             // Cor do título
@@ -564,6 +583,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             })
             // Cor do botão "confirmar"
             positiveButtonColorRes(R.color.purple1)
+            // Torna o objeto clicável novamente quando o diálogo for fechado
+            onClose { binding.btnTimer.isEnabled = true }
             // Botão confirmar do BottomSheet
             onPositive("Confirmar") { result ->
                 // Altera a cor do botão do timer para uma cor que indique que ele está ligado
@@ -645,20 +666,23 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
     // Método quando o serviço se conectar ao player
     override fun onServiceConnected(name: ComponentName?, servico: IBinder?) {
-        // Define o objeto appBinder como o AppBinder da classe Service
-        val appBinder = servico as MusicaService.AppBinder
-        // O Service chama o método "reproducaoAtual()"
-        musicaService = appBinder.reproducaoAtual()
+        // Se o serviço da música estiver inicialmente nulo, assim não executará duas vezes o código abaixo
+        // e quando o usuário selecionar outra nova música, ela não iniciará pausada
+        if (musicaService == null){
+            // Define o objeto appBinder como o AppBinder da classe Service
+            val appBinder = servico as MusicaService.AppBinder
+            // O Service chama o método "reproducaoAtual()"
+            musicaService = appBinder.reproducaoAtual()
+            // Retorna o serviço do sistema "AUDIO_SERVICE" como o administrador de áudio
+            musicaService!!.audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            // Passa o método para requisitar o foco de áudio, passando como parâmetro a classe do listener (musicaService)
+            // o tipo de streaming (STREAM_MUSIC), e a operação a ser feita (AUDIOFOCUS_GAIN).
+            musicaService!!.audioManager.requestAudioFocus(musicaService, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
+        }
         // Cria o reprodutor e reproduz a música selecionada
         criarPlayer()
         // O Service chama o método para carregar a SeekBar com as devidas definições
         musicaService!!.carregarSeekBar()
-
-        // Retorna o serviço do sistema "AUDIO_SERVICE" como o administrador de áudio
-        musicaService!!.audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        // Passa o método para requisitar o foco de áudio, passando como parâmetro a classe do listener (musicaService)
-        // o tipo de streaming (STREAM_MUSIC), e a operação a ser feita (AUDIOFOCUS_GAIN).
-        musicaService!!.audioManager.requestAudioFocus(musicaService, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
     }
 
     // Método quando o serviço estiver desconectado ao Player

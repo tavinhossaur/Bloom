@@ -3,7 +3,6 @@
     <style name="Theme.Bloom" parent="Theme.MaterialComponents.Light">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black3</item>
-        <item name="android:textColorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/purple2</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -35,11 +34,21 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Transparent navigation bar color. -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- Sheet theme -->
+        <item name="sheetsPrimaryColor">@color/white</item>
+        <item name="sheetsHighlightColor">@color/purple1</item>
+        <item name="sheetsBackgroundColor">@color/black3</item>
+        <item name="sheetsContentColor">@color/white</item>
+        <item name="sheetsDividerColor">@android:color/transparent</item>
+        <item name="sheetsTextInputLayoutBoxStrokeColor">@color/purple1</item>
+        <item name="sheetsTextInputLayoutHintTextColor">@color/grey3</item>
     </style>
 
     <style name="Theme.BloomPlayer" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black3</item>
+        <item name="android:textColorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/purple2</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -52,6 +61,16 @@
         <item name="android:windowTranslucentStatus">true</item>
         <!-- Transparent navigation bar color. -->
         <item name="android:windowTranslucentNavigation">true</item>
+
+        <!-- Sheet theme -->
+        <item name="sheetsPrimaryColor">@color/white</item>
+        <item name="sheetsHighlightColor">@color/white</item>
+        <item name="sheetsBackgroundColor">@color/black3</item>
+        <item name="sheetsContentColor">@color/white</item>
+        <item name="sheetsDividerColor">@android:color/transparent</item>
+        <item name="sheetsTextInputLayoutEndIconColor">@color/purple1</item>
+        <item name="sheetsTextInputLayoutBoxStrokeColor">@color/grey2</item>
+        <item name="sheetsTextInputLayoutHintTextColor">@color/grey3</item>
     </style>
 
     <style name="SplashScreen" parent="Theme.BloomNoActionBar">

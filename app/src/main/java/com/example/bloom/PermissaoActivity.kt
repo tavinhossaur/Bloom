@@ -73,9 +73,10 @@ class PermissaoActivity : AppCompatActivity() {
                     title("Bloom não pedirá mais pelas permissões!")
                     // Cor do título
                     titleColorRes(R.color.purple1)
+                    // Impede que o usuário feche o diálogo clicando fora dele
+                    cancelableOutside(false)
                     // Mensagem do AlertDialog
                     content("Se você deseja utilizar o aplicativo, conceda as permissões necessárias nas configurações do Bloom.\n\n Ao clicar em \"Cancelar\" o aplicativo será encerrado.")
-
                     // Botão positivo que redireciona o usuário para a tela de configurações e detalhes do aplicativo
                     positiveButtonColorRes(R.color.purple1)
                     onPositive("Permissões") {

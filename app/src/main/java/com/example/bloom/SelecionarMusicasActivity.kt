@@ -1,6 +1,6 @@
 package com.example.bloom
 
-import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -10,13 +10,15 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivitySelecionarMusicasBinding
-import com.maxkeppeler.sheets.core.SheetStyle
-import com.maxkeppeler.sheets.info.InfoSheet
 
 class SelecionarMusicasActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivitySelecionarMusicasBinding
     private lateinit var musicaAdapter: MusicaAdapter
+
+    companion object{
+        @SuppressLint("StaticFieldLeak")
+        lateinit var binding : ActivitySelecionarMusicasBinding
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         modoEscuro()
@@ -41,30 +43,10 @@ class SelecionarMusicasActivity : AppCompatActivity() {
         musicaAdapter = MusicaAdapter(this@SelecionarMusicasActivity, MainActivity.listaMusicaMain, activitySelecionar = true)
         // Setando o Adapter para este RecyclerView
         binding.slcMusicaRv.adapter = musicaAdapter
+        // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
+        binding.slcMusicaRv.isMotionEventSplittingEnabled = false
 
         binding.btnVoltarSlc.setOnClickListener {finish()}
-
-        binding.btnInfo.setOnClickListener {
-            // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
-            val permSheet = InfoSheet().build(this) {
-                // Estilo do sheet (AlertDialog)
-                style(SheetStyle.DIALOG)
-                // Título do AlertDialog
-                title("Adicionando músicas")
-                // Cor do título
-                titleColorRes(R.color.purple1)
-                // Mensagem do AlertDialog
-                content("Para adicionar, basta clicar na música e ela será automaticamente adicionada. Caso você deseje remover a música adicionada, basta clicar novamente na mesma.")
-
-                // Botão positivo que exclui a playlist em questão
-                positiveButtonColorRes(R.color.purple1)
-                onPositive("Entendido") {
-                    dismiss()
-                }
-            }
-            // Mostra o AlertDialog
-            permSheet.show()
-        }
 
         val pesquisaView = binding.pesquisaViewSlc
         // Hint da pesquisa

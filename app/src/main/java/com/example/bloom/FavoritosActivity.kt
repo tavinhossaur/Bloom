@@ -1,5 +1,6 @@
 package com.example.bloom
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -18,12 +19,12 @@ import com.example.bloom.databinding.ActivityFavoritosBinding
 
 class FavoritosActivity : AppCompatActivity() {
 
-
-    private lateinit var binding : ActivityFavoritosBinding // binding é a variável do ViewBinding para ligar as views ao código
     private lateinit var favoritosAdapter : FavoritosAdapter // Variável que leva a classe FavoritosAdapter
 
     companion object{
         var listaFavoritos : ArrayList<Musica> = ArrayList()
+        @SuppressLint("StaticFieldLeak")
+        lateinit var binding : ActivityFavoritosBinding // binding é a variável do ViewBinding para ligar as views ao código
     }
 
     // Método chamado quando o aplicativo é iniciado
@@ -54,6 +55,8 @@ class FavoritosActivity : AppCompatActivity() {
         favoritosAdapter = FavoritosAdapter(this@FavoritosActivity, listaFavoritos)
         // Setando o Adapter para este RecyclerView
         binding.favoritosRv.adapter = favoritosAdapter
+        // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
+        binding.favoritosRv.isMotionEventSplittingEnabled = false
 
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
         binding.btnVoltarFav.setOnClickListener {finish()}

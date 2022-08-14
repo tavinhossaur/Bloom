@@ -9,18 +9,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.bloom.databinding.ActivityPlaylistsBinding
+import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputEditText
-import java.util.*
 
 class PlaylistsActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityPlaylistsBinding // binding é a variável do ViewBinding para ligar as views ao código
     private lateinit var playlistsAdapter: PlaylistsAdapter // variável que leva a classe PlaylistsAdapter
 
     companion object{
         var playlists : ModeloPlaylist = ModeloPlaylist()
+        @SuppressLint("StaticFieldLeak")
+        lateinit var binding : ActivityPlaylistsBinding // binding é a variável do ViewBinding para ligar as views ao código
     }
 
     // Método chamado quando o aplicativo é iniciado
@@ -49,16 +50,22 @@ class PlaylistsActivity : AppCompatActivity() {
         playlistsAdapter = PlaylistsAdapter(this, playlists.modelo)
         // Setando o Adapter para este RecyclerView
         binding.playlistsRv.adapter = playlistsAdapter
+        // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
+        binding.playlistsRv.isMotionEventSplittingEnabled = false
 
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
         binding.btnVoltarPl.setOnClickListener {finish()}
 
         binding.fabCriarPl.setOnClickListener {criarPlaylist()}
 
-       /* if(playlists.modelo.isNotEmpty()) {
+        // Caso não tenha nenhuma música favoritada ainda
+        if (playlists.modelo.isNotEmpty()){
             binding.avisoPlaylists.visibility = View.GONE
+            binding.playlistsRv.visibility = View.VISIBLE
+        }else{
+            binding.avisoPlaylists.visibility = View.VISIBLE
+            binding.playlistsRv.visibility = View.GONE
         }
-        */
     }
 
     // Método para deixar o aplicativo no seu modo padrão
@@ -74,9 +81,13 @@ class PlaylistsActivity : AppCompatActivity() {
     // Método para poder chamar o BottomSheetDialog ao botão do timer ser clicado
     private fun criarPlaylist(){
         // Cria e mostra a InputSheet
+        // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
+        binding.fabCriarPl.isEnabled = false
         InputSheet().show(this@PlaylistsActivity) {
             // Estilo do sheet (BottomSheet)
             style(SheetStyle.BOTTOM_SHEET)
+            // Altera o botão de fechar o dialogo
+            closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
             // Título do BottomSheetDialog
             title("Criar uma playlist")
             // Cor do título
@@ -93,6 +104,8 @@ class PlaylistsActivity : AppCompatActivity() {
                 drawable(R.drawable.ic_round_person_24)
                 hint("Nome do criador (Opcional)")
             })
+            // Torna o objeto clicável novamente quando o diálogo for fechado
+            onClose { binding.fabCriarPl.isEnabled = true }
             // Cor do botão "confirmar"
             positiveButtonColorRes(R.color.purple1)
             // Botão confirmar do BottomSheet
@@ -126,6 +139,9 @@ class PlaylistsActivity : AppCompatActivity() {
             tempPlaylist.criador = criador
             playlists.modelo.add(tempPlaylist)
             playlistsAdapter.atualizarLista()
+
+            binding.playlistsRv.visibility = View.VISIBLE
+            binding.avisoPlaylists.visibility = View.GONE
         }
     }
 

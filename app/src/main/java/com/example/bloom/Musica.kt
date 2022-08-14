@@ -15,6 +15,17 @@ data class Musica(
     val imagemUri:String,
     val caminho: String)
 
+class Playlist {
+    lateinit var nome : String
+    lateinit var playlist : ArrayList<Musica>
+    lateinit var criador : String
+    lateinit var imagemUri: String
+}
+
+class ModeloPlaylist{
+    var modelo : ArrayList<Playlist> = ArrayList()
+}
+
 // Método que formata a duração em milisegundos das músicas para o tempo comum (minutos : segundos)
 fun formatarDuracao(duracao: Long) : String{
     val minutos = TimeUnit.MINUTES.convert(duracao, TimeUnit.MILLISECONDS)
@@ -34,6 +45,10 @@ fun encerrarProcesso(){
     }
 }
 
+fun finish(){
+    finish()
+}
+
 // Método para checar se a música esta favoritada ou não
 fun checarFavoritos(id: String) : Int{
     PlayerActivity.favoritado = false
@@ -44,17 +59,6 @@ fun checarFavoritos(id: String) : Int{
         }
     }
     return -1
-}
-
-class Playlist {
-    lateinit var nome : String
-    lateinit var playlist : ArrayList<Musica>
-    lateinit var criador : String
-    lateinit var imagemUri: String
-}
-
-class ModeloPlaylist{
-    var modelo : ArrayList<Playlist> = ArrayList()
 }
 
 // Metódo para sincronizar os botões do player na barra de notificação
