@@ -17,6 +17,8 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <!-- ActionBar style -->
         <item name="actionBarWidgetTheme">@style/ActionBarStyle</item>
+        <!-- Texto da cor primária para o texto da SearchView da ActionBar -->
+        <item name="android:textColorPrimary">@color/white</item>
     </style>
 
     <style name="Theme.BloomNoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -61,6 +63,8 @@
         <item name="android:windowTranslucentStatus">true</item>
         <!-- Transparent navigation bar color. -->
         <item name="android:windowTranslucentNavigation">true</item>
+        <!-- Para esconder a barra de status em uma activity de tela cheia -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
 
         <!-- Sheet theme -->
         <item name="sheetsPrimaryColor">@color/white</item>

@@ -1,5 +1,6 @@
 package com.example.bloom
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
@@ -14,6 +15,9 @@ import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +35,7 @@ import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputRadioButtons
 import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
+import kotlinx.coroutines.NonCancellable.start
 
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
 class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {
@@ -45,6 +50,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         var repetindo : Boolean = false // Variável para definir se a música está repetindo ou não, por padrão: "false"
         var favoritado = false // Variável para definir se a música está favoritada ou não
         var favIndex : Int = -1 // Variável indicadora da música favoritada
+        var telaCheia : Boolean = false
         // var randomizando : Boolean = false
 
         // Variáveis para indentificar qual opção do timer o usuário selecionou
@@ -75,7 +81,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Texto do cabeçalho do player, mostrando ao usuário a quantidade total de músicas dele
         binding.musicaAtualTotal.text = "Você tem ${MainActivity.listaMusicaMain.size} músicas no total."
 
-        // FUNÇÕES DA EXTRAS
+        // FUNÇÕES EXTRAS
         // Ao clicar no botão de favorito, favorita a música atual do player
         binding.btnFavTpl.setOnClickListener {
             favIndex = checarFavoritos(filaMusica[posMusica].id)
@@ -198,6 +204,15 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 // Torna o objeto clicável novamente
                 binding.btnEqual.isEnabled = true
             }
+        }
+
+        //
+        binding.btnFullScreen.setOnClickListener {
+            telaCheia()
+        }
+
+        binding.root.setOnClickListener {
+            telaCheia()
         }
 
         // FUNÇÕES DE CONTROLE DO PLAYER
@@ -383,6 +398,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     private fun iniciarLayout(){
         // Marca como selecionado a caixa de texto do nome da música, para fazer a animação de correr o texto
         binding.tituloMusicaTpl.isSelected = true
+
+        binding.root.isEnabled = false
 
         // Para reprodução das músicas
         // Recebe os dados enviados ao ser enviado a tela pela intent
@@ -662,6 +679,74 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         binding.btnTimer.setImageResource(R.drawable.ic_baseline_timer_24)
         // E muda os valores das variáveis "min15" e "tocando" para false
         tocando = false
+    }
+
+    // Método para fazer a tela ficar em tela cheia
+    private fun telaCheia(){
+        // Se não estiver em tela cheia (false)
+        if (!telaCheia){
+            // Esconde os seguintes layouts da tela
+            binding.cabecalhoPlayer.visibility = View.INVISIBLE
+            binding.controlesBtnTpl.visibility = View.INVISIBLE
+            binding.btnEspecial.visibility = View.INVISIBLE
+
+            // Aplica a animação de translação vertical no bodyPlayer, levando 200px para baixo
+            // em uma duração de 3000 milisegundos (3 segundos)
+            ObjectAnimator.ofFloat(binding.bodyPlayer, "translationY", 200f).apply {
+                duration = 3000
+                start()
+            }
+
+            // Aplica a animação de translação vertical no bodyPlayer, levando 150px para cima
+            // em uma duração de 3000 milisegundos (3 segundos)
+            ObjectAnimator.ofFloat(binding.progressBar, "translationY", -150f).apply {
+                duration = 3000
+                start()
+            }
+
+            // Marca a variável tela cheia como true
+            telaCheia = true
+            // Atualiza a disponibilidade do root da activity (Enabled = true), o que
+            // significa que agora ele pode ser clicado
+            binding.root.isEnabled = true
+
+            // Limpa as flags anteriores
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+            // Adiciona uma nova flag para colocar a activity em tela cheia
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
+        // Caso contrário (Se já estiver em tela cheia (true))
+        }else{
+            // Mostra os seguintes layouts da tela
+            binding.cabecalhoPlayer.visibility = View.VISIBLE
+            binding.controlesBtnTpl.visibility = View.VISIBLE
+            binding.btnEspecial.visibility = View.VISIBLE
+
+            // Aplica a animação de translação vertical no bodyPlayer, levando para o lugar padrão
+            // em uma duração de 3000 milisegundos (3 segundos)
+            ObjectAnimator.ofFloat(binding.bodyPlayer, "translationY", 0f).apply {
+                duration = 3000
+                start()
+            }
+
+            // Aplica a animação de translação vertical no bodyPlayer, levando para o lugar padrão
+            // em uma duração de 3000 milisegundos (3 segundos)
+            ObjectAnimator.ofFloat(binding.progressBar, "translationY", 0f).apply {
+                duration = 3000
+                start()
+            }
+
+            // Marca a variável tela cheia como false
+            telaCheia = false
+            // Atualiza a disponibilidade do root da activity (Enabled = false), o que
+            // significa que agora ele não pode ser clicado
+            binding.root.isEnabled = false
+
+            // Limpa as flags anteriores
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            // Adiciona uma nova flag para colocar a activity em tela cheia
+            window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+        }
     }
 
     // Método quando o serviço se conectar ao player
