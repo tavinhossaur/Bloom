@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black3"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start"
     tools:context=".MainActivity">
-
-    <!-- ConstraintLayout da tela principal -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black3">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,24 +24,23 @@
                 android:layout_height="85dp"
                 android:gravity="center"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <!-- Botão "Playlists" -->
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/playlist_btn"
+                    android:id="@+id/configs_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:drawableTop="@drawable/ic_round_library_music_24"
+                    android:drawableTop="@drawable/ic_round_settings_24"
                     android:drawablePadding="15dp"
                     android:drawableTint="@color/purple1"
                     android:elevation="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Playlists"
+                    android:text="Definições"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="13sp" />
@@ -73,18 +66,18 @@
 
                 <!-- Botão "Randomizar" -->
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_aaa"
+                    android:id="@+id/playlist_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/button_style"
-                    android:drawableTop="@drawable/ic_round_shuffle_24"
+                    android:drawableTop="@drawable/ic_round_library_music_24"
                     android:drawablePadding="15dp"
                     android:drawableTint="@color/purple1"
                     android:elevation="8dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="Randomizar"
+                    android:text="Playlists"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="13sp" />
@@ -216,47 +209,4 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Componente "NavigationView" (Menu lateral) -->
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_layout_main"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/black3"
-        android:fitsSystemWindows="true"
-        app:drawerLayoutCornerSize="30dp"
-        app:headerLayout="@layout/activity_navheader"
-        app:insetForeground="@color/purple1"
-        app:itemIconSize="25dp"
-        app:itemIconTint="@color/purple1"
-        app:itemTextAppearance="@style/menu_text_style"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/main_nav_menu">
-
-        <!-- Linha divisória -->
-        <com.google.android.material.divider.MaterialDivider
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="200dp"
-            android:background="@color/white"
-            app:dividerThickness="2dp"/>
-
-        <!-- Componente "NavigationView" (Menu inferior) -->
-        <com.google.android.material.navigation.NavigationView
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:layout_gravity="bottom"
-            android:background="@color/black3"
-            app:itemIconSize="25dp"
-            app:itemIconTint="@color/grey3"
-            app:itemTextAppearance="@style/menu_text_style"
-            app:itemTextColor="@color/grey3"
-            app:menu="@menu/bottom_nav_menu" />
-
-    </com.google.android.material.navigation.NavigationView>
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

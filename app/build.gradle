@@ -62,7 +62,7 @@ dependencies {
     implementation 'com.maxkeppeler.sheets:core:2.2.9'
     implementation 'com.maxkeppeler.sheets:input:2.2.9'
     implementation 'com.maxkeppeler.sheets:options:2.2.8'
-    implementation 'com.maxkeppeler.sheets:info:2.2.8'
+    implementation 'com.maxkeppeler.sheets:info:2.2.9'
 
     // SharedPreferences
     implementation 'com.google.code.gson:gson:2.8.9'

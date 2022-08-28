@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black3"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context=".ConfiguracoesActivity">
+
+    <!-- Cabeçalho da barra de pesquisa, botão de menu e título -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="18dp"
+        android:orientation="horizontal">
+
+        <!-- Botão para voltar à tela principal -->
+        <ImageView
+            android:id="@+id/btn_voltar_config"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"
+            android:rotation="270"
+            android:src="@drawable/ic_round_keyboard_arrow_up_24"
+            app:tint="@color/white" />
+
+        <!-- Barra de título -->
+        <LinearLayout
+            android:id="@+id/barra_titulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/btn_voltar_config"
+            android:layout_toStartOf="@id/view_end"
+            android:orientation="horizontal"
+            android:paddingTop="0dp">
+
+            <!-- Título -->
+            <TextView
+                android:id="@+id/titulo_config"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:text="Configurações"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_end"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/config"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:text="CONFIGURAÇÕES"
+            android:textColor="@color/purple1" />
+
+        <TextView
+            android:id="@+id/config1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/config"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="2dp"
+            android:text="Ocultar áudios do Whatsapp"
+            android:textColor="@color/grey2"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_config1"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="10dp" />
+
+        <TextView
+            android:id="@+id/config2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/config1"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="3dp"
+            android:text="Ocultar arquivos abaixo de 10 segundos"
+            android:textColor="@color/grey2"
+            android:textSize="16sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_config2"
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_below="@id/switch_config1"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp" />
+
+        <TextView
+            android:id="@+id/feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/config"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="80dp"
+            android:text="FEEDBACK"
+            android:textColor="@color/purple1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/feedback"
+            android:layout_marginHorizontal="20dp"
+            android:text="Enviar sugestões, bugs, etc."
+            android:textColor="@color/grey2" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/switch_config2"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="10dp"
+            android:rotation="180"
+            android:src="@drawable/ic_round_keyboard_arrow_left_24"
+            app:tint="@color/white" />
+
+        <TextView
+            android:id="@+id/softwares"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/feedback"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="30dp"
+            android:text="SOFTWARE DE TERCEIROS"
+            android:textColor="@color/purple1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/softwares"
+            android:layout_marginHorizontal="20dp"
+            android:text="Android Studio\nGitHub\nGit\nGlide por Bump Technologies\nSheets por maxkeppeler"
+            android:textColor="@color/grey2" />
+
+        <TextView
+            android:id="@+id/sobre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/softwares"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="100dp"
+            android:text="SOBRE"
+            android:textColor="@color/purple1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sobre"
+            android:layout_marginHorizontal="20dp"
+            android:text="Bloom foi desenvolvido por:
+            \nJoão Fontinelli, Matheus Martinelli e Octávio Barassa.
+            \n\nEsse aplicativo se trata do nosso TCC do curso de Desenvolvimento de Sistemas na ETEC João Belarmino em Amparo. "
+            android:textColor="@color/grey2" />
+
+    </RelativeLayout>
+
+</LinearLayout>

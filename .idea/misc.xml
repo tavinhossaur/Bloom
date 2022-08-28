@@ -101,6 +101,8 @@
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_bloom_app.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_bloom_logo.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_launcher_background.xml" value="0.174" />
+        <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_access_time_filled_24.xml" value="0.177" />
+        <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_audio_file_24.xml" value="0.177" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_check_circle_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_circle_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_clear_all_24.xml" value="0.174" />
@@ -114,6 +116,8 @@
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_favorite_miniplayer24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_favorite_notify_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_folder_24.xml" value="0.174" />
+        <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_keyboard_arrow_left_24.xml" value="0.177" />
+        <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_library_music_24.xml" value="0.177" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_pause_circle_notify_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_pause_notify_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_person_24.xml" value="0.174" />
@@ -132,8 +136,9 @@
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_twotone_image_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/pesquisa_style.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/splash_screen_gradient_color.xml" value="0.174" />
-        <entry key="..\:/tccbloom/app/src/main/res/layout/action_bar_layout.xml" value="0.3375" />
+        <entry key="..\:/tccbloom/app/src/main/res/layout/action_bar_layout.xml" value="0.33" />
         <entry key="..\:/tccbloom/app/src/main/res/layout/actionbar_layout.xml" value="0.3375" />
+        <entry key="..\:/tccbloom/app/src/main/res/layout/activity_configuracoes.xml" value="0.33" />
         <entry key="..\:/tccbloom/app/src/main/res/layout/activity_conteudo_playlist.xml" value="0.33" />
         <entry key="..\:/tccbloom/app/src/main/res/layout/activity_favoritos.xml" value="0.2744479495268139" />
         <entry key="..\:/tccbloom/app/src/main/res/layout/activity_main.xml" value="0.33" />
@@ -161,7 +166,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

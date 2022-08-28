@@ -61,28 +61,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
-            android:text="Para favoritar as músicas, clique no "
+            android:text="Você ainda não possui músicas 🥺"
             android:textAlignment="center"
             android:textColor="@color/grey3"
             android:textSize="20sp"
             android:visibility="visible"
-            android:drawableEnd="@drawable/ic_round_favorite_border_24"
-            android:drawableTint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/slc_musica_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"
             android:background="@color/black3"
             android:fadingEdge="vertical"
             android:requiresFadingEdge="vertical"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:scrollbarThumbVertical="@drawable/ic_baseline_scrollbar_24"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical"
+            android:visibility="visible"
+            tools:visibility="invisible" />
 
         <!--
         <androidx.fragment.app.FragmentContainerView

@@ -16,7 +16,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
@@ -35,7 +34,6 @@ import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputRadioButtons
 import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
-import kotlinx.coroutines.NonCancellable.start
 
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
 class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {

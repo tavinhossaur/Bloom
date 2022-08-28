@@ -5,6 +5,7 @@
         android:id="@+id/pesquisa_view"
         android:title="Pesquisa"
         android:icon="@drawable/ic_round_search_24"
+        android:iconTint="@color/white"
         app:showAsAction="ifRoom|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 </menu>

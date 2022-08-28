@@ -9,29 +9,30 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bloom.databinding.ActionBarLayoutBinding
 import com.example.bloom.databinding.ActivityMainBinding
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.maxkeppeler.sheets.core.IconButton
+import com.maxkeppeler.sheets.core.SheetStyle
+import com.maxkeppeler.sheets.input.InputSheet
+import com.maxkeppeler.sheets.input.type.InputRadioButtons
 import java.io.File
-
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
-    private lateinit var setMenuDrawer : ActionBarDrawerToggle // Toggle do Drawer Layout
 
     // Declaração de objetos/classes estáticas para poder utilizar
     companion object{
@@ -40,6 +41,13 @@ class MainActivity : AppCompatActivity() {
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityMainBinding // binding é a variável do ViewBinding para ligar as views ao código
         var pesquisando : Boolean = false // Variável para indentificar se o usuário está fazendo uma pesquisa de músicas
+        var ordem : Int = 0 // Variável que leva um valor para indicar qual ordem a lista de músicas está ordenada
+        // Lista de ordenações
+        val listaOrdens = arrayOf(
+            MediaStore.Audio.Media.ARTIST,
+            MediaStore.Audio.Media.DISPLAY_NAME + " COLLATE NOCASE ASC",
+            MediaStore.Audio.Media.DATE_ADDED + " DESC",
+            MediaStore.Audio.Media.SIZE + " DESC",)
     }
 
     // Método chamado quando o aplicativo é iniciado
@@ -86,6 +94,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        binding.configsBtn.setOnClickListener {
+            startActivity(Intent(this, ConfiguracoesActivity::class.java))
+        }
+
         // Abrir a tela de playlists
         binding.playlistBtn.setOnClickListener {
             startActivity(Intent(this, PlaylistsActivity::class.java))
@@ -113,31 +125,74 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Abrir a gaveta lateral de opções (Drawer)
-        setMenuDrawer = ActionBarDrawerToggle(this, binding.root, R.string.drawer_aberto, R.string.drawer_fechado)
-        // Adiciona um listener para o layout do Drawer
-        binding.root.addDrawerListener(setMenuDrawer)
-        // Sincroniza o ícone do drawer ao estado dele
-        setMenuDrawer.syncState()
-        // Mostra o ícone de menu
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        // Muda a cor do ícone do drawer
-        setMenuDrawer.drawerArrowDrawable.color = ContextCompat.getColor(this, R.color.white)
+        binding.filtroBtn.setOnClickListener {
+            binding.filtroBtn.isEnabled = false
+            var ordemAtual = ordem
+            InputSheet().show(this) {
+                // Estilo do sheet (BottomSheet)
+                style(SheetStyle.BOTTOM_SHEET)
+                // Altera o botão de fechar o dialogo
+                closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
+                // Título do BottomSheetDialog
+                title("Ordenar músicas")
+                // Cor do título
+                titleColorRes(R.color.purple1)
+                // Conteúdo da sheet (Radio Buttons)
+                with(InputRadioButtons("ordens_opt") {
+                    // Marca como um campo obrigatório ou não para liberar o botão "ok"
+                    required(true)
+                    // Título das opções
+                    label("Selecione a ordem desejada")
+                    // Opções disponíveis numa lista de arrays (MutableList)
+                    options(mutableListOf("Por artista", "Por título", "Por data adicionada", "Por tamanho"))
+                })
+                // Cor do botão "confirmar"
+                positiveButtonColorRes(R.color.purple1)
+                // Torna o objeto clicável novamente quando o diálogo for fechado
+                onClose { binding.filtroBtn.isEnabled = true }
+                // Botão confirmar do BottomSheet
+                onPositive("Confirmar") { result ->
+                    // Quando o resultado, convertido para String for igual as strings abaixo
+                    when(result.toString()){
+                        "Bundle[{ordens_opt=0}]" -> {
+                            ordemAtual = 0
 
-        /*  binding.navLayout.setNavigationItemSelectedListener {
-              when(it.itemId){
-                  R.id.item_musicas ->
-                  R.id.item_albuns ->
-                  R.id.item_artistas ->
-                  R.id.item_favoritos ->
-                  R.id.item_playlists ->
-                  R.id.item_config ->
-                  R.id.item_equalizador ->
-                  R.id.item_sobre ->
-              }
-              true
-          }
-          */
+                            val editor = getSharedPreferences("ORDEM", MODE_PRIVATE).edit()
+                            editor.putInt("ordemSet", ordemAtual)
+                            editor.apply()
+                        }
+                        "Bundle[{ordens_opt=1}]" -> {
+                            ordemAtual = 1
+
+                            val editor = getSharedPreferences("ORDEM", MODE_PRIVATE).edit()
+                            editor.putInt("ordemSet", ordemAtual)
+                            editor.apply()
+                        }
+                        "Bundle[{ordens_opt=2}]" -> {
+                            ordemAtual = 2
+
+                            val editor = getSharedPreferences("ORDEM", MODE_PRIVATE).edit()
+                            editor.putInt("ordemSet", ordemAtual)
+                            editor.apply()
+                        }
+                        "Bundle[{ordens_opt=3}]" -> {
+                            ordemAtual = 3
+
+                            val editor = getSharedPreferences("ORDEM", MODE_PRIVATE).edit()
+                            editor.putInt("ordemSet", ordemAtual)
+                            editor.apply()
+                        }
+                    }
+                    startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                }
+                // Cor do botão "cancelar"
+                negativeButtonColorRes(R.color.grey3)
+                // Botão cancelar do BottomSheet
+                onNegative {
+                    dismiss()
+                }
+            }
+        }
     }
 
     // Método para deixar o aplicativo no seu modo padrão
@@ -167,6 +222,8 @@ class MainActivity : AppCompatActivity() {
     private fun iniciarLayout(){
         pesquisando = false
         // Lista de músicas
+        val ordemEditor = getSharedPreferences("ORDEM", MODE_PRIVATE)
+        ordem = ordemEditor.getInt("ordemSet", 0)
         listaMusicaMain = procurarMusicas()
         if(listaMusicaMain.size < 1){
             binding.avisoMusicas.visibility = View.VISIBLE
@@ -224,7 +281,7 @@ class MainActivity : AppCompatActivity() {
             dadosMusica,
             selectMusica,
             null,
-            MediaStore.Audio.Media.DISPLAY_NAME + " COLLATE NOCASE ASC",
+            listaOrdens[ordem],
             null)
 
         // If que, se houverem arquivos de áudios, o cursor começará a passar por todos eles um por um,
@@ -258,17 +315,11 @@ class MainActivity : AppCompatActivity() {
         return tempLista // Retorna a lista de músicas para o ArrayList<Musica>
     }
 
-    // Método para seleção de itens do menu
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (setMenuDrawer.onOptionsItemSelected(item))
-            return true
-        return super.onOptionsItemSelected(item)
-    }
-
-    // Método para mostrar (inflar) o menu na action bar
+    // Método para mostrar (inflar) a pesquisa na action bar
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.pesquisa_menu, menu)
         val pesquisaView = menu.findItem(R.id.pesquisa_view)?.actionView as SearchView
+
         // Texto da hint
         pesquisaView.queryHint = "Procure por título, artista, álbum..."
         // Muda a cor da hint da textView da pesquisa
@@ -327,6 +378,14 @@ class MainActivity : AppCompatActivity() {
         val jsonStringPlaylists = GsonBuilder().create().toJson(PlaylistsActivity.playlists)
         editor.putString("Lista de playlists", jsonStringPlaylists)
         editor.apply()
+        // SharedPreferences, para salvar a ordenação da lista de músicas do usuário
+        val ordemEditor = getSharedPreferences("ORDEM", MODE_PRIVATE)
+        val valorOrdem = ordemEditor.getInt("ordemSet", 0)
+        if (ordem != valorOrdem){
+            ordem = valorOrdem
+            listaMusicaMain = procurarMusicas()
+            musicaAdapter.atualizarListaMusicas()
+        }
 
         // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
         if(PlayerActivity.musicaService != null){

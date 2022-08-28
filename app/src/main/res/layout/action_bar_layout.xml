@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/black3"
     android:layout_gravity="center"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_action_bar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Todas as músicas"
+        android:text="Bem-vindo ao Bloom!"
         android:textStyle="bold"
         android:textSize="18sp"
-        android:gravity="center"
         android:textColor="@color/white" />
 
 </LinearLayout>
