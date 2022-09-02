@@ -57,7 +57,7 @@
         android:background="@color/black3">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/aviso_favoritas"
+            android:id="@+id/aviso_selecionar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"

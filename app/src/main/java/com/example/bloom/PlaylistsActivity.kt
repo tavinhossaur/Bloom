@@ -56,6 +56,7 @@ class PlaylistsActivity : AppCompatActivity() {
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
         binding.btnVoltarPl.setOnClickListener {finish()}
 
+        // Ao clicar no botão de criar playlists, chama o método para criar uma playlist
         binding.fabCriarPl.setOnClickListener {criarPlaylist()}
 
         // Caso não tenha nenhuma música favoritada ainda
@@ -110,8 +111,11 @@ class PlaylistsActivity : AppCompatActivity() {
             positiveButtonColorRes(R.color.purple1)
             // Botão confirmar do BottomSheet
             onPositive("Criar") { result ->
+                // Retorna o valor string da input "nome_playlist"
                 val nomePlaylist = result.getString("nome_playlist").toString()
+                // Retorna o valor string da input "nome_criador"
                 val nomeCriador = result.getString("nome_criador").toString()
+                // Passa ambas para o método adicionar playlist
                 adicionarPlaylist(nomePlaylist, nomeCriador)
             }
 
@@ -122,30 +126,48 @@ class PlaylistsActivity : AppCompatActivity() {
         }
     }
 
+    // Método para adicionar playlists, que recebe o nome da mesma e do criador
     private fun adicionarPlaylist(nome : String, criador : String){
+        // Variável para identificar se a playlist já existe, por padrão tem valor false
         var playlistExiste = false
+        // Loop para verificar se já há alguma de mesmo nome na lista de playlists
         for (i in playlists.modelo){
+            // Se o nome inserido for igual ao nome de alguma playlist
             if (nome == i.nome){
+                // O valor da variável de indentificação passa a ser true
                 playlistExiste = true
+                // E o loop encerra
                 break
             }
         }
+        // Portanto, se a playlist existir
         if (playlistExiste) {
+            // Mostra um toast dizendo que a playlist já existe
             Toast.makeText(this, "Já existe uma playlist com este nome", Toast.LENGTH_SHORT).show()
+        // Caso contrário (playlist não existe)
         }else{
-            val tempPlaylist = Playlist()
-            tempPlaylist.nome = nome
-            tempPlaylist.playlist = ArrayList()
-            tempPlaylist.criador = criador
-            playlists.modelo.add(tempPlaylist)
+            // Então cria um objeto da classe Playlist
+            val novaPlaylist = Playlist()
+            // Define o nome da playlist
+            novaPlaylist.nome = nome
+            // Define o nome do criador da playlist
+            novaPlaylist.criador = criador
+            // Define a lista de músicas dessa playlist como um ArrayList
+            novaPlaylist.playlist = ArrayList()
+            // Adiciona a nova playlist para lista de playlists
+            playlists.modelo.add(novaPlaylist)
+            // E atualiza a lista de playlists
             playlistsAdapter.atualizarLista()
 
+            // Muda a visibilidade dos itens quando houver ao menos uma playlist na lista
+            // (a verificação disso não fica aqui)
             binding.playlistsRv.visibility = View.VISIBLE
             binding.avisoPlaylists.visibility = View.GONE
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    // Quando retornar a esta activity, verifica se a lista de playlists foi alterada
     override fun onResume() {
         super.onResume()
         playlistsAdapter.notifyDataSetChanged()

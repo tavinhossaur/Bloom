@@ -115,7 +115,8 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
                 onClose { holder.btnExtra.isEnabled = true }
                 with(
                     Option(R.drawable.ic_round_share_24, "Compartilhar"),
-                    Option(R.drawable.ic_round_delete_forever_24, "Excluir")
+                    Option(R.drawable.ic_round_delete_forever_24, "Excluir"),
+                    Option(R.drawable.ic_round_info_24, "Detalhes")
                 )
                 onPositive { index: Int, _: Option ->
                     when(index){
@@ -166,6 +167,24 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
                             }
                             // Mostra o AlertDialog
                             permSheet.show()
+                        }
+                        // Detalhes da música
+                        2 -> {
+                            // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
+                            val detalhesSheet = InfoSheet().build(requireContext()) {
+                                // Estilo do sheet (AlertDialog)
+                                style(SheetStyle.DIALOG)
+                                // Mensagem do AlertDialog
+                                content("Título: ${listaFavoritos[posicao].titulo}" +
+                                        "\nArtista: ${listaFavoritos[posicao].artista}" +
+                                        "\nAlbum: ${listaFavoritos[posicao].album}" +
+                                        "\nDuração ${formatarDuracao(listaFavoritos[posicao].duracao)}" +
+                                        "\n\nDiretório: ${listaFavoritos[posicao].caminho}")
+                                // Esconde os ambos os botões
+                                displayButtons(false)
+                            }
+                            // Mostra o AlertDialog
+                            detalhesSheet.show()
                         }
                     }
                 }

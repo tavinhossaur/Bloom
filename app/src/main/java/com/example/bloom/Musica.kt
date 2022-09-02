@@ -19,7 +19,6 @@ class Playlist {
     lateinit var nome : String
     lateinit var playlist : ArrayList<Musica>
     lateinit var criador : String
-    lateinit var imagemUri: String
 }
 
 class ModeloPlaylist{
@@ -43,10 +42,6 @@ fun encerrarProcesso(){
         PlayerActivity.musicaService = null
         exitProcess(1)
     }
-}
-
-fun finish(){
-    finish()
 }
 
 // Método para checar se a música esta favoritada ou não

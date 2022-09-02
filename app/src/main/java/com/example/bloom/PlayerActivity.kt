@@ -15,12 +15,15 @@ import android.media.audiofx.AudioEffect
 import android.net.Uri
 import android.os.Bundle
 import android.os.IBinder
+import android.view.ContextThemeWrapper
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.request.RequestOptions
@@ -34,9 +37,13 @@ import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputRadioButtons
 import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
+import java.io.File
+
 
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
 class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {
+
+    private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
 
     // Declaração de objetos/classes estáticas
     companion object{
@@ -73,11 +80,84 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         iniciarLayout()
 
+        musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica)
+
         // FUNÇÕES DA ACTIVITY (TELA)
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
         binding.btnFecharTpl.setOnClickListener {finish()}
         // Texto do cabeçalho do player, mostrando ao usuário a quantidade total de músicas dele
         binding.musicaAtualTotal.text = "Você tem ${MainActivity.listaMusicaMain.size} músicas no total."
+        // Ao clicar no botão de opções extras
+        binding.btnExtraTpl.setOnClickListener {
+            // Cria o popup menu
+            val contexto: Context = ContextThemeWrapper(this, R.style.PopupMenuStyle)
+            val popup = PopupMenu(contexto, binding.btnExtraTpl, Gravity.CENTER)
+            popup.setForceShowIcon(true)
+            // Infla o menu do card
+            popup.inflate(R.menu.player_menu)
+            // Adicionando o listener das opções do menu
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    // Detalhes da música
+                    R.id.detalhes_musica -> {
+                        // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
+                        val detalhesSheet = InfoSheet().build(this) {
+                            // Estilo do sheet (AlertDialog)
+                            style(SheetStyle.DIALOG)
+                            // Mensagem do AlertDialog
+                            content("Título: ${filaMusica[posMusica].titulo}" +
+                                    "\nArtista: ${filaMusica[posMusica].artista}" +
+                                    "\nAlbum: ${filaMusica[posMusica].album}" +
+                                    "\nDuração ${formatarDuracao(filaMusica[posMusica].duracao)}" +
+                                    "\n\nDiretório: ${filaMusica[posMusica].caminho}")
+                            // Esconde os ambos os botões
+                            displayButtons(false)
+                        }
+                        // Mostra o AlertDialog
+                        detalhesSheet.show()
+                    }
+                    // Excluir a música
+                    R.id.delete_musica -> {
+                        // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
+                        val permSheet = InfoSheet().build(this) {
+                            // Estilo do sheet (AlertDialog)
+                            style(SheetStyle.DIALOG)
+                            // Título do AlertDialog
+                            title("Deseja mesmo excluir a música?")
+                            // Cor do título
+                            titleColorRes(R.color.purple1)
+                            // Mensagem do AlertDialog
+                            content("Excluir a música \"${filaMusica[posMusica].titulo}\" de ${filaMusica[posMusica].artista}?\n\nAtenção: se a música que você estiver tentando excluir não for apagada, você precisará apaga-la manualmente no armazenamento do dispositivo.")
+                            // Botão positivo que exclui a música em questão
+                            positiveButtonColorRes(R.color.purple1)
+                            onPositive("Sim, excluir") {
+                                // Criando o objeto "musica" com base nos dados da música que foi selecionada
+                                val musica = Musica(filaMusica[posMusica].id, filaMusica[posMusica].titulo, filaMusica[posMusica].artista, filaMusica[posMusica].album, filaMusica[posMusica].duracao, filaMusica[posMusica].imagemUri, filaMusica[posMusica].caminho)
+                                // Criando o objeto "arquivo" que leva o objeto "musica" e o seu caminho (url do arquivo no armazenamento do dispositivo)
+                                val arquivo = File(filaMusica[posMusica].caminho)
+                                // Exclui a música do armazenamento do dispositivo
+                                arquivo.delete()
+                                // Remove a música da lista
+                                filaMusica.remove(musica)
+                                // Carrega o player novamente com a próxima música automaticamente pois a anterior foi removida
+                                carregarMusica()
+                                criarPlayer()
+                            }
+                            // Botão negativo que apenas fecha o diálogo
+                            negativeButtonColorRes(R.color.grey3)
+                            onNegative {
+                                dismiss()
+                            }
+                        }
+                        // Mostra o AlertDialog
+                        permSheet.show()
+                    }
+                }
+                true
+            }
+            // Mostra o menu popup
+            popup.show()
+        }
 
         // FUNÇÕES EXTRAS
         // Ao clicar no botão de favorito, favorita a música atual do player

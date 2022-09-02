@@ -97,18 +97,17 @@
             android:layout_height="match_parent"
             android:background="@color/black3">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/aviso_favoritas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="80dp"
-                android:text="Para favoritar as músicas, clique no "
+                android:text="Para favoritar as músicas, clique no 🤍"
                 android:textAlignment="center"
                 android:textColor="@color/grey3"
                 android:textSize="20sp"
                 android:visibility="visible"
-                android:drawableEnd="@drawable/ic_round_favorite_border_24"
-                android:drawableTint="@color/white"
+                android:padding="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

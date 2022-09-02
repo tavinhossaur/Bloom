@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/detalhes_musica"
+        android:icon="@drawable/ic_round_edit_note_24"
+        android:title="Detalhes da música" />
+    <item
+        android:id="@+id/delete_musica"
+        android:icon="@drawable/ic_round_delete_forever_24"
+        android:title="Excluir música" />
+</menu>

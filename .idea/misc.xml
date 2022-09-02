@@ -103,6 +103,7 @@
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_launcher_background.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_access_time_filled_24.xml" value="0.177" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_audio_file_24.xml" value="0.177" />
+        <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_calendar_today_24.xml" value="0.332" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_check_circle_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_circle_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_clear_all_24.xml" value="0.174" />
@@ -116,8 +117,10 @@
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_favorite_miniplayer24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_favorite_notify_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_folder_24.xml" value="0.174" />
+        <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_info_24.xml" value="0.177" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_keyboard_arrow_left_24.xml" value="0.177" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_library_music_24.xml" value="0.177" />
+        <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_lyrics_24.xml" value="0.177" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_pause_circle_notify_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_pause_notify_24.xml" value="0.174" />
         <entry key="..\:/tccbloom/app/src/main/res/drawable/ic_round_person_24.xml" value="0.174" />
@@ -160,6 +163,7 @@
         <entry key="..\:/tccbloom/app/src/main/res/menu/main_nav_menu.xml" value="0.3385416666666667" />
         <entry key="..\:/tccbloom/app/src/main/res/menu/musica_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/tccbloom/app/src/main/res/menu/pesquisa_menu.xml" value="0.3385416666666667" />
+        <entry key="..\:/tccbloom/app/src/main/res/menu/player_menu.xml" value="0.3385416666666667" />
         <entry key="..\:/tccbloom/app/src/main/res/menu/playlist_card_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/tccbloom/app/src/main/res/menu/playlist_menu.xml" value="0.3385416666666667" />
         <entry key="..\:/tccbloom/app/src/main/res/mipmap-anydpi-v26/ic_bloom_app.xml" value="0.174" />

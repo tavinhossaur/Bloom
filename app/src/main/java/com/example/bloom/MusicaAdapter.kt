@@ -74,21 +74,30 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                 preventIconTint(true)
                 // Torna o objeto clicável novamente quando o diálogo for fechado
                 onClose { holder.botao.isEnabled = true }
+                // Se não estiver favoritado
                 if (!PlayerActivity.favoritado) {
+                    // Mostra as opções com a opção de favoritar
                     with(
                         Option(R.drawable.ic_round_favorite_border_menu_24, "Favoritar"),
                         Option(R.drawable.ic_round_share_24, "Compartilhar"),
-                        Option(R.drawable.ic_round_delete_forever_24, "Excluir")
+                        Option(R.drawable.ic_round_delete_forever_24, "Excluir"),
+                        Option(R.drawable.ic_round_info_24, "Detalhes")
                     )
+                // Caso contrário (estiver favoritado)
                 }else{
+                    // Mostra as opções com a opção de desfavoritar
                     with(
                         Option(R.drawable.ic_round_favorite_menu_24, "Desfavoritar"),
                         Option(R.drawable.ic_round_share_24, "Compartilhar"),
-                        Option(R.drawable.ic_round_delete_forever_24, "Excluir")
+                        Option(R.drawable.ic_round_delete_forever_24, "Excluir"),
+                        Option(R.drawable.ic_round_info_24, "Detalhes")
                     )
                 }
+                // Quando clicado em uma opção
                 onPositive { index: Int, _: Option ->
+                    // Verifica qual foi clicada
                     when(index){
+                        // Favoritar / Desfavoritar
                         0 -> {
                             PlayerActivity.favIndex = checarFavoritos(listaMusicas[posicao].id)
                             // Se a música já estiver favoritada
@@ -117,6 +126,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                 FavoritosActivity.listaFavoritos.add(listaMusicas[posicao])
                             }
                         }
+                        // Compartilhar
                         1 -> {
                             // Cria a intent para o compartilhamento
                             val compartIntent = Intent()
@@ -130,6 +140,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                             // E um título que aparece no BottomSheetDialog
                             startActivity(Intent.createChooser(compartIntent, "Selecione como você vai compartilhar a música"))
                         }
+                        // Excluir
                         2 -> {
                             // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
                             val permSheet = InfoSheet().build(requireContext()) {
@@ -155,7 +166,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                     // Notifica que ela foi removida
                                     notifyItemRemoved(posicao)
                                     // E atualiza a lista de músicas
-                                    atualizarListaMusicas()
+                                    atualizarLista(MainActivity.listaMusicaMain)
                                 }
                                 // Botão negativo que apenas fecha o diálogo
                                 negativeButtonColorRes(R.color.grey3)
@@ -165,6 +176,24 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                             }
                             // Mostra o AlertDialog
                             permSheet.show()
+                        }
+                        // Mostrar detalhes
+                        3 -> {
+                            // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
+                            val detalhesSheet = InfoSheet().build(requireContext()) {
+                                // Estilo do sheet (AlertDialog)
+                                style(SheetStyle.DIALOG)
+                                // Mensagem do AlertDialog
+                                content("Título: ${listaMusicas[posicao].titulo}" +
+                                        "\nArtista: ${listaMusicas[posicao].artista}" +
+                                        "\nAlbum: ${listaMusicas[posicao].album}" +
+                                        "\nDuração ${formatarDuracao(listaMusicas[posicao].duracao)}" +
+                                        "\n\nDiretório: ${listaMusicas[posicao].caminho}")
+                                // Esconde os ambos os botões
+                                displayButtons(false)
+                            }
+                            // Mostra o AlertDialog
+                            detalhesSheet.show()
                         }
                     }
                 }
@@ -213,7 +242,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
             }
             // Se não foi selecionada, adicione ela a lista
             // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
-            val trueSheet = InfoSheet().build(context) {
+            val addSheet = InfoSheet().build(context) {
                 // Estilo do sheet (AlertDialog)
                 style(SheetStyle.DIALOG)
                 // Título do AlertDialog
@@ -241,7 +270,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                 }
             }
             // Mostra o AlertDialog
-            trueSheet.show()
+            addSheet.show()
             return true
         }
 
@@ -448,17 +477,9 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
 
     // Método para atualizar a lista de músicas
     @SuppressLint("NotifyDataSetChanged")
-    fun atualizarLista(listaPesquisa : ArrayList<Musica>){
+    fun atualizarLista(lista : ArrayList<Musica>){
         listaMusicas = ArrayList()
-        listaMusicas.addAll(listaPesquisa)
-        notifyDataSetChanged()
-    }
-
-    // Método para atualizar a lista de músicas
-    @SuppressLint("NotifyDataSetChanged")
-    fun atualizarListaMusicas(){
-        listaMusicas = ArrayList()
-        listaMusicas.addAll(MainActivity.listaMusicaMain)
+        listaMusicas.addAll(lista)
         notifyDataSetChanged()
     }
 

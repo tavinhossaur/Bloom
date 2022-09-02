@@ -11,15 +11,17 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivitySelecionarMusicasBinding
 
+// Classe da activity
 class SelecionarMusicasActivity : AppCompatActivity() {
 
-    private lateinit var musicaAdapter: MusicaAdapter
+    private lateinit var musicaAdapter: MusicaAdapter // Variável que leva a classe MusicAdapter
 
     companion object{
         @SuppressLint("StaticFieldLeak")
-        lateinit var binding : ActivitySelecionarMusicasBinding
+        lateinit var binding : ActivitySelecionarMusicasBinding // binding é a variável do ViewBinding para ligar as views ao código
     }
 
+    // Método chamado quando o aplicativo/activity é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
         modoEscuro()
         super.onCreate(savedInstanceState)
@@ -47,6 +49,14 @@ class SelecionarMusicasActivity : AppCompatActivity() {
         binding.slcMusicaRv.isMotionEventSplittingEnabled = false
 
         binding.btnVoltarSlc.setOnClickListener {finish()}
+
+        if (MainActivity.listaMusicaMain.size < 1){
+            binding.slcMusicaRv.visibility = View.GONE
+            binding.avisoSelecionar.visibility = View.VISIBLE
+        }else{
+            binding.slcMusicaRv.visibility = View.VISIBLE
+            binding.avisoSelecionar.visibility = View.GONE
+        }
 
         val pesquisaView = binding.pesquisaViewSlc
         // Hint da pesquisa
@@ -79,7 +89,7 @@ class SelecionarMusicasActivity : AppCompatActivity() {
                             // Defina pesquisando como true
                             MainActivity.pesquisando = true
                             // E atualize a lista de músicas pesquisadas
-                            musicaAdapter.atualizarLista(listaPesquisa = MainActivity.listaMusicaPesquisa)
+                            musicaAdapter.atualizarLista(MainActivity.listaMusicaPesquisa)
                         }
                 }
                 return true

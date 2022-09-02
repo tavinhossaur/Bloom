@@ -20,16 +20,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.bloom.databinding.ActionBarLayoutBinding
 import com.example.bloom.databinding.ActivityMainBinding
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
-import com.maxkeppeler.sheets.input.InputSheet
-import com.maxkeppeler.sheets.input.type.InputRadioButtons
+import com.maxkeppeler.sheets.options.Option
+import com.maxkeppeler.sheets.options.OptionsSheet
 import java.io.File
 
+// Classe da activity
 class MainActivity : AppCompatActivity() {
 
     private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
@@ -42,19 +42,26 @@ class MainActivity : AppCompatActivity() {
         lateinit var binding : ActivityMainBinding // binding é a variável do ViewBinding para ligar as views ao código
         var pesquisando : Boolean = false // Variável para indentificar se o usuário está fazendo uma pesquisa de músicas
         var ordem : Int = 0 // Variável que leva um valor para indicar qual ordem a lista de músicas está ordenada
-        // Lista de ordenações
-        val listaOrdens = arrayOf(
+        val listaOrdens = arrayOf( // Lista de ordenações
+            // Por nome de artista
             MediaStore.Audio.Media.ARTIST,
+            // para a organização alfabética, está sendo utilizado o código em SQL "COLLATE NOCASE ASC", sendo COLLATE a cláusula que
+            // define uma ordenação, essa ordenação recebe como argumentos o "NOCASE" que torna a ordenação case-insensitive e "ASC" seria
+            // "ascendente" ou seja, alfabéticamente de A a Z.
             MediaStore.Audio.Media.DISPLAY_NAME + " COLLATE NOCASE ASC",
+            // Pela data adicionada de forma decrescente, ou seja, o mais recente primeiro
             MediaStore.Audio.Media.DATE_ADDED + " DESC",
-            MediaStore.Audio.Media.SIZE + " DESC",)
+            // E pela duração também de forma decrescente, a música mais longa música primeiro
+            MediaStore.Audio.Media.DURATION + " DESC",)
+        var selectMusica : String  = "" // Variável de seleção da música no armazenamento
     }
 
-    // Método chamado quando o aplicativo é iniciado
+    // Método chamado quando o aplicativo/activity é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
         modoEscuro()
         super.onCreate(savedInstanceState)
 
+        // Método da api da Google para gerar uma Splash Screen
         installSplashScreen()
 
         // Define o estilo customizado da action bar
@@ -128,54 +135,58 @@ class MainActivity : AppCompatActivity() {
         binding.filtroBtn.setOnClickListener {
             binding.filtroBtn.isEnabled = false
             var ordemAtual = ordem
-            InputSheet().show(this) {
+            OptionsSheet().show(this) {
                 // Estilo do sheet (BottomSheet)
                 style(SheetStyle.BOTTOM_SHEET)
                 // Altera o botão de fechar o dialogo
                 closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                 // Título do BottomSheetDialog
                 title("Ordenar músicas")
+                // Marca como falso as múltiplas opções
+                multipleChoices(false)
+                // Mantém as cores dos ícones
+                preventIconTint(true)
                 // Cor do título
                 titleColorRes(R.color.purple1)
                 // Conteúdo da sheet (Radio Buttons)
-                with(InputRadioButtons("ordens_opt") {
-                    // Marca como um campo obrigatório ou não para liberar o botão "ok"
-                    required(true)
-                    // Título das opções
-                    label("Selecione a ordem desejada")
-                    // Opções disponíveis numa lista de arrays (MutableList)
-                    options(mutableListOf("Por artista", "Por título", "Por data adicionada", "Por tamanho"))
-                })
+                with(
+                    Option(R.drawable.ic_round_person_24, "Por artista"),
+                    Option(R.drawable.ic_round_library_music_24, "Por título"),
+                    Option(R.drawable.ic_round_calendar_today_24, "Por data adicionada"),
+                    Option(R.drawable.ic_round_access_time_filled_24, "Por duração")
+                )
                 // Cor do botão "confirmar"
                 positiveButtonColorRes(R.color.purple1)
                 // Torna o objeto clicável novamente quando o diálogo for fechado
                 onClose { binding.filtroBtn.isEnabled = true }
                 // Botão confirmar do BottomSheet
-                onPositive("Confirmar") { result ->
-                    // Quando o resultado, convertido para String for igual as strings abaixo
-                    when(result.toString()){
-                        "Bundle[{ordens_opt=0}]" -> {
+                onPositive { index: Int, option: Option ->
+                    // Quando o index (selecionado)
+                    when(index){
+                        // For "0" (Por artista)
+                        0 -> {
+                            // Então a ordem atual será o valor 0 do array da lista de ordens
                             ordemAtual = 0
 
                             val editor = getSharedPreferences("ORDEM", MODE_PRIVATE).edit()
                             editor.putInt("ordemSet", ordemAtual)
                             editor.apply()
                         }
-                        "Bundle[{ordens_opt=1}]" -> {
+                        1 -> {
                             ordemAtual = 1
 
                             val editor = getSharedPreferences("ORDEM", MODE_PRIVATE).edit()
                             editor.putInt("ordemSet", ordemAtual)
                             editor.apply()
                         }
-                        "Bundle[{ordens_opt=2}]" -> {
+                        2 -> {
                             ordemAtual = 2
 
                             val editor = getSharedPreferences("ORDEM", MODE_PRIVATE).edit()
                             editor.putInt("ordemSet", ordemAtual)
                             editor.apply()
                         }
-                        "Bundle[{ordens_opt=3}]" -> {
+                        3 -> {
                             ordemAtual = 3
 
                             val editor = getSharedPreferences("ORDEM", MODE_PRIVATE).edit()
@@ -223,12 +234,18 @@ class MainActivity : AppCompatActivity() {
         pesquisando = false
         // Lista de músicas
         val ordemEditor = getSharedPreferences("ORDEM", MODE_PRIVATE)
+        // Retorna a ordem da lista selecionada pelo usuário
         ordem = ordemEditor.getInt("ordemSet", 0)
+        // E procura as músicas
         listaMusicaMain = procurarMusicas()
+        // Se a quantidade de músicas for menor que um
         if(listaMusicaMain.size < 1){
+            // Esconde a lista e mostra o aviso de que não há músicas
             binding.avisoMusicas.visibility = View.VISIBLE
             binding.musicasRv.visibility = View.GONE
+        // Caso contrário (há músicas)
         }else{
+            // Mostra a lista e esconde o aviso
             binding.avisoMusicas.visibility = View.GONE
             binding.musicasRv.visibility = View.VISIBLE
         }
@@ -253,14 +270,13 @@ class MainActivity : AppCompatActivity() {
 
     // Método que faz a procura de músicas pelos arquivos do celular
     @SuppressLint("Recycle", "Range")
-    private fun procurarMusicas(): ArrayList<Musica>{
+    private fun procurarMusicas(): ArrayList<Musica> {
         // Lista temporária de músicas
         val tempLista = ArrayList<Musica>()
         // Condições para a seleção das músicas dos arquivos "!= 0" (diferente de 0) significa que o cursor procurará apenas músicas
         // e não ringtones do android " AND " título não igual a "AUD%" ou seja, o título da música não pode ser igual a
         // AUD + zero ou outros caracteres.
-        val selectMusica = MediaStore.Audio.Media.IS_MUSIC + "!= 0" + " AND " + MediaStore.Audio.Media.TITLE + " NOT  LIKE  'AUD%'"
-
+        // Se o switch1 das configurações for true, então os áudios do WhatsApp não vão ser selecionados
         // Array de dados que serão retornados dos arquivos
         val dadosMusica = arrayOf(
             MediaStore.Audio.Media._ID, // ID da música
@@ -269,20 +285,18 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Audio.Media.ALBUM, // Álbum da música
             MediaStore.Audio.Media.DURATION, // Duração da música
             MediaStore.Audio.Media.ALBUM_ID, // ID do álbum (imagem)
-            // MediaStore.Audio.Media.DATE_ADDED, // Data de quando a música foi adicionada ao aplicativo
-            MediaStore.Audio.Media.DATA) // Caminho da música
+            MediaStore.Audio.Media.DATA
+        ) // Caminho da música
 
         // Cursor é o mecanismo que faz a busca e seleciona as músicas e as organiza com base nas condições passadas nos parâmetros,
-        // para a organização alfabética, está sendo utilizado o código em SQL "COLLATE NOCASE ASC", sendo COLLATE a cláusula que
-        // define uma ordenação, essa ordenação recebe como argumentos o "NOCASE" que torna a ordenação case-insensitive e "ASC" seria
-        // "ascendente" ou seja, alfabéticamente de A a Z.
         val cursor = this.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             dadosMusica,
             selectMusica,
             null,
             listaOrdens[ordem],
-            null)
+            null
+        )
 
         // If que, se houverem arquivos de áudios, o cursor começará a passar por todos eles um por um,
         // retornando seus dados e os adicionando ao modelo do array da música (Musica.kt),
@@ -290,18 +304,33 @@ class MainActivity : AppCompatActivity() {
         if (cursor != null) {
             if (cursor.moveToFirst())
                 do {
-                    val idC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)) // Cursor procura e adiciona o ID da música
-                    val tituloC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)) // Cursor procura e adiciona o título da música
-                    val artistaC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)) // Cursor procura e adiciona o artista da música
-                    val albumC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)) // Cursor procura e adiciona o álbuns da música
-                    val duracaoC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) // Cursor procura e adiciona o duração da música
-                    val albumIdC = cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString() // Cursor procura e adiciona o id do álbum da música
-                    val uri = Uri.parse("content://media/external/audio/albumart") // Link onde ficará as imagens dos álbuns que o cursor deve retornar
+                    val idC =
+                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID)) // Cursor procura e adiciona o ID da música
+                    val tituloC =
+                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)) // Cursor procura e adiciona o título da música
+                    val artistaC =
+                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)) // Cursor procura e adiciona o artista da música
+                    val albumC =
+                        cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)) // Cursor procura e adiciona o álbum da música
+                    val duracaoC =
+                        cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)) // Cursor procura e adiciona o duração da música
+                    val albumIdC =
+                        cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString() // Cursor procura e adiciona o id do álbum da música
+                    val uri =
+                        Uri.parse("content://media/external/audio/albumart") // Link onde ficará as imagens dos álbuns que o cursor deve retornar
                     val imagemUriC = Uri.withAppendedPath(uri, albumIdC).toString() // A imagemUri é a junção do id com o link da imagem
                     val caminhoC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)) // Cursor procura e adiciona o caminho da música
 
                     // Passando os dados retornados da música para o modelo do array da música (Musica.kt)
-                    val musica = Musica(id = idC, titulo = tituloC, artista = artistaC, album = albumC, duracao = duracaoC, caminho = caminhoC, imagemUri = imagemUriC)
+                    val musica = Musica(
+                        id = idC,
+                        titulo = tituloC,
+                        artista = artistaC,
+                        album = albumC,
+                        duracao = duracaoC,
+                        caminho = caminhoC,
+                        imagemUri = imagemUriC
+                    )
                     // Passando o caminho da música para uma constante que o identifica como um arquivo
                     val arquivo = File(musica.caminho)
                     // Se o arquivo existir, ele será adicionado para a lista de músicas,
@@ -311,7 +340,7 @@ class MainActivity : AppCompatActivity() {
 
                 } while (cursor.moveToNext())
             cursor.close() // Termina o cursor, para que ele não fique executando o loop de pesquisa infinitamente
-        }
+            }
         return tempLista // Retorna a lista de músicas para o ArrayList<Musica>
     }
 
@@ -348,7 +377,7 @@ class MainActivity : AppCompatActivity() {
                             // Defina pesquisando como true
                             pesquisando = true
                             // E atualize a lista de músicas pesquisadas
-                            musicaAdapter.atualizarLista(listaPesquisa = listaMusicaPesquisa)
+                            musicaAdapter.atualizarLista(listaMusicaPesquisa)
                         }
                 }
                 return true
@@ -370,26 +399,50 @@ class MainActivity : AppCompatActivity() {
     // Método onResume, para quando o usuário volta a activity
     override fun onResume() {
         super.onResume()
-        // SharedPreferences, para salvar a lista de favoritos do usuário
-        val editor = getSharedPreferences("Favoritos", MODE_PRIVATE).edit()
-        val jsonStringFavoritos = GsonBuilder().create().toJson(FavoritosActivity.listaFavoritos)
-        editor.putString("Lista de favoritos", jsonStringFavoritos)
-        // SharedPreferences, para salvar a lista de playlists do usuário
-        val jsonStringPlaylists = GsonBuilder().create().toJson(PlaylistsActivity.playlists)
-        editor.putString("Lista de playlists", jsonStringPlaylists)
-        editor.apply()
-        // SharedPreferences, para salvar a ordenação da lista de músicas do usuário
-        val ordemEditor = getSharedPreferences("ORDEM", MODE_PRIVATE)
-        val valorOrdem = ordemEditor.getInt("ordemSet", 0)
-        if (ordem != valorOrdem){
-            ordem = valorOrdem
-            listaMusicaMain = procurarMusicas()
-            musicaAdapter.atualizarListaMusicas()
-        }
+        // Se o usuário já tiver dado a permissão pro aplicativo, então pode retornar as preferencias salvas
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            // SharedPreferences, para salvar a lista de favoritos do usuário
+            val editor = getSharedPreferences("Favoritos", MODE_PRIVATE).edit()
+            val jsonStringFavoritos = GsonBuilder().create().toJson(FavoritosActivity.listaFavoritos)
+            editor.putString("Lista de favoritos", jsonStringFavoritos)
+            // SharedPreferences, para salvar a lista de playlists do usuário
+            val jsonStringPlaylists = GsonBuilder().create().toJson(PlaylistsActivity.playlists)
+            editor.putString("Lista de playlists", jsonStringPlaylists)
+            editor.apply()
+            // SharedPreferences, para retornar a ordenação da lista de músicas do usuário
+            val ordemEditor = getSharedPreferences("ORDEM", MODE_PRIVATE)
+            val valorOrdem = ordemEditor.getInt("ordemSet", 0)
+            // Se o valor da ordem atual for diferente do valor selecionado
+            if (ordem != valorOrdem) {
+                // Então iguala o valor
+                ordem = valorOrdem
+                // E atualiza a lista de músicas procurando e armazenando elas com a nova ordem
+                listaMusicaMain = procurarMusicas()
+                musicaAdapter.atualizarLista(listaMusicaMain)
+            }
+            // SharedPreferences, para retornar as definições do usuário
+            val switchEditor = getSharedPreferences("SWITCH1", MODE_PRIVATE)
+            val switchAud = switchEditor.getBoolean("switchAud", ConfiguracoesActivity.switch1)
+            // Se o valor do switch for true
+            if (switchAud) {
+                // Então os áudios do WhatsApp serão ignorados
+                selectMusica = MediaStore.Audio.Media.IS_MUSIC + " != 0" + " AND " + MediaStore.Audio.Media.TITLE + " NOT  LIKE  'AUD%'"
+                // E atualiza a lista de músicas procurando novamente por elas com os parâmetros de seleção acima
+                listaMusicaMain = procurarMusicas()
+                musicaAdapter.atualizarLista(listaMusicaMain)
+                // Caso contrário (valor false para o switch)
+            } else {
+                // Então a seleção será de todos os áudios encontrados
+                selectMusica = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+                // E atualiza a lista de músicas procurando novamente por elas com os parâmetros de seleção acima
+                listaMusicaMain = procurarMusicas()
+                musicaAdapter.atualizarLista(listaMusicaMain)
+            }
 
-        // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
-        if(PlayerActivity.musicaService != null){
-            binding.miniPlayer.visibility = View.VISIBLE
+            // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
+            if (PlayerActivity.musicaService != null) {
+                binding.miniPlayer.visibility = View.VISIBLE
+            }
         }
     }
 }

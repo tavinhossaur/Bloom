@@ -42,7 +42,7 @@
 
             <!-- Título -->
             <TextView
-                android:id="@+id/titulo_config"
+                android:id="@+id/titulo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -66,122 +66,123 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/content_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/config"
+        <RelativeLayout
+            android:id="@+id/content_config"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:text="CONFIGURAÇÕES"
-            android:textColor="@color/purple1" />
+            android:layout_marginTop="20dp">
 
-        <TextView
-            android:id="@+id/config1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/config"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="2dp"
-            android:text="Ocultar áudios do Whatsapp"
-            android:textColor="@color/grey2"
-            android:textSize="16sp" />
+            <TextView
+                android:id="@+id/titulo_config"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/switch_config1"
+                android:text="Ocultar áudios do WhatsApp"
+                android:textColor="@color/purple1"
+                android:textSize="18sp" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_config1"
-            android:layout_width="wrap_content"
-            android:layout_height="10dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="35dp"
-            android:layout_marginEnd="10dp" />
+            <TextView
+                android:id="@+id/sub_config"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titulo_config"
+                android:layout_toStartOf="@id/switch_config1"
+                android:text="Remove mensagens de áudio do WhatsApp"
+                android:textColor="@color/grey2"
+                android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/config2"
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_config1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn_feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/config1"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="3dp"
-            android:text="Ocultar arquivos abaixo de 10 segundos"
-            android:textColor="@color/grey2"
-            android:textSize="16sp" />
+            android:layout_below="@id/content_config"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_style"
+            android:elevation="8dp"
+            android:orientation="horizontal">
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_config2"
-            android:layout_width="wrap_content"
-            android:layout_height="10dp"
-            android:layout_below="@id/switch_config1"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp" />
+            <TextView
+                android:id="@+id/titulo_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@id/img_arrow"
+                android:text="FEEDBACK"
+                android:textColor="@color/purple1"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/feedback"
+            <TextView
+                android:id="@+id/sub_feedback"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titulo_feedback"
+                android:layout_toStartOf="@id/img_arrow"
+                android:text="Envie sugestões, dúvidas, problemas, mensagens de amor, etc."
+                android:textColor="@color/grey2"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/img_arrow"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:background="@drawable/ic_round_keyboard_arrow_left_24"
+                android:backgroundTint="@color/white"
+                android:rotation="180" />
+
+        </RelativeLayout>
+
+        <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/config"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="80dp"
-            android:text="FEEDBACK"
-            android:textColor="@color/purple1" />
+            android:layout_above="@+id/content_sobre"
+            android:layout_marginBottom="5dp"
+            app:dividerColor="@color/grey3"
+            app:dividerInsetStart="20dp"
+            app:dividerInsetEnd="20dp"/>
 
-        <TextView
+        <RelativeLayout
+            android:id="@+id/content_sobre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/feedback"
+            android:layout_alignParentBottom="true"
             android:layout_marginHorizontal="20dp"
-            android:text="Enviar sugestões, bugs, etc."
-            android:textColor="@color/grey2" />
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_below="@id/switch_config2"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="10dp"
-            android:rotation="180"
-            android:src="@drawable/ic_round_keyboard_arrow_left_24"
-            app:tint="@color/white" />
+            <TextView
+                android:id="@+id/titulo_sobre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SOBRE"
+                android:textColor="@color/purple1"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/softwares"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/feedback"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="30dp"
-            android:text="SOFTWARE DE TERCEIROS"
-            android:textColor="@color/purple1" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/softwares"
-            android:layout_marginHorizontal="20dp"
-            android:text="Android Studio\nGitHub\nGit\nGlide por Bump Technologies\nSheets por maxkeppeler"
-            android:textColor="@color/grey2" />
-
-        <TextView
-            android:id="@+id/sobre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/softwares"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="100dp"
-            android:text="SOBRE"
-            android:textColor="@color/purple1" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/sobre"
-            android:layout_marginHorizontal="20dp"
-            android:text="Bloom foi desenvolvido por:
+            <TextView
+                android:id="@+id/text_sobre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titulo_sobre"
+                android:text="Bloom foi desenvolvido por:
             \nJoão Fontinelli, Matheus Martinelli e Octávio Barassa.
             \n\nEsse aplicativo se trata do nosso TCC do curso de Desenvolvimento de Sistemas na ETEC João Belarmino em Amparo. "
-            android:textColor="@color/grey2" />
+                android:textColor="@color/grey2" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

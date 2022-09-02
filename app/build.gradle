@@ -66,4 +66,8 @@ dependencies {
 
     // SharedPreferences
     implementation 'com.google.code.gson:gson:2.8.9'
+
+    // Para enviar emails diretamente do app
+    implementation 'com.sun.mail:android-mail:1.6.2'
+    implementation 'com.sun.mail:android-activation:1.6.2'
 }
