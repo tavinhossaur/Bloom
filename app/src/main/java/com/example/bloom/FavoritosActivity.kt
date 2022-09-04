@@ -22,7 +22,7 @@ class FavoritosActivity : AppCompatActivity() {
     private lateinit var favoritosAdapter : FavoritosAdapter // Variável que leva a classe FavoritosAdapter
 
     companion object{
-        var listaFavoritos : ArrayList<Musica> = ArrayList()
+        var listaFavoritos : ArrayList<Musica> = ArrayList() // Lista de músicas favoritadas
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityFavoritosBinding // binding é a variável do ViewBinding para ligar as views ao código
     }
@@ -50,7 +50,7 @@ class FavoritosActivity : AppCompatActivity() {
         // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.favoritosRv.layoutManager = LinearLayoutManager(this@FavoritosActivity)
 
-        // Criando uma variável do Adapter com o contexto (tela) e a lista de músicas que será adicionada
+        // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
         // ao RecyclerView por meio do mesmo Adapter
         favoritosAdapter = FavoritosAdapter(this@FavoritosActivity, listaFavoritos)
         // Setando o Adapter para este RecyclerView

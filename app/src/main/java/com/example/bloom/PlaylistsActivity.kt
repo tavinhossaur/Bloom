@@ -19,7 +19,7 @@ class PlaylistsActivity : AppCompatActivity() {
     private lateinit var playlistsAdapter: PlaylistsAdapter // variável que leva a classe PlaylistsAdapter
 
     companion object{
-        var playlists : ModeloPlaylist = ModeloPlaylist()
+        var playlists : ModeloPlaylist = ModeloPlaylist() // Lista de playlists
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityPlaylistsBinding // binding é a variável do ViewBinding para ligar as views ao código
     }
@@ -45,7 +45,7 @@ class PlaylistsActivity : AppCompatActivity() {
         // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.playlistsRv.layoutManager = GridLayoutManager(this@PlaylistsActivity, 2)
 
-        // Criando uma variável do Adapter com o contexto (tela) e a lista de playlists que será adicionada
+        // Passando ao adapter o contexto (tela) e a lista de playlists que será adicionada
         // ao RecyclerView por meio do mesmo Adapter
         playlistsAdapter = PlaylistsAdapter(this, playlists.modelo)
         // Setando o Adapter para este RecyclerView
@@ -59,9 +59,11 @@ class PlaylistsActivity : AppCompatActivity() {
         // Ao clicar no botão de criar playlists, chama o método para criar uma playlist
         binding.fabCriarPl.setOnClickListener {criarPlaylist()}
 
-        // Caso não tenha nenhuma música favoritada ainda
+        // Caso tenha pelo menos uma playlist criada
         if (playlists.modelo.isNotEmpty()){
+            // Esconde o aviso da playlist
             binding.avisoPlaylists.visibility = View.GONE
+            // E mostra a lista de playlists
             binding.playlistsRv.visibility = View.VISIBLE
         }else{
             binding.avisoPlaylists.visibility = View.VISIBLE

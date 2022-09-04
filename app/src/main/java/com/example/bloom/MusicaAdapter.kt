@@ -20,7 +20,7 @@ import com.maxkeppeler.sheets.options.OptionsSheet
 import java.io.File
 
 // Classe do Adapter que liga a lista de músicas aos itens do RecyclerView
-class MusicaAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>, private val conteudoPlaylist : Boolean = false, private val activitySelecionar : Boolean = false) : RecyclerView.Adapter<MusicaAdapter.Holder>() {
+class MusicaAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>, private val conteudoPlaylist : Boolean = false, private val activitySelecionar : Boolean = false, private val filaReproducao : Boolean = false) : RecyclerView.Adapter<MusicaAdapter.Holder>() {
     class Holder(binding: MusicViewLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val titulo = binding.tituloMusicaView    // Título da música
         val artista = binding.artistaMusicaView  // Artista da música
@@ -274,7 +274,9 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
             return true
         }
 
+        // Em algumas telas, as views das músicas terão comportamentos específicos
         when{
+            // Na tela do conteudoPlaylist
             conteudoPlaylist -> {
                 holder.root.setOnClickListener {
                     irParaMusica("ConteudoPlaylist", posicao)
@@ -314,6 +316,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                         }
                         onPositive { index: Int, _: Option ->
                             when(index){
+                                // Favoritar/Desfavoritar música
                                 0 -> {
                                     PlayerActivity.favIndex = checarFavoritos(listaMusicas[posicao].id)
                                     // Se a música já estiver favoritada
@@ -342,6 +345,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                         FavoritosActivity.listaFavoritos.add(listaMusicas[posicao])
                                     }
                                 }
+                                // Compartilhar música
                                 1 -> {
                                     // Cria a intent para o compartilhamento
                                     val compartIntent = Intent()
@@ -355,6 +359,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                     // E um título que aparece no BottomSheetDialog
                                     startActivity(Intent.createChooser(compartIntent, "Selecione como você vai compartilhar a música"))
                                 }
+                                // Remover música da playlist
                                 2 -> {
                                     // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
                                     val permSheet = InfoSheet().build(requireContext()) {
@@ -389,6 +394,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                     // Mostra o AlertDialog
                                     permSheet.show()
                                 }
+                                // Excluir música
                                 3 -> {
                                     // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
                                     val permSheet = InfoSheet().build(requireContext()) {
@@ -411,8 +417,10 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                             arquivo.delete()
                                             // Remove a música da lista
                                             listaMusicas.remove(musica)
-                                            // E notifica que ela foi removida
+                                            // Notifica que ela foi removida
                                             notifyItemRemoved(posicao)
+                                            // E atualiza a lista
+                                            atualizarPlaylists()
                                         }
                                         // Botão negativo que apenas fecha o diálogo
                                         negativeButtonColorRes(R.color.grey3)
@@ -428,6 +436,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                     }
                 }
             }
+            // Na tela de selecionar músicas
             activitySelecionar -> {
                 // Esconde a duração da música que não tem utilidade nessa tela
                 holder.duracao.visibility = View.INVISIBLE
@@ -444,6 +453,49 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                     adicionarMusica(listaMusicas[posicao])
                 }
             }
+            // No card da fila de reprodução
+            filaReproducao -> {
+                // Impede que o usuário clique em uma das músicas
+                holder.root.isEnabled = false
+                // Muda o ícone para um ícone de remoção
+                holder.botao.setImageResource(R.drawable.ic_round_remove_24)
+                // Quando for clicado no botão de opções extras
+                holder.botao.setOnClickListener {
+                    // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
+                    holder.botao.isEnabled = false
+                    // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
+                    val permSheet = InfoSheet().build(context) {
+                        // Estilo do sheet (AlertDialog)
+                        style(SheetStyle.DIALOG)
+                        // Título do AlertDialog
+                        title("Deseja mesmo remover a música?")
+                        // Cor do título
+                        titleColorRes(R.color.purple1)
+                        // Mensagem do AlertDialog
+                        content("Remover a música \"${listaMusicas[posicao].titulo}\" da fila de reprodução atual?")
+                        // Torna o objeto clicável novamente
+                        onClose { holder.botao.isEnabled = true }
+                        // Botão positivo que remove a música em questão
+                        positiveButtonColorRes(R.color.purple1)
+                        onPositive("Sim, remover") {
+                            // Remove a música da lista
+                            PlayerActivity.filaMusica.removeAt(posicao)
+                            // Notifica que ela foi removida
+                            notifyItemRemoved(posicao)
+                            // E atualiza a lista de reprodução
+                            atualizarLista(PlayerActivity.filaMusica)
+                        }
+                        // Botão negativo que apenas fecha o diálogo
+                        negativeButtonColorRes(R.color.grey3)
+                        onNegative {
+                            dismiss()
+                        }
+                    }
+                    // Mostra o AlertDialog
+                    permSheet.show()
+                }
+            }
+            // Em qualquer outra situação
             else -> {
                 // Quando clicado na view da música no RecyclerView, o usuário é levado para o player
                 holder.root.setOnClickListener {

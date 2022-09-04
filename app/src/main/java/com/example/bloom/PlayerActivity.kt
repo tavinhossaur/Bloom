@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.request.RequestOptions
@@ -39,7 +40,6 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
 import java.io.File
 
-
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
 class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {
 
@@ -47,15 +47,15 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
     // Declaração de objetos/classes estáticas
     companion object{
-        lateinit var filaMusica : ArrayList<Musica> // Fila de reprodução das músicas
-        var posMusica : Int = 0 // Posição da música, valor padrão de 0
-        var tocando : Boolean = false // Variável para definir se a música está tocando ou não, por padrão: "false"
-        var musicaService : MusicaService? = null // Serviço da música, por padrão fica como null
-        var musicaAtual : String = "" // Variável que recebe o id da música atual tocando
-        var repetindo : Boolean = false // Variável para definir se a música está repetindo ou não, por padrão: "false"
-        var favoritado = false // Variável para definir se a música está favoritada ou não
-        var favIndex : Int = -1 // Variável indicadora da música favoritada
-        var telaCheia : Boolean = false
+        var filaMusica : ArrayList<Musica> = ArrayList() // Fila de reprodução das músicas
+        var posMusica : Int = 0                          // Posição da música, valor padrão de 0
+        var tocando : Boolean = false                    // Variável para definir se a música está tocando ou não, por padrão: "false"
+        var musicaService : MusicaService? = null        // Serviço da música, por padrão fica como null
+        var musicaAtual : String = ""                    // Variável que recebe o id da música atual tocando
+        var repetindo : Boolean = false                  // Variável para definir se a música está repetindo ou não, por padrão: "false"
+        var favoritado = false                           // Variável para definir se a música está favoritada ou não
+        var favIndex : Int = -1                          // Variável indicadora da música favoritada
+        var telaCheia : Boolean = false                  // Variável para definir se o player está em tela cheia ou não
         // var randomizando : Boolean = false
 
         // Variáveis para indentificar qual opção do timer o usuário selecionou
@@ -79,8 +79,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         setContentView(binding.root)
 
         iniciarLayout()
-
-        musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica)
 
         // FUNÇÕES DA ACTIVITY (TELA)
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
@@ -284,12 +282,30 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             }
         }
 
-        //
+        // Para deixar o player em tela cheia
         binding.btnFullScreen.setOnClickListener {
+            // Chama o método "telaCheia()"
             telaCheia()
         }
 
+        // Para mostrar a fila de reprodução atual
+        binding.btnFila.setOnClickListener {
+            // Chama o método "mostrarFilaAtual()"
+            mostrarFilaAtual()
+        }
+
+        // Quando clicar no card fecha ele e mostra as views escondidas
+        binding.btnFecharCard.setOnClickListener {
+            binding.btnEspecial.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.VISIBLE
+            binding.controlesBtnTpl.visibility = View.VISIBLE
+            binding.cardFilaRv.visibility = View.GONE
+        }
+
+        // Se o usuário clicar na tela
         binding.root.setOnClickListener {
+            // Também chama o método "telaCheia()"
+            // Caso telaCheia for true ele desliga a tela cheia e vice versa
             telaCheia()
         }
 
@@ -477,7 +493,20 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Marca como selecionado a caixa de texto do nome da música, para fazer a animação de correr o texto
         binding.tituloMusicaTpl.isSelected = true
 
+        // Usuário impedido de clicar na root inicialmente pois o player não estará em tela cheia
         binding.root.isEnabled = false
+
+        // Para otimização do RecyclerView, o seu tamanho é fixo,
+        // mesmo quando itens são adicionados ou removidos.
+        binding.filaRv.setHasFixedSize(true)
+        // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados"
+        // para depois potencialmente usá-los de novo (Reciclagem de itens).
+        binding.filaRv.setItemViewCacheSize(13)
+        // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
+        // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
+        binding.filaRv.layoutManager = LinearLayoutManager(this@PlayerActivity)
+        // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
+        binding.filaRv.isMotionEventSplittingEnabled = false
 
         // Para reprodução das músicas
         // Recebe os dados enviados ao ser enviado a tela pela intent
@@ -498,6 +527,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 filaMusica = ArrayList()
                 filaMusica.addAll(MainActivity.listaMusicaPesquisa)
                 carregarMusica()
+
+                // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+                // ao RecyclerView por meio do mesmo Adapter
+                musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+                // Setando o Adapter para este RecyclerView
+                binding.filaRv.adapter = musicaAdapter
             }
             // Caso o valor da string "classe" seja "Adapter", a fila de reprodução do player se torna um ArrayList
             // e então, será adicionado todas as músicas da lista de músicas da tela principal a ela,
@@ -510,6 +545,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 filaMusica = ArrayList()
                 filaMusica.addAll(MainActivity.listaMusicaMain)
                 carregarMusica()
+
+                // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+                // ao RecyclerView por meio do mesmo Adapter
+                musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+                // Setando o Adapter para este RecyclerView
+                binding.filaRv.adapter = musicaAdapter
             }
             // Caso o valor da string "classe" seja "Main", a fila de reprodução do player se torna um ArrayList
             // e então, será adicionado todas as músicas da lista de músicas da tela principal a ela junto de um método
@@ -524,6 +565,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 filaMusica.addAll(MainActivity.listaMusicaMain)
                 filaMusica.shuffle()
                 carregarMusica()
+
+                // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+                // ao RecyclerView por meio do mesmo Adapter
+                musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+                // Setando o Adapter para este RecyclerView
+                binding.filaRv.adapter = musicaAdapter
             }
             // Caso o valor da string "classe" seja "Favoritos", a fila de reprodução do player se torna um ArrayList
             // e então, será adicionado todas as músicas da lista de favoritos a ela,
@@ -538,6 +585,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 filaMusica = ArrayList()
                 filaMusica.addAll(FavoritosActivity.listaFavoritos)
                 carregarMusica()
+
+                // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+                // ao RecyclerView por meio do mesmo Adapter
+                musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+                // Setando o Adapter para este RecyclerView
+                binding.filaRv.adapter = musicaAdapter
             }
             // Caso o valor da string "classe" seja "FavoritosShuffle", a fila de reprodução do player se torna um ArrayList
             // e então, será adicionado todas as músicas da lista de favoritos a ela junto de um método
@@ -552,6 +605,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 filaMusica.addAll(FavoritosActivity.listaFavoritos)
                 filaMusica.shuffle()
                 carregarMusica()
+
+                // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+                // ao RecyclerView por meio do mesmo Adapter
+                musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+                // Setando o Adapter para este RecyclerView
+                binding.filaRv.adapter = musicaAdapter
             }
             // Caso o valor da string "classe" seja "ConteudoPlaylist", a fila de reprodução do player se torna um ArrayList
             // e então, será adicionado todas as músicas da lista da playlist específica a ela,
@@ -564,6 +623,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 filaMusica = ArrayList()
                 filaMusica.addAll(PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist)
                 carregarMusica()
+
+                // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+                // ao RecyclerView por meio do mesmo Adapter
+                musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+                // Setando o Adapter para este RecyclerView
+                binding.filaRv.adapter = musicaAdapter
             }
             // Caso o valor da string "classe" seja "ConteudoPlaylistRandom", a fila de reprodução do player se torna um ArrayList
             // e então, será adicionado todas as músicas da lista da playlist específica a ela junto de um método
@@ -578,6 +643,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 filaMusica.addAll(PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist)
                 filaMusica.shuffle()
                 carregarMusica()
+
+                // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+                // ao RecyclerView por meio do mesmo Adapter
+                musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+                // Setando o Adapter para este RecyclerView
+                binding.filaRv.adapter = musicaAdapter
             }
             // Caso o valor da string "classe" seja "MiniPlayer", apenas carregue os dados da música,
             // assim nenhuma alteração no media player é feito e o usuário é jogado para tela do player.
@@ -600,6 +671,11 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         } else {
             binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
         }
+        // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+        // ao RecyclerView por meio do mesmo Adapter
+        musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+        // Setando o Adapter para este RecyclerView
+        binding.filaRv.adapter = musicaAdapter
     }
 
     // Método para o botão play e pause
@@ -825,6 +901,14 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Adiciona uma nova flag para colocar a activity em tela cheia
             window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
         }
+    }
+
+    // Método para mostrar o card com a fila de reprodução atual
+    private fun mostrarFilaAtual(){
+        binding.btnEspecial.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+        binding.controlesBtnTpl.visibility = View.GONE
+        binding.cardFilaRv.visibility = View.VISIBLE
     }
 
     // Método quando o serviço se conectar ao player

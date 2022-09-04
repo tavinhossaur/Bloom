@@ -36,18 +36,20 @@ class MainActivity : AppCompatActivity() {
 
     // Declaração de objetos/classes estáticas para poder utilizar
     companion object{
-        lateinit var listaMusicaMain : ArrayList<Musica> // Lista de músicas da tela principal
+        lateinit var listaMusicaMain : ArrayList<Musica>     // Lista de músicas da tela principal
         lateinit var listaMusicaPesquisa : ArrayList<Musica> // Lista de músicas que aparecerá na pesquisa
         @SuppressLint("StaticFieldLeak")
-        lateinit var binding : ActivityMainBinding // binding é a variável do ViewBinding para ligar as views ao código
-        var pesquisando : Boolean = false // Variável para indentificar se o usuário está fazendo uma pesquisa de músicas
-        var ordem : Int = 0 // Variável que leva um valor para indicar qual ordem a lista de músicas está ordenada
-        val listaOrdens = arrayOf( // Lista de ordenações
-            // Por nome de artista
-            MediaStore.Audio.Media.ARTIST,
+        lateinit var binding : ActivityMainBinding           // binding é a variável do ViewBinding para ligar as views ao código
+        var pesquisando : Boolean = false                    // Variável para indentificar se o usuário está fazendo uma pesquisa de músicas
+        var ordem : Int = 0                                  // Variável que leva um valor para indicar qual ordem a lista de músicas está ordenada
+        val listaOrdens = arrayOf(
+            // Lista de ordenações
             // para a organização alfabética, está sendo utilizado o código em SQL "COLLATE NOCASE ASC", sendo COLLATE a cláusula que
             // define uma ordenação, essa ordenação recebe como argumentos o "NOCASE" que torna a ordenação case-insensitive e "ASC" seria
             // "ascendente" ou seja, alfabéticamente de A a Z.
+            // Por nome de artista com "COLLATE NOCASO ASC"
+            MediaStore.Audio.Media.ARTIST + " COLLATE NOCASE ASC",
+            // Por título da música com "COLLATE NOCASO ASC"
             MediaStore.Audio.Media.DISPLAY_NAME + " COLLATE NOCASE ASC",
             // Pela data adicionada de forma decrescente, ou seja, o mais recente primeiro
             MediaStore.Audio.Media.DATE_ADDED + " DESC",
@@ -101,6 +103,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Abrir tela de configurações
         binding.configsBtn.setOnClickListener {
             startActivity(Intent(this, ConfiguracoesActivity::class.java))
         }
@@ -134,7 +137,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.filtroBtn.setOnClickListener {
             binding.filtroBtn.isEnabled = false
-            var ordemAtual = ordem
+            var ordemAtual: Int
             OptionsSheet().show(this) {
                 // Estilo do sheet (BottomSheet)
                 style(SheetStyle.BOTTOM_SHEET)
@@ -160,7 +163,7 @@ class MainActivity : AppCompatActivity() {
                 // Torna o objeto clicável novamente quando o diálogo for fechado
                 onClose { binding.filtroBtn.isEnabled = true }
                 // Botão confirmar do BottomSheet
-                onPositive { index: Int, option: Option ->
+                onPositive { index: Int, _: Option ->
                     // Quando o index (selecionado)
                     when(index){
                         // For "0" (Por artista)
@@ -259,7 +262,7 @@ class MainActivity : AppCompatActivity() {
         // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.musicasRv.layoutManager = LinearLayoutManager(this@MainActivity)
 
-        // Criando uma variável do Adapter com o contexto (tela) e a lista de músicas que será adicionada
+        // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
         // ao RecyclerView por meio do mesmo Adapter
         musicaAdapter = MusicaAdapter(this@MainActivity, listaMusicaMain)
         // Setando o Adapter para este RecyclerView
@@ -438,11 +441,10 @@ class MainActivity : AppCompatActivity() {
                 listaMusicaMain = procurarMusicas()
                 musicaAdapter.atualizarLista(listaMusicaMain)
             }
-
-            // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
-            if (PlayerActivity.musicaService != null) {
-                binding.miniPlayer.visibility = View.VISIBLE
-            }
+        }
+        // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
+        if (PlayerActivity.musicaService != null) {
+            binding.miniPlayer.visibility = View.VISIBLE
         }
     }
 }
