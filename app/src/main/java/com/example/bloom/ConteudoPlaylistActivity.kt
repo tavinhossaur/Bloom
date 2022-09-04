@@ -135,10 +135,8 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
                                 PlaylistsActivity.playlists.modelo[posPlaylistAtual].nome = nomePlaylist
                                 binding.nomePlaylistCpl.text = nomePlaylist
                             }
-                            // Cor do botão "cancelar"
+                            // Cor do botão negativo
                             negativeButtonColorRes(R.color.grey3)
-                            // Botão cancelar do BottomSheet
-                            onNegative { dismiss() }
                         }
                         true
                     }
@@ -179,11 +177,8 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
                                     Toast.makeText(context, "A playlist já está limpa", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            // Botão negativo que apenas fecha o diálogo
+                            // Cor do botão negativo
                             negativeButtonColorRes(R.color.grey3)
-                            onNegative {
-                                dismiss()
-                            }
                         }
                         // Mostra o AlertDialog
                         permSheet.show()

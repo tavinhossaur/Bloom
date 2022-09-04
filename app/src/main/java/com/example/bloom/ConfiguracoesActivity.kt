@@ -172,10 +172,8 @@ class ConfiguracoesActivity : AppCompatActivity() {
                         Toast.makeText(this@ConfiguracoesActivity, "Você precisa estar conectado a internet", Toast.LENGTH_SHORT).show()
                     }
                 }
-                // Cor do botão "cancelar"
+                // Cor do botão negativo
                 negativeButtonColorRes(R.color.grey3)
-                // Botão cancelar do BottomSheet
-                onNegative { dismiss() }
             }
         }
     }

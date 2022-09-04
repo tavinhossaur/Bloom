@@ -8,6 +8,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.bloom.databinding.PlaylistViewLayoutBinding
 import com.maxkeppeler.sheets.core.IconButton
@@ -48,14 +49,25 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
             startActivity(context, playlistIntent, null)
         }
 
-        if (PlaylistsActivity.playlists.modelo[posicao].playlist.size > 0){
+        // Se a playlist não estiver vazia
+        if (PlaylistsActivity.playlists.modelo[posicao].playlist.isNotEmpty()){
             // Utilizando Glide, Procura na lista de músicas a posição da música em específico
             // e retorna sua imagem de álbum no lugar da ImageView da mesma
             Glide.with(context)
                 // Carrega a posição da música e a uri da sua imagem
                 .load(PlaylistsActivity.playlists.modelo[posicao].playlist[0].imagemUri)
                 // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                // junto do método centerCrop() para ajustar a imagem dentro da view
                 .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                // Alvo da aplicação da imagem
+                .into(holder.imagem)
+        // Caso a playlist esteja vazia
+        }else{
+            Glide.with(context)
+                // Carrega a posição da imagem placeholder
+                .load(R.drawable.bloom_lotus_icon_grey)
+                // Faz a aplicação da imagem com o método centerCrop() para ajustar a imagem dentro da view
+                .apply(RequestOptions().centerCrop())
                 // Alvo da aplicação da imagem
                 .into(holder.imagem)
         }
@@ -74,6 +86,8 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                     // Editar playlist
                     R.id.edit_playlist -> {
                         // Cria e mostra a InputSheet
+                        // Lista de nomes de playlists para hint da input no BottomSheetDialog
+                        val nomespl = arrayOf("Músicas para viagem...", "Músicas para banho...", "Músicas para relaxar...", "Músicas para estudar...", "Músicas para liberar a raiva...")
                         InputSheet().show(context) {
                             // Estilo do sheet (BottomSheet)
                             style(SheetStyle.BOTTOM_SHEET)
@@ -88,7 +102,7 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                                 required(true)
                                 drawable(R.drawable.ic_round_folder_24)
                                 label("Insira o novo nome da playlist")
-                                hint("Músicas para tomar banho...")
+                                hint(nomespl.random())
                             })
                             // Cor do botão "confirmar"
                             positiveButtonColorRes(R.color.purple1)
@@ -99,11 +113,8 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                                 PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].nome = nomePlaylist
                                 holder.nome.text = nomePlaylist
                             }
-
-                            // Cor do botão "cancelar"
+                            // Cor do botão negativo
                             negativeButtonColorRes(R.color.grey3)
-                            // Botão cancelar do BottomSheet
-                            onNegative { dismiss() }
                         }
                         true
                     }
@@ -135,11 +146,8 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                                     PlaylistsActivity.binding.avisoPlaylists.visibility = View.VISIBLE
                                 }
                             }
-                            // Botão negativo que apenas fecha o diálogo
+                            // Cor do botão negativo
                             negativeButtonColorRes(R.color.grey3)
-                            onNegative {
-                                dismiss()
-                            }
                         }
                         // Mostra o AlertDialog
                         permSheet.show()

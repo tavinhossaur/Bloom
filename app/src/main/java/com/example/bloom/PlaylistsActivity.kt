@@ -13,6 +13,8 @@ import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputEditText
+import java.lang.Math.random
+import java.util.Collections.shuffle
 
 class PlaylistsActivity : AppCompatActivity() {
 
@@ -86,6 +88,12 @@ class PlaylistsActivity : AppCompatActivity() {
         // Cria e mostra a InputSheet
         // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
         binding.fabCriarPl.isEnabled = false
+
+        // Lista de nomes de criador para hint da input no BottomSheetDialog
+        val nomescr = arrayOf("David Bowie...", "Freddie Mercury...", "Michael Jackson...", "Elton John...", "Pat Benatar...", "Whitney Houston...", "Bonnie Tyler...", "Cindy Lauper...")
+        // Lista de nomes de playlists para hint da input no BottomSheetDialog
+        val nomespl = arrayOf("Músicas para viagem...", "Músicas para banho...", "Músicas para relaxar...", "Músicas para estudar...", "Músicas para liberar a raiva...")
+
         InputSheet().show(this@PlaylistsActivity) {
             // Estilo do sheet (BottomSheet)
             style(SheetStyle.BOTTOM_SHEET)
@@ -100,12 +108,13 @@ class PlaylistsActivity : AppCompatActivity() {
                 required(true)
                 drawable(R.drawable.ic_round_folder_24)
                 label("Insira o nome da playlist")
-                hint("Músicas para viagem...")
+                hint(nomespl.random())
             })
             with(InputEditText("nome_criador") {
-                required(false)
+                label("Insira seu nome")
+                required(true)
                 drawable(R.drawable.ic_round_person_24)
-                hint("Nome do criador (Opcional)")
+                hint(nomescr.random())
             })
             // Torna o objeto clicável novamente quando o diálogo for fechado
             onClose { binding.fabCriarPl.isEnabled = true }
@@ -120,11 +129,8 @@ class PlaylistsActivity : AppCompatActivity() {
                 // Passa ambas para o método adicionar playlist
                 adicionarPlaylist(nomePlaylist, nomeCriador)
             }
-
-            // Cor do botão "cancelar"
+            // Cor do botão negativo
             negativeButtonColorRes(R.color.grey3)
-            // Botão cancelar do BottomSheet
-            onNegative { dismiss() }
         }
     }
 
@@ -160,7 +166,6 @@ class PlaylistsActivity : AppCompatActivity() {
             playlists.modelo.add(novaPlaylist)
             // E atualiza a lista de playlists
             playlistsAdapter.atualizarLista()
-
             // Muda a visibilidade dos itens quando houver ao menos uma playlist na lista
             // (a verificação disso não fica aqui)
             binding.playlistsRv.visibility = View.VISIBLE

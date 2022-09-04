@@ -56,6 +56,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         var favoritado = false                           // Variável para definir se a música está favoritada ou não
         var favIndex : Int = -1                          // Variável indicadora da música favoritada
         var telaCheia : Boolean = false                  // Variável para definir se o player está em tela cheia ou não
+        var mudouMusica : Boolean = true
         // var randomizando : Boolean = false
 
         // Variáveis para indentificar qual opção do timer o usuário selecionou
@@ -137,15 +138,14 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                                 arquivo.delete()
                                 // Remove a música da lista
                                 filaMusica.remove(musica)
+                                // Atualiza a tela (lista da fila de reprodução)
+                                musicaAdapter.atualizarLista(filaMusica)
                                 // Carrega o player novamente com a próxima música automaticamente pois a anterior foi removida
                                 carregarMusica()
                                 criarPlayer()
                             }
                             // Botão negativo que apenas fecha o diálogo
                             negativeButtonColorRes(R.color.grey3)
-                            onNegative {
-                                dismiss()
-                            }
                         }
                         // Mostra o AlertDialog
                         permSheet.show()
@@ -809,12 +809,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                     }
                 }
             }
-            // Cor do botão "cancelar"
+            // Cor do botão negativo
             negativeButtonColorRes(R.color.grey3)
-            // Botão cancelar do BottomSheet
-            onNegative {
-                dismiss()
-            }
         }
     }
 

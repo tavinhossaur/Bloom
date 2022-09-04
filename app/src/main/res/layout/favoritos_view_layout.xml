@@ -9,7 +9,7 @@
 
     <!-- Card que contém a foto de capa da música -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/card_img_musicafav_view"
+        android:id="@+id/card_img_musica_fav"
         style="@style/CardViewShadow"
         android:layout_width="55dp"
         android:layout_height="55dp"
@@ -21,8 +21,8 @@
 
         <!-- Imagem da música -->
         <ImageView
+            android:id="@+id/img_musica_fav"
             android:forceDarkAllowed="false"
-            android:id="@+id/img_musicafav_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
@@ -34,13 +34,13 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginHorizontal="3dp"
-        android:layout_toStartOf="@id/fav_btn"
-        android:layout_toEndOf="@id/card_img_musicafav_view"
+        android:layout_toStartOf="@id/btn_fav"
+        android:layout_toEndOf="@id/card_img_musica_fav"
         android:orientation="vertical">
 
         <!-- Título da música -->
         <TextView
-            android:id="@+id/titulo_musicafav_view"
+            android:id="@+id/titulo_musica_fav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
@@ -51,7 +51,7 @@
 
         <!-- Artista da música -->
         <TextView
-            android:id="@+id/artista_musicafav_view"
+            android:id="@+id/artista_musica_fav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
@@ -64,11 +64,11 @@
 
     <!-- Ícone de sinalização de reprodução da música -->
     <ImageView
-        android:id="@+id/fav_btn"
+        android:id="@+id/btn_fav"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="5dp"
-        android:layout_toStartOf="@id/tempo_musicafav_view"
+        android:layout_toStartOf="@id/tempo_musica_fav"
         android:gravity="center"
         android:src="@drawable/ic_round_favorite_24"
         android:visibility="visible"
@@ -76,11 +76,11 @@
 
     <!-- Duração da música -->
     <TextView
-        android:id="@+id/tempo_musicafav_view"
+        android:id="@+id/tempo_musica_fav"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="10dp"
-        android:layout_toStartOf="@id/btn_extrafav_view"
+        android:layout_toStartOf="@id/btn_extra_fav"
         android:gravity="center"
         android:text="00:00"
         android:textAppearance="?android:attr/textAppearanceSmall"
@@ -88,7 +88,7 @@
 
     <!-- Botão de opções extras -->
     <ImageView
-        android:id="@+id/btn_extrafav_view"
+        android:id="@+id/btn_extra_fav"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"

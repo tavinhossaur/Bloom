@@ -199,12 +199,8 @@ class MainActivity : AppCompatActivity() {
                     }
                     startActivity(Intent(this@MainActivity, MainActivity::class.java))
                 }
-                // Cor do botão "cancelar"
+                // Cor do botão negativo
                 negativeButtonColorRes(R.color.grey3)
-                // Botão cancelar do BottomSheet
-                onNegative {
-                    dismiss()
-                }
             }
         }
     }

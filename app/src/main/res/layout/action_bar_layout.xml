@@ -10,10 +10,10 @@
         android:id="@+id/title_action_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bem-vindo ao Bloom!"
+        android:text="Olá, bem-vindo ao Bloom!"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textSize="18sp"
+        android:textSize="22sp"
         android:textColor="@color/white" />
 
 </LinearLayout>

@@ -61,16 +61,6 @@ class FavoritosActivity : AppCompatActivity() {
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
         binding.btnVoltarFav.setOnClickListener {finish()}
 
-        // Caso não tenha nenhuma música favoritada ainda
-        if (listaFavoritos.size < 1){
-            // Esconde o botão de randomizar as músicas favoritas
-            binding.fabFavRandom.visibility = View.INVISIBLE
-            // Esconde o RecyclerView das músicas favoritas
-            binding.favoritosRv.visibility = View.GONE
-            // E mostra o aviso dizendo que não há músicas favoritas
-            binding.avisoFavoritas.visibility = View.VISIBLE
-        }
-
         binding.fabFavRandom.setOnClickListener {
             val favIntent = Intent(this@FavoritosActivity, PlayerActivity::class.java)
             // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
@@ -89,5 +79,19 @@ class FavoritosActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        favoritosAdapter.atualizarFavoritos(listaFavoritos)
+        // Caso não tenha nenhuma música favoritada ainda
+        if (listaFavoritos.size < 1){
+            // Esconde o botão de randomizar as músicas favoritas
+            binding.fabFavRandom.visibility = View.INVISIBLE
+            // Esconde o RecyclerView das músicas favoritas
+            binding.favoritosRv.visibility = View.GONE
+            // E mostra o aviso dizendo que não há músicas favoritas
+            binding.avisoFavoritas.visibility = View.VISIBLE
+        }
     }
 }

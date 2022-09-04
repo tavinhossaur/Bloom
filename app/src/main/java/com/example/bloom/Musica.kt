@@ -77,14 +77,13 @@ fun retornarImgMusica(caminho: String): ByteArray?{
 
 // Método que checa se uma música que foi excluída está presente em alguma playlist, e apaga ela
 // esse código é necessário pois o SharedPreferences mantém os dados da música mesmo ela tendo sido excluída.
-fun checarMusicasApagadas(playlist: ArrayList<Musica>) : ArrayList<Musica>{
-    playlist.forEachIndexed { index, musica ->
-        val arquivo = File(musica.caminho)
-        if (!arquivo.exists()){
-            playlist.removeAt(index)
-        }
+fun checarMusicasApagadas(lista: ArrayList<Musica>): ArrayList<Musica>{
+    lista.forEachIndexed { index, musica ->
+        val file = File(musica.caminho)
+        if(!file.exists())
+            lista.removeAt(index)
     }
-    return playlist
+    return lista
 }
 
 // Método para alterar a posição da música e o modo de reprodução de forma correta evitando crashes e bugs

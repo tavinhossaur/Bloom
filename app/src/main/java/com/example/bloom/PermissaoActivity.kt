@@ -87,10 +87,9 @@ class PermissaoActivity : AppCompatActivity() {
                             data = Uri.fromParts("package", packageName, null)
                         })
                     }
-
                     // Botão negativo que encerra o aplicativo
                     negativeButtonColorRes(R.color.grey3)
-                    onNegative("Cancelar") {
+                    onNegative {
                         finish()
                     }
                 }
