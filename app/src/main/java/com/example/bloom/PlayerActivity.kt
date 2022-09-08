@@ -56,7 +56,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         var favoritado = false                           // Variável para definir se a música está favoritada ou não
         var favIndex : Int = -1                          // Variável indicadora da música favoritada
         var telaCheia : Boolean = false                  // Variável para definir se o player está em tela cheia ou não
-        var mudouMusica : Boolean = true
         // var randomizando : Boolean = false
 
         // Variáveis para indentificar qual opção do timer o usuário selecionou
@@ -345,12 +344,13 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 // Verificará se foi mudado pelo usuário, e então irá para o lugar onde foi clicado (progresso)
                 if (fromUser) {
                     musicaService!!.mPlayer!!.seekTo(progresso)
+                    setBtnsNotify()
                 }
             }
             // Quando o usuário tocar no indicador ou na SeekBar
-            override fun onStartTrackingTouch(p0: SeekBar?) = Unit
+            override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
             // Quando o usuário soltar o indicador ou a SeekBar
-            override fun onStopTrackingTouch(p0: SeekBar?) = Unit
+            override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
         })
     }
 

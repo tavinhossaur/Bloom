@@ -7,11 +7,10 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.os.Binder
-import android.os.Handler
-import android.os.IBinder
-import android.os.Looper
+import android.os.*
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
 
 // Um service é um componente do aplicativo que pode realizar operações longas e não fornece uma interface do usuário.
@@ -103,7 +102,7 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
             .setContentText(PlayerActivity.filaMusica[PlayerActivity.posMusica].artista + " ● " + PlayerActivity.filaMusica[PlayerActivity.posMusica].album)
             // Ícone pequeno da barra de notificação
             .setSmallIcon(R.drawable.ic_round_favorite_24)
-            // Ícone grande da logo do app na barra de notificação
+            // Imagem da música atual na barra de notificação
             .setLargeIcon(imagemNotificacao)
             // Define o estilo da notificação, como o estilo padrão de notificações de um media player
             // juntamente de um token que representa a música atual sendo reproduzida para mostrá-la na notificação
@@ -125,6 +124,67 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
         // Toda vez que ocorre a troca de músicas automáticamente, a verificação de favoritos ocorre para não
         // dessincronizar o botão de favoritos da barra de notificação.
         PlayerActivity.favIndex = checarFavoritos(PlayerActivity.filaMusica[PlayerActivity.posMusica].id)
+
+        // Constante da velocidade da seekbar da barra da notificação
+        // Se estiver tocando então a velocidade é de 1F (1 float) e se não estiver tocando 0F
+        val velocidadeSB = if(PlayerActivity.tocando) 1F else 0F
+
+        // setMetadata serve para atualizar as informações da barra de notificação
+        // esse código serve para mostrar a duração da música na notificação
+        sessaoMusica.setMetadata(MediaMetadataCompat.Builder()
+            // METADATA_KEY_DURATION retorna a duração da música atual
+            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, mPlayer!!.duration.toLong())
+            .build())
+
+        // Criando a SeekBar da barra de notificação
+        val posicaoSeekBar = PlaybackStateCompat.Builder()
+            // setState é referente ao estado (STATE_PLAYING) a posição atual da música.
+            // velocidadeSB é a velocidade em que ela atualiza (se move)
+            .setState(PlaybackStateCompat.STATE_PLAYING, mPlayer!!.currentPosition.toLong(), velocidadeSB)
+            // Define uma ação para a seekBar (seekTo é o método de arrastar a bolinha da seekBar para alterar a decorrência da música)
+            .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+            .build()
+
+        // Define o estado do playback (seekBar)
+        sessaoMusica.setPlaybackState(posicaoSeekBar)
+        // Define um callback para a barra de notificação
+        sessaoMusica.setCallback(object: MediaSessionCompat.Callback(){
+            // Chama essa função quando o botão do fone do usuário for clicado
+            override fun onMediaButtonEvent(clique: Intent?): Boolean {
+                // Se estiver tocando a música quando for clicado
+                if(PlayerActivity.tocando){
+                    // Então pausa a música
+                    PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
+                    MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
+                    PlayerActivity.tocando = false
+                    mPlayer!!.pause()
+                    setBtnsNotify()
+                // Caso contrário (música pausada)
+                }else{
+                    // Então toca a música
+                    PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
+                    MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
+                    PlayerActivity.tocando = true
+                    mPlayer!!.start()
+                    setBtnsNotify()
+                }
+                // Retorna o clique do usuário
+                return super.onMediaButtonEvent(clique)
+            }
+            // Método onSeekTo para mudar o tempo da música
+            override fun onSeekTo(posicao: Long) {
+                super.onSeekTo(posicao)
+                mPlayer!!.seekTo(posicao.toInt())
+                // Cria um novo estado para o playback (posição para a seekbar)
+                val novaPosicaoSeekBar = PlaybackStateCompat.Builder()
+                    .setState(PlaybackStateCompat.STATE_PLAYING, mPlayer!!.currentPosition.toLong(), velocidadeSB)
+                    .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
+                    .build()
+                // Define o estado do playback (seekBar)
+                sessaoMusica.setPlaybackState(novaPosicaoSeekBar)
+            }
+        })
+
         // Coloca a notificação em segundo plano e a inicia
         startForeground(13, notificacao)
     }
@@ -196,18 +256,12 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
             }
             PlayerActivity.tocando = false
             mPlayer!!.pause()
-        // Caso contrário (foco não mudou, ou voltou para o foco normal depois de ter tocado outro áudio, ou uma chamada tenha sido encerrada)
-        }else{
-            // Então retorne a música
-            PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
-            MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
-            if(PlayerActivity.favoritado){
-                mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_24)
-            }else{
-                mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_border_24)
-            }
-            PlayerActivity.tocando = true
-            mPlayer!!.start()
         }
+    }
+
+    // Utilizando START_STICKY para não encerrar ou pausar a reprodução de músicas quando o smartphone
+    // estiver com a tela apagada.
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_STICKY
     }
 }
