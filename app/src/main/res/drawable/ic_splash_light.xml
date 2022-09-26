@@ -6,7 +6,7 @@
         android:width="900dp">
     </item>
     <item
-        android:drawable="@drawable/bloom_logo_app"
+        android:drawable="@drawable/bloom_logo_app_light"
         android:height="150dp"
         android:width="150dp"
         android:bottom="150dp"

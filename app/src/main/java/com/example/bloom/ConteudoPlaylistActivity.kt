@@ -3,6 +3,7 @@ package com.example.bloom
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.Gravity
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,10 +33,11 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         var posPlaylistAtual : Int = -1 // Posição da playlist selecionada
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityConteudoPlaylistBinding // binding é a variável do ViewBinding para ligar as views ao código
+        var escuroContPl : Boolean = false // Variável para definir se o modo escuro está ligado ou desligado
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        modoEscuro()
+        setTheme(R.style.Theme_BloomNoActionBar)
         super.onCreate(savedInstanceState)
         // Inicialização do binding
         binding = ActivityConteudoPlaylistBinding.inflate(layoutInflater)
@@ -54,9 +57,11 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         // Para otimização do RecyclerView, o seu tamanho é fixo,
         // mesmo quando itens são adicionados ou removidos.
         binding.musicasPlaylistRv.setHasFixedSize(true)
-        // Para otimização do RecyclerView, 10 itens fora da tela serão "segurados"
+        // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados"
         // para depois potencialmente usá-los de novo (Reciclagem de itens).
-        binding.musicasPlaylistRv.setItemViewCacheSize(10)
+        binding.musicasPlaylistRv.setItemViewCacheSize(13)
+        // Desativa o nested scrolling para a rolagem ser mais suave
+        binding.musicasPlaylistRv.isNestedScrollingEnabled = false
         // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
         // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.musicasPlaylistRv.layoutManager = LinearLayoutManager(this@ConteudoPlaylistActivity)
@@ -113,12 +118,10 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
                         InputSheet().show(this) {
                             // Estilo do sheet (BottomSheet)
                             style(SheetStyle.BOTTOM_SHEET)
-                            // Altera o botão de fechar o dialogo
-                            closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                             // Título do BottomSheetDialog
                             title("Editar a playlist")
-                            // Cor do título
-                            titleColorRes(R.color.purple1)
+                            // Mostra o botão de fechar o BottomSheetDialog
+                            displayCloseButton(true)
                             // Conteúdo da sheet (Edit Texts)
                             with(InputEditText("nome_playlist") {
                                 required(true)
@@ -148,8 +151,6 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
                             style(SheetStyle.DIALOG)
                             // Título do AlertDialog
                             title("Deseja mesmo limpar a playlist?")
-                            // Cor do título
-                            titleColorRes(R.color.purple1)
                             // Mensagem do AlertDialog
                             content("Remover todas as músicas da playlist ${PlaylistsActivity.playlists.modelo[posPlaylistAtual].nome}?")
                             // Botão positivo que exclui a playlist em questão
@@ -190,6 +191,17 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
             // Mostra o menu popup
             popup.show()
         }
+
+        // Ajuste de cores para o modo escuro do Android
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
+            escuroContPl = true
+            binding.btnVoltarCpl.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.btnExtraCpl.setImageResource(R.drawable.ic_baseline_more_vert_white_24)
+            binding.nomePlaylistCpl.setTextColor(ContextCompat.getColor(this, R.color.grey2))
+            binding.cardImgCpl.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
+            binding.btnAddMusicas.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
+            binding.fabRandomCpl.setBackgroundColor(ContextCompat.getColor(this, R.color.black3))
+        }else {escuroContPl = false }
     }
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
@@ -224,15 +236,5 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         val jsonStringPlaylists = GsonBuilder().create().toJson(PlaylistsActivity.playlists)
         editor.putString("Lista de playlists", jsonStringPlaylists)
         editor.apply()
-    }
-
-    // Método para deixar o aplicativo no seu modo padrão
-    private fun modoEscuro(){
-        application.setTheme(R.style.Theme_BloomNoActionBar)
-        setTheme(R.style.Theme_BloomNoActionBar)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
     }
 }

@@ -2,20 +2,14 @@ package com.example.bloom
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
-import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivityFavoritosBinding
-
 
 class FavoritosActivity : AppCompatActivity() {
 
@@ -25,11 +19,12 @@ class FavoritosActivity : AppCompatActivity() {
         var listaFavoritos : ArrayList<Musica> = ArrayList() // Lista de músicas favoritadas
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityFavoritosBinding // binding é a variável do ViewBinding para ligar as views ao código
+        var escuroFav : Boolean = false // Variável para definir se o modo escuro está ligado ou desligado
     }
 
     // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
-        modoEscuro()
+        setTheme(R.style.Theme_BloomNoActionBar)
         super.onCreate(savedInstanceState)
 
         // Inicialização do binding
@@ -38,6 +33,7 @@ class FavoritosActivity : AppCompatActivity() {
         // no caso, a ActivityFavoritosBinding (activity_favoritos.xml)
         setContentView(binding.root)
 
+        // Faz a checagem de músicas apagadas que poderiam estar favoritadas
         listaFavoritos = checarMusicasApagadas(listaFavoritos)
 
         // Para otimização do RecyclerView, o seu tamanho é fixo,
@@ -46,6 +42,8 @@ class FavoritosActivity : AppCompatActivity() {
         // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados"
         // para depois potencialmente usá-los de novo (Reciclagem de itens).
         binding.favoritosRv.setItemViewCacheSize(13)
+        // Desativa o nested scrolling para a rolagem ser mais suave
+        binding.favoritosRv.isNestedScrollingEnabled = false
         // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
         // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.favoritosRv.layoutManager = LinearLayoutManager(this@FavoritosActivity)
@@ -61,6 +59,7 @@ class FavoritosActivity : AppCompatActivity() {
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
         binding.btnVoltarFav.setOnClickListener {finish()}
 
+        // Quando clicado no botão de randomizar músicas da tela de favoritos
         binding.fabFavRandom.setOnClickListener {
             val favIntent = Intent(this@FavoritosActivity, PlayerActivity::class.java)
             // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
@@ -69,16 +68,15 @@ class FavoritosActivity : AppCompatActivity() {
             favIntent.putExtra("classe", "FavoritosRandom")
             startActivity(favIntent)
         }
-    }
 
-    // Método para deixar o aplicativo no seu modo padrão
-    private fun modoEscuro(){
-        application.setTheme(R.style.Theme_BloomNoActionBar)
-        setTheme(R.style.Theme_BloomNoActionBar)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
+        // Ajuste de cores para o modo escuro do Android
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES) {
+            escuroFav = true
+            binding.btnVoltarFav.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.tituloActivityFav.setTextColor(ContextCompat.getColor(this, R.color.grey2))
+            binding.barFav.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
+            binding.fabFavRandom.setBackgroundColor(ContextCompat.getColor(this, R.color.black3))
+        }else {escuroFav = false}
     }
 
     override fun onResume() {

@@ -2,6 +2,7 @@ package com.example.bloom
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,13 +24,26 @@ class MiniPlayerFragment : Fragment(){
     }
 
     // Criação da view do miniplayer
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val viewMiniPlayer = inflater.inflate(R.layout.fragment_mini_player, container, false)
         // Inicialização do binding
         binding = FragmentMiniPlayerBinding.bind(viewMiniPlayer)
         binding.root.visibility = View.INVISIBLE
 
-        binding.root.setOnClickListener {
+        // Ajuste de cores para o modo escuro do Android
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_NO){
+            binding.root.setBackgroundResource(R.drawable.miniplayer_style)
+            binding.root.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.white)
+        }else{
+            binding.root.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.white)
+            binding.tituloMusicaMp.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey2))
+            binding.btnFavMp.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.btnProxMp.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+        }
+
+        // Quando clicado no miniplayer o usuário é levado para o player
+        binding.miniplayerView.setOnClickListener {
             val miniPlayerIntent = Intent(requireContext(), PlayerActivity::class.java)
             // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
             miniPlayerIntent.putExtra("indicador", PlayerActivity.posMusica)
@@ -63,18 +77,6 @@ class MiniPlayerFragment : Fragment(){
             }
         }
 
-        // Ao clicar no botão play/pause, chama o método para tocar ou pausar a música
-        binding.btnPpMp.setOnClickListener {
-            // Se estiver tocando, então pause e torne possível a exclusão da barra de notificação
-            if(PlayerActivity.tocando){
-                pausar()
-                PlayerActivity.musicaService!!.stopForeground(false)
-                // Caso contrário (Não estiver tocando), então toque a música
-            }else{
-                tocar()
-            }
-        }
-
         // Ao clicar no botão "next", chama o método trocar música
         // com valor "true" para o Boolean "proximo"
         binding.btnProxMp.setOnClickListener {
@@ -101,16 +103,6 @@ class MiniPlayerFragment : Fragment(){
             binding.tituloMusicaMp.isSelected = true
             // e carregue os dados da música nele
             carregarMusica()
-
-            // Se estiver tocando
-            if (PlayerActivity.tocando){
-                // Ícone de pausa
-                binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
-                // Caso contrário (se não estiver tocando)
-            }else{
-                // Ícone de play
-                binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
-            }
         }
     }
 
@@ -121,7 +113,7 @@ class MiniPlayerFragment : Fragment(){
             // Carrega a posição da música e a uri da sua imagem
             .load(PlayerActivity.filaMusica[PlayerActivity.posMusica].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-            .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
             // Alvo da aplicação da imagem
             .into(binding.imgMusicaMp)
 
@@ -129,6 +121,7 @@ class MiniPlayerFragment : Fragment(){
         binding.tituloMusicaMp.text = PlayerActivity.filaMusica[PlayerActivity.posMusica].titulo
         binding.artistaMusicaMp.text = PlayerActivity.filaMusica[PlayerActivity.posMusica].artista
 
+        // Verica se a música carregada está favoritada
         if (favoritado) {
             binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_miniplayer_24)
         } else{
@@ -148,22 +141,5 @@ class MiniPlayerFragment : Fragment(){
             PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_border_24)
         }
         PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
-        binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
     }
-
-    // Método para pausar a música pela barra de notificação
-    private fun pausar(){
-        // Pausa a música e muda o ícone do botão na barra e no player
-        PlayerActivity.tocando = false
-        checarFavoritos(PlayerActivity.filaMusica[PlayerActivity.posMusica].id)
-        PlayerActivity.musicaService!!.mPlayer!!.pause()
-        if (favoritado) {
-            PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
-        } else{
-            PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_border_24)
-        }
-        PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
-        binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
-    }
-
 }

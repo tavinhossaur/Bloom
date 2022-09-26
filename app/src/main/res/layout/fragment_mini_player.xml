@@ -6,20 +6,27 @@
     android:layout_width="370dp"
     android:layout_height="60dp"
     android:layout_gravity="center_horizontal"
-    android:clickable="true"
-    android:gravity="center"
-    android:orientation="horizontal"
-    android:background="@drawable/miniplayer_style"
     tools:context=".MiniPlayerFragment">
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/miniplayer_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
         <!-- CardView da imagem da música (Moldura) -->
-        <androidx.cardview.widget.CardView
-            style="@style/CardViewShadow"
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_musica_mp"
+            style="@style/CardViewShadow"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_centerVertical="true"
-            android:background="@drawable/miniplayer_style"
             app:cardCornerRadius="0dp">
 
             <!-- Imagem da música -->
@@ -27,9 +34,10 @@
                 android:id="@+id/img_musica_mp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:forceDarkAllowed="false"
                 android:background="@android:color/transparent"/>
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
@@ -44,14 +52,13 @@
             android:id="@+id/detalhes_musica"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
+            android:layout_toEndOf="@+id/card_musica_mp"
+            android:layout_toStartOf="@+id/controles_btn_mp"
             android:layout_centerInParent="true"
-            android:layout_toStartOf="@id/controles_btn_mp"
-            android:layout_toEndOf="@id/card_musica_mp"
+            android:layout_marginHorizontal="5dp"
             android:orientation="vertical">
 
             <!-- Título da música no mini-player -->
-
             <TextView
                 android:id="@+id/titulo_musica_mp"
                 android:layout_width="match_parent"
@@ -60,7 +67,6 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:singleLine="true"
                 android:text="In Bloom"
-                android:textColor="@color/white"
                 android:textSize="16sp"/>
 
             <!-- Artista da música no mini-player -->
@@ -85,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="5dp"
             android:orientation="horizontal">
 
             <!-- Botão "previous" (Voltar/Anterior) do mini-player -->
@@ -94,27 +100,20 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_round_favorite_border_miniplayer_24"
-                app:tint="@color/white" />
-
-            <!-- Botão reproduzir/pausar (Play/Pause) do mini-player -->
-            <ImageView
-                android:id="@+id/btn_pp_mp"
-                android:layout_width="35dp"
-                android:layout_height="55dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="5dp"
-                android:src="@drawable/ic_round_play_circle_24"
-                app:tint="@color/white" />
+                android:src="@drawable/ic_round_favorite_border_miniplayer_24" />
 
             <!-- Botão "next" (Pular/Próximo) do mini-player -->
             <ImageView
                 android:id="@+id/btn_prox_mp"
                 android:layout_width="35dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_round_skip_next_24"
-                app:tint="@color/white" />
+                android:layout_height="55dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_round_skip_next_24" />
 
         </LinearLayout>
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>

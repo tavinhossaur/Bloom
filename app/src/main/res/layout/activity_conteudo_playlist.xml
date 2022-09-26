@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black3"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     tools:context=".ConteudoPlaylistActivity">
@@ -26,9 +25,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
-            android:rotation="270"
-            android:src="@drawable/ic_round_keyboard_arrow_up_24"
-            app:tint="@color/white" />
+            android:src="@drawable/ic_round_keyboard_arrow_left_24" />
 
         <!-- Barra de título -->
         <LinearLayout
@@ -49,8 +46,8 @@
                 android:text="Nome da playlist"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textColor="@color/white"
                 android:textStyle="bold"
+                android:textColor="@color/black2"
                 android:textSize="18sp"/>
 
             <!-- Título -->
@@ -63,7 +60,6 @@
                 android:text="por Usuário"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textColor="@color/white"
                 android:textSize="14sp"/>
 
         </LinearLayout>
@@ -75,8 +71,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/ic_baseline_more_vert_24"
-            android:backgroundTint="@color/white" />
+            android:background="@drawable/ic_baseline_more_vert_24" />
 
     </RelativeLayout>
 
@@ -84,14 +79,14 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:layout_marginTop="10dp"
-        android:background="@color/black3"
         android:orientation="vertical">
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_img_cpl"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            app:cardElevation="10dp"
+            android:layout_margin="10dp"
+            app:cardElevation="5dp"
             app:cardCornerRadius="10dp"
             app:cardPreventCornerOverlap="false">
 
@@ -110,7 +105,7 @@
                 android:id="@+id/playlist_img_cpl"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/black6"
+                android:background="@android:color/transparent"
                 app:srcCompat="@drawable/bloom_lotus_icon_grey"
                 android:scaleType="centerCrop" />
 
@@ -121,8 +116,7 @@
     <!-- ConstraintLayout para fazer o FAB -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black3">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/aviso_cpl"
@@ -137,29 +131,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/btn_add_musicas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Adicionar músicas"
-            android:textAllCaps="false"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:background="@drawable/button_style"
-            android:drawableEnd="@drawable/ic_round_playlist_add_24"
-            android:drawablePadding="5dp"
-            android:drawableTint="@color/white"
+            android:clickable="true"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:contentPadding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/aviso_cpl" />
+            app:layout_constraintTop_toBottomOf="@id/aviso_cpl">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Adicionar músicas"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:drawablePadding="10dp"
+                app:drawableEndCompat="@drawable/ic_round_playlist_add_24" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/musicas_playlist_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black3"
             android:visibility="invisible"
             android:fadingEdge="vertical"
             android:requiresFadingEdge="vertical"
@@ -172,7 +171,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            app:backgroundTint="@color/black3"
+            android:backgroundTint="@color/white"
             app:icon="@drawable/ic_round_shuffle_24"
             app:iconSize="35dp"
             app:iconTint="@color/purple1"
@@ -183,18 +182,6 @@
             android:layout_marginEnd="35dp"
             android:layout_marginBottom="35dp"
             tools:ignore="MissingConstraints" />
-
-        <!--
-        <androidx.fragment.app.FragmentContainerView
-             android:id="@+id/mini_player"
-             android:name="com.example.bloom.MiniPlayerFragment"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             app:layout_constraintBottom_toBottomOf="parent"
-             app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintStart_toStartOf="parent"
-             tools:layout="@layout/fragment_mini_player"/>
-        -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

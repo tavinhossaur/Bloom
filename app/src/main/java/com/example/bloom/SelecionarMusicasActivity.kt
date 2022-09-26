@@ -1,14 +1,15 @@
 package com.example.bloom
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.bloom.MainActivity.Companion.escuro
 import com.example.bloom.databinding.ActivitySelecionarMusicasBinding
 
 // Classe da activity
@@ -19,24 +20,27 @@ class SelecionarMusicasActivity : AppCompatActivity() {
     companion object{
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivitySelecionarMusicasBinding // binding é a variável do ViewBinding para ligar as views ao código
+        var escuroSelect : Boolean = false // Variável para definir se o modo escuro está ligado ou desligado
     }
 
     // Método chamado quando o aplicativo/activity é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
-        modoEscuro()
+        setTheme(R.style.Theme_BloomNoActionBar)
         super.onCreate(savedInstanceState)
         // Inicialização do binding
         binding = ActivitySelecionarMusicasBinding.inflate(layoutInflater)
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
-        // no caso, a ActivityConteudoPlaylistBinding (activity_conteudo_playlist.xml)
+        // no caso, a ActivitySelecionarMusicasBinding (activity_selecionar_musicas.xml)
         setContentView(binding.root)
 
         // Para otimização do RecyclerView, o seu tamanho é fixo,
         // mesmo quando itens são adicionados ou removidos.
         binding.slcMusicaRv.setHasFixedSize(true)
-        // Para este caso específico, o tamanho do cache precisa ser grande por conta do indicador de seleção
-        // de músicas do app
+        // Para este caso específico, o tamanho de itens no cache precisa ser
+        // grande por conta do indicador de seleção de músicas do app
         binding.slcMusicaRv.setItemViewCacheSize(5000)
+        // Desativa o nested scrolling para a rolagem ser mais suave
+        binding.slcMusicaRv.isNestedScrollingEnabled = false
         // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
         // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.slcMusicaRv.layoutManager = LinearLayoutManager(this@SelecionarMusicasActivity)
@@ -58,13 +62,15 @@ class SelecionarMusicasActivity : AppCompatActivity() {
             binding.avisoSelecionar.visibility = View.GONE
         }
 
+        // Ajuste de cores para o modo escuro do Android
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
+            escuroSelect = true
+            binding.btnVoltarSlc.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+        }else {escuroSelect = false}
+
         val pesquisaView = binding.pesquisaViewSlc
         // Hint da pesquisa
         pesquisaView.queryHint = "Procure por título, artista, álbum..."
-        // Cor da hint
-        pesquisaView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text).setHintTextColor(ContextCompat.getColor(this@SelecionarMusicasActivity, R.color.grey3))
-        // Cor do texto digitado pelo usuário
-        pesquisaView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text).setTextColor(ContextCompat.getColor(this@SelecionarMusicasActivity, R.color.white))
 
         // Para pesquisas de músicas
         binding.pesquisaViewSlc.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
@@ -95,15 +101,5 @@ class SelecionarMusicasActivity : AppCompatActivity() {
                 return true
             }
         })
-    }
-
-    // Método para deixar o aplicativo no seu modo padrão
-    private fun modoEscuro(){
-        application.setTheme(R.style.Theme_BloomNoActionBar)
-        setTheme(R.style.Theme_BloomNoActionBar)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
     }
 }

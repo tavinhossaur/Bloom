@@ -1,11 +1,14 @@
 package com.example.bloom
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.bloom.databinding.ActivityPlaylistsBinding
@@ -24,11 +27,12 @@ class PlaylistsActivity : AppCompatActivity() {
         var playlists : ModeloPlaylist = ModeloPlaylist() // Lista de playlists
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityPlaylistsBinding // binding é a variável do ViewBinding para ligar as views ao código
+        var escuroPl : Boolean = false // Variável para definir se o modo escuro está ligado ou desligado
     }
 
     // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
-        modoEscuro()
+        setTheme(R.style.Theme_BloomNoActionBar)
         super.onCreate(savedInstanceState)
 
         // Inicialização do binding
@@ -43,6 +47,8 @@ class PlaylistsActivity : AppCompatActivity() {
         // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados"
         // para depois potencialmente usá-los de novo (Reciclagem de itens).
         binding.playlistsRv.setItemViewCacheSize(13)
+        // Desativa o nested scrolling para a rolagem ser mais suave
+        binding.playlistsRv.isNestedScrollingEnabled = false
         // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
         // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.playlistsRv.layoutManager = GridLayoutManager(this@PlaylistsActivity, 2)
@@ -71,16 +77,14 @@ class PlaylistsActivity : AppCompatActivity() {
             binding.avisoPlaylists.visibility = View.VISIBLE
             binding.playlistsRv.visibility = View.GONE
         }
-    }
 
-    // Método para deixar o aplicativo no seu modo padrão
-    private fun modoEscuro(){
-        application.setTheme(R.style.Theme_BloomNoActionBar)
-        setTheme(R.style.Theme_BloomNoActionBar)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
+        // Ajuste de cores para o modo escuro do Android
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
+            escuroPl = true
+            binding.btnVoltarPl.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.tituloActivityPlaylists.setTextColor(ContextCompat.getColor(this, R.color.grey2))
+            binding.fabCriarPl.setBackgroundColor(ContextCompat.getColor(this, R.color.black3))
+        }else { escuroPl = false}
     }
 
     // Método para poder chamar o BottomSheetDialog ao botão do timer ser clicado
@@ -97,12 +101,8 @@ class PlaylistsActivity : AppCompatActivity() {
         InputSheet().show(this@PlaylistsActivity) {
             // Estilo do sheet (BottomSheet)
             style(SheetStyle.BOTTOM_SHEET)
-            // Altera o botão de fechar o dialogo
-            closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
             // Título do BottomSheetDialog
             title("Criar uma playlist")
-            // Cor do título
-            titleColorRes(R.color.purple1)
             // Conteúdo da sheet (Edit Texts)
             with(InputEditText("nome_playlist") {
                 required(true)

@@ -3,22 +3,26 @@ package com.example.bloom
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.View
-import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivityMainBinding
 import com.google.gson.GsonBuilder
@@ -56,11 +60,12 @@ class MainActivity : AppCompatActivity() {
             // E pela duração também de forma decrescente, a música mais longa música primeiro
             MediaStore.Audio.Media.DURATION + " DESC",)
         var selectMusica : String  = "" // Variável de seleção da música no armazenamento
+        var escuro : Boolean = false // Variável para definir se o modo escuro está ligado ou desligado
     }
 
     // Método chamado quando o aplicativo/activity é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
-        modoEscuro()
+        setTheme(R.style.Theme_Bloom)
         super.onCreate(savedInstanceState)
 
         // Método da api da Google para gerar uma Splash Screen
@@ -103,19 +108,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Ao clicar no switch da configuração 2, chama o método para ativar ou desligar o modo escuro
+        // binding.modoEscuroBtn.setOnClickListener{ modoEscuro() }
+
         // Abrir tela de configurações
         binding.configsBtn.setOnClickListener {
             startActivity(Intent(this, ConfiguracoesActivity::class.java))
         }
 
-        // Abrir a tela de playlists
-        binding.playlistBtn.setOnClickListener {
-            startActivity(Intent(this, PlaylistsActivity::class.java))
-        }
-
         // Abrir a tela de favoritos
         binding.favoritosBtn.setOnClickListener {
             startActivity(Intent(this, FavoritosActivity::class.java))
+        }
+
+        // Abrir a tela de playlists
+        binding.playlistsBtn.setOnClickListener {
+            startActivity(Intent(this, PlaylistsActivity::class.java))
         }
 
         // Randomizar as músicas
@@ -141,8 +149,6 @@ class MainActivity : AppCompatActivity() {
             OptionsSheet().show(this) {
                 // Estilo do sheet (BottomSheet)
                 style(SheetStyle.BOTTOM_SHEET)
-                // Altera o botão de fechar o dialogo
-                closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                 // Título do BottomSheetDialog
                 title("Ordenar músicas")
                 // Marca como falso as múltiplas opções
@@ -205,16 +211,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Método para deixar o aplicativo no seu modo padrão
-    private fun modoEscuro(){
-        application.setTheme(R.style.Theme_Bloom)
-        setTheme(R.style.Theme_Bloom)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
-    }
-
     // Método que faz a checa se foram concedidas as permissões que o app precisa
     private fun checarPermissoes() : Boolean{
         // Se o aplicativo ainda não tiver a permissão concedida, fara a requisição da mesma, caso contrário, nada acontece e a pessoa pode utilizar o aplicativo normalmente
@@ -251,9 +247,11 @@ class MainActivity : AppCompatActivity() {
         // Para otimização do RecyclerView, o seu tamanho é fixo,
         // mesmo quando itens são adicionados ou removidos.
         binding.musicasRv.setHasFixedSize(true)
-        // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados"
-        // para depois potencialmente usá-los de novo (Reciclagem de itens).
-        binding.musicasRv.setItemViewCacheSize(13)
+        // Para este caso específico, o tamanho de itens no cache precisa ser
+        // grande por conta do indicador de música atual tocando
+        binding.musicasRv.setItemViewCacheSize(5000)
+        // Desativa o nested scrolling para a rolagem ser mais suave
+        binding.musicasRv.isNestedScrollingEnabled = false
         // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
         // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.musicasRv.layoutManager = LinearLayoutManager(this@MainActivity)
@@ -265,6 +263,14 @@ class MainActivity : AppCompatActivity() {
         binding.musicasRv.adapter = musicaAdapter
         // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
         binding.musicasRv.isMotionEventSplittingEnabled = false
+
+        // Ajuste de cores para o modo escuro do Android
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
+            escuro = true
+            binding.filtroImg.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+        }else{
+            escuro = false
+        }
     }
 
     // Método que faz a procura de músicas pelos arquivos do celular
@@ -351,7 +357,7 @@ class MainActivity : AppCompatActivity() {
         // Texto da hint
         pesquisaView.queryHint = "Procure por título, artista, álbum..."
         // Muda a cor da hint da textView da pesquisa
-        pesquisaView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text).setHintTextColor(ContextCompat.getColor(this, R.color.grey3))
+        // pesquisaView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text).setTextColor(ContextCompat.getColor(this, R.color.black3))
 
         // Fica lendo o que o usuário está digitando na barra de pesquisa
         pesquisaView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{

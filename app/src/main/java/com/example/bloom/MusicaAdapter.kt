@@ -8,13 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
-import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.bloom.databinding.MusicViewLayoutBinding
-import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.options.Option
@@ -27,6 +26,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
         val titulo = binding.tituloMusicaView    // Título da música
         val artista = binding.artistaMusicaView  // Artista da música
         val imagem = binding.imgMusicaView       // Imagem da música
+        val play = binding.playAnim              // Indicador da música atual reproduzindo
         val duracao = binding.tempoMusicaView    // Duração da música
         val botao = binding.btnExtraView         // Botão de opções extras
 
@@ -56,9 +56,22 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
             // Carrega a posição da música e a uri da sua imagem
             .load(listaMusicas[posicao].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-            .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
             // Alvo da aplicação da imagem
             .into(holder.imagem)
+
+        // Ajuste de cores para o modo escuro do Android
+        if (MainActivity.escuro){
+            // Muda a cor do ícone para branco
+            holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
+            // Muda a cor do título para uma cor mais clara
+            holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
+        }else{
+            // Muda a cor do ícone preto
+            holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+            // Muda a cor do título para uma cor mais escura
+            holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+        }
 
         // Quando o usuário clicar no botão de opções extras
         holder.botao.setOnClickListener {
@@ -67,9 +80,6 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
             checarFavoritos(listaMusicas[posicao].id)
             OptionsSheet().show(context) {
                 title("${listaMusicas[posicao].titulo} | ${listaMusicas[posicao].artista}")
-                titleColorRes(R.color.white)
-                // Altera o botão de fechar o dialogo
-                closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                 // Marca como falso as múltiplas opções
                 multipleChoices(false)
                 // Mantém as cores dos ícones
@@ -155,8 +165,6 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                     style(SheetStyle.DIALOG)
                                     // Título do AlertDialog
                                     title("Deseja mesmo excluir a música?")
-                                    // Cor do título
-                                    titleColorRes(R.color.purple1)
                                     // Mensagem do AlertDialog
                                     content("Excluir a música \"${listaMusicas[posicao].titulo}\" de ${listaMusicas[posicao].artista}?\n\nAtenção: se a música que você estiver tentando excluir não for apagada, você precisará apaga-la manualmente no armazenamento do dispositivo.")
                                     // Botão positivo que exclui a música em questão
@@ -190,9 +198,9 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                 style(SheetStyle.DIALOG)
                                 // Mensagem do AlertDialog
                                 content("Título: ${listaMusicas[posicao].titulo}" +
-                                        "\nArtista: ${listaMusicas[posicao].artista}" +
-                                        "\nAlbum: ${listaMusicas[posicao].album}" +
-                                        "\nDuração ${formatarDuracao(listaMusicas[posicao].duracao)}" +
+                                        "\nArtista(s): ${listaMusicas[posicao].artista}" +
+                                        "\nÁlbum: ${listaMusicas[posicao].album}" +
+                                        "\nDuração: ${formatarDuracao(listaMusicas[posicao].duracao)}" +
                                         "\n\nDiretório: ${listaMusicas[posicao].caminho}")
                                 // Esconde os ambos os botões
                                 displayButtons(false)
@@ -211,21 +219,17 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
         fun adicionarMusica(musica : Musica) : Boolean{
             // Pra cada música clicada
             PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.forEachIndexed { index, musicas ->
-                // Verifica se ela já foi selecionada
+                // Verifica se ela já foi adicionada
                 if (musica.id == musicas.id){
-                    // Se já tiver sido selecionada, remova da lista
+                    // Se já tiver sido adicionada, remova da lista
                     // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
                     val falseSheet = InfoSheet().build(context) {
                         // Estilo do sheet (AlertDialog)
                         style(SheetStyle.DIALOG)
                         // Título do AlertDialog
                         title("Essa música já foi adicionada")
-                        // Cor do título
-                        titleColorRes(R.color.purple1)
                         // Mensagem do AlertDialog
                         content("Deseja remove-lá?")
-                        // Impede que o usuário clique fora do diálogo para fechá-lo
-                        cancelableOutside(false)
                         // Torna o objeto clicável novamente quando o diálogo for fechado
                         onClose { holder.root.isEnabled = true }
                         // Botão positivo que remove a música selecionada da playlist
@@ -251,12 +255,8 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                 style(SheetStyle.DIALOG)
                 // Título do AlertDialog
                 title("Adicionar música")
-                // Cor do título
-                titleColorRes(R.color.purple1)
                 // Mensagem do AlertDialog
                 content("Deseja adicionar a música selecionada?")
-                // Impede que o usuário clique fora do diálogo para fechá-lo
-                cancelableOutside(false)
                 // Torna o objeto clicável novamente quando o diálogo for fechado
                 onClose { holder.root.isEnabled = true }
                 // Botão positivo que remove a música selecionada da playlist
@@ -279,6 +279,18 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
         when{
             // Na tela do conteudoPlaylist
             conteudoPlaylist -> {
+                if (ConteudoPlaylistActivity.escuroContPl){
+                    // Muda a cor do ícone branco
+                    holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
+                    // Muda a cor do título para uma cor mais clara
+                    holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
+                }else{
+                    // Muda a cor do ícone para branco
+                    holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+                    // Muda a cor do título para uma cor mais clara
+                    holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+                }
+
                 holder.root.setOnClickListener {
                     irParaMusica("ConteudoPlaylist", posicao)
                 }
@@ -290,10 +302,6 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                         style(SheetStyle.BOTTOM_SHEET)
                         // Título da sheet
                         title("${listaMusicas[posicao].titulo} | ${listaMusicas[posicao].artista}")
-                        // Cor do título
-                        titleColorRes(R.color.white)
-                        // Altera o botão de fechar o dialogo
-                        closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                         // Marca como falso as múltiplas opções
                         multipleChoices(false)
                         // Mantém as cores dos ícones
@@ -370,8 +378,6 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                         style(SheetStyle.DIALOG)
                                         // Título do AlertDialog
                                         title("Deseja mesmo remover a música?")
-                                        // Cor do título
-                                        titleColorRes(R.color.purple1)
                                         // Mensagem do AlertDialog
                                         content("Remover a música \"${listaMusicas[posicao].titulo}\" da playlist \"${PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].nome}\"?")
                                         // Botão positivo que remove a música em questão
@@ -407,8 +413,6 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                             style(SheetStyle.DIALOG)
                                             // Título do AlertDialog
                                             title("Deseja mesmo excluir a música?")
-                                            // Cor do título
-                                            titleColorRes(R.color.purple1)
                                             // Mensagem do AlertDialog
                                             content("Excluir a música \"${listaMusicas[posicao].titulo}\" de ${listaMusicas[posicao].artista}?\n\nAtenção: se a música que você estiver tentando excluir não for apagada, você precisará apaga-la manualmente no armazenamento do dispositivo.")
                                             // Botão positivo que exclui a música em questão
@@ -443,18 +447,29 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
             }
             // Na tela de selecionar músicas
             activitySelecionar -> {
+                holder.botao.setImageResource(R.drawable.ic_round_check_circle_24)
+                if (SelecionarMusicasActivity.escuroSelect){
+                    // Muda a cor do ícone para branco
+                    holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
+                    // Muda a cor do título para uma cor mais clara
+                    holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
+                }else{
+                    // Muda a cor do ícone para branco
+                    holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+                    // Muda a cor do título para uma cor mais clara
+                    holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+                }
                 // Esconde a duração da música que não tem utilidade nessa tela
                 holder.duracao.visibility = View.INVISIBLE
                 // Esconde o ícone de selecionado inicialmente
                 holder.botao.visibility = View.INVISIBLE
-                // Muda o ícone para um ícone de seleção
-                holder.botao.setImageResource(R.drawable.ic_round_check_circle_24)
                 // Define o botão como não clicável
                 holder.botao.isClickable = false
                 // Quando a música for clicada
                 holder.root.setOnClickListener{
                     // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
                     holder.root.isEnabled = false
+                    // E chama o método para adicionar a música selecionada
                     adicionarMusica(listaMusicas[posicao])
                 }
             }
@@ -464,7 +479,6 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                 holder.root.isEnabled = false
                 // Impede que o usuário clique em um dos botões das músicas
                 holder.botao.isEnabled = false
-                // Muda o ícone para um ícone de remoção
                 holder.botao.setImageResource(R.drawable.ic_round_queue_music_24)
             }
             // Em qualquer outra situação

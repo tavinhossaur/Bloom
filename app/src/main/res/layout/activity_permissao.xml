@@ -5,7 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/black3"
     tools:context=".PermissaoActivity">
 
     <LinearLayout
@@ -49,40 +48,60 @@
         <!-- Botões de opção -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center_horizontal">
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
 
             <!-- Botão permitir -->
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_permitir"
-                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
-                android:text="Permitir"
-                android:textAllCaps="false"
-                android:textColor="@color/purple1"
-                android:textSize="17sp"
-                app:strokeColor="@color/purple1"
-                app:strokeWidth="2.5dp"
-                tools:ignore="TextContrastCheck" />
+                android:clickable="true"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:contentPadding="10dp"
+                tools:ignore="TouchTargetSizeCheck">
+
+                <TextView
+                    android:id="@+id/text_permitir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Permitir"
+                    android:textColor="@color/purple1"
+                    android:textSize="18sp" />
+
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Botão cancelar -->
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_cancelar"
-                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancelar"
-                android:textAllCaps="false"
-                android:textColor="@color/purple1"
-                android:textSize="17sp"
-                app:strokeColor="@color/purple1"
-                app:strokeWidth="2.5dp"
-                tools:ignore="TextContrastCheck" />
+                android:layout_marginEnd="5dp"
+                android:clickable="true"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:contentPadding="10dp"
+                tools:ignore="TouchTargetSizeCheck">
+
+                <TextView
+                    android:id="@+id/text_cancelar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Cancelar"
+                    android:textColor="@color/purple1"
+                    android:textSize="18sp" />
+
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 

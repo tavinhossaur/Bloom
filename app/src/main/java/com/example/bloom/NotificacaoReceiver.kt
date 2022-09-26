@@ -3,12 +3,9 @@ package com.example.bloom
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.media.MediaPlayer
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.request.RequestOptions
@@ -26,16 +23,16 @@ class NotificacaoReceiver : BroadcastReceiver() {
         // E executará a ação da intent específica.
         when(intent?.action){
             // Chama o método para randomizar as músicas
-            /* ClasseApplication.REPETIR ->
+            /* Application.REPETIR ->
                 if(!PlayerActivity.repetindo){
                     reproducaoNormal()
                 }else{
                     reproducaoRepetir()
                 } */
             // Chama o método para voltar para música anterior
-            ClasseApplication.ANTERIOR -> proxMusicaAnte(proximo = false, context = context!!)
+            Application.ANTERIOR -> proxMusicaAnte(proximo = false, context = context!!)
             // Chama o método para tocar ou pausar a música atual
-            ClasseApplication.TOCAR ->
+            Application.TOCAR ->
                 // Se estiver tocando, então pause e torne possível a exclusão da barra de notificação
                 if(PlayerActivity.tocando){
                     pausar()
@@ -45,11 +42,11 @@ class NotificacaoReceiver : BroadcastReceiver() {
                     tocar()
                 }
             // Chama o método para ir para próxima música
-            ClasseApplication.PROXIMO -> proxMusicaAnte(proximo = true, context = context!!)
+            Application.PROXIMO -> proxMusicaAnte(proximo = true, context = context!!)
             // Chama o método para favoritar a música
-            ClasseApplication.FAVORITAR -> favoritar()
+            Application.FAVORITAR -> favoritar()
             // Quando a barra de notificação for limpa, chame o método para resetar o player
-            ClasseApplication.LIMPAR -> pausarPlayer()
+            Application.LIMPAR -> pausarPlayer()
             }
         }
     }
@@ -67,7 +64,6 @@ class NotificacaoReceiver : BroadcastReceiver() {
         }
         // setBtnsNotify()
         PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
-        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
     }
 
     // Método para pausar a música pela barra de notificação
@@ -83,7 +79,6 @@ class NotificacaoReceiver : BroadcastReceiver() {
         }
         // setBtnsNotify()
         PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
-        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
     }
 
     private fun favoritar(){
@@ -186,7 +181,7 @@ class NotificacaoReceiver : BroadcastReceiver() {
     // assim, quando o usuário a apagar, e voltar a tela do player, ele poderá retomar a música novamente de onde ela parou.
     private fun pausarPlayer(){
         try {
-            // Se a variável do player for nula, então ela se torna o MediaPlayer
+            // Se a variável do player estiver nulo, então ele é ligado ao método MediaPlayer
             if (PlayerActivity.musicaService!!.mPlayer == null) PlayerActivity.musicaService!!.mPlayer = MediaPlayer()
             // .pause = Pausa o player com a música no tempo em que ela parou
             PlayerActivity.musicaService!!.mPlayer!!.pause()

@@ -5,12 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black3"
-    android:fitsSystemWindows="true"
     android:orientation="vertical"
+    android:animateLayoutChanges="true"
     tools:context=".ConfiguracoesActivity">
 
-    <!-- Cabeçalho da barra de pesquisa, botão de menu e título -->
+    <!-- Cabeçalho do botão de voltar e título -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,13 +24,10 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
-            android:rotation="270"
-            android:src="@drawable/ic_round_keyboard_arrow_up_24"
-            app:tint="@color/white" />
+            android:src="@drawable/ic_round_keyboard_arrow_left_24" />
 
         <!-- Barra de título -->
         <LinearLayout
-            android:id="@+id/barra_titulo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -42,15 +38,15 @@
 
             <!-- Título -->
             <TextView
-                android:id="@+id/titulo"
+                android:id="@+id/titulo_activity_config"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:text="Configurações"
-                android:textColor="@color/white"
                 android:textStyle="bold"
+                android:textColor="@color/black2"
                 android:textSize="18sp"/>
 
         </LinearLayout>
@@ -93,58 +89,59 @@
                 android:layout_below="@id/titulo_config"
                 android:layout_toStartOf="@id/switch_config1"
                 android:text="Remove mensagens de áudio do WhatsApp"
-                android:textColor="@color/grey2"
                 android:textSize="14sp" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/switch_config1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textOn="On"
+                android:textOff="Off"
                 android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/btn_feedback"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/content_config"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/button_style"
-            android:elevation="8dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/titulo_feedback"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_feedback"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/img_arrow"
-                android:text="FEEDBACK"
-                android:textColor="@color/purple1"
-                android:textSize="18sp" />
+                android:layout_below="@id/content_config"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:clickable="true"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                app:contentPadding="10dp">
 
-            <TextView
-                android:id="@+id/sub_feedback"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/titulo_feedback"
-                android:layout_toStartOf="@id/img_arrow"
-                android:text="Envie sugestões, dúvidas, problemas, mensagens de amor, etc."
-                android:textColor="@color/grey2"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/titulo_feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="FEEDBACK"
+                    android:textColor="@color/purple1"
+                    android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/img_arrow"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/ic_round_keyboard_arrow_left_24"
-                android:backgroundTint="@color/white"
-                android:rotation="180" />
+                <TextView
+                    android:id="@+id/sub_feedback"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="40dp"
+                    android:text="Envie sugestões, dúvidas, problemas, mensagens de amor, etc."
+                    android:textSize="16sp" />
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/img_arrow"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center|end"
+                    android:layout_marginStart="10dp"
+                    android:background="@drawable/ic_round_keyboard_arrow_left_24"
+                    android:backgroundTint="@color/purple1"
+                    android:rotation="180" />
+
+            </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
@@ -179,8 +176,7 @@
                 android:layout_below="@id/titulo_sobre"
                 android:text="Bloom foi desenvolvido por:
             \nJoão Fontinelli, Matheus Martinelli e Octávio Barassa.
-            \n\nEsse aplicativo se trata do nosso TCC do curso de Desenvolvimento de Sistemas na ETEC João Belarmino em Amparo. "
-                android:textColor="@color/grey2" />
+            \n\nEsse aplicativo se trata do nosso TCC do curso de Desenvolvimento de Sistemas na ETEC João Belarmino em Amparo. " />
 
         </RelativeLayout>
 

@@ -1,9 +1,8 @@
-<resources>
-
+    <resources>
     <!-- Base application theme. -->
-    <style name="Theme.Bloom" parent="Theme.MaterialComponents.DayNight">
+    <style name="Theme.Bloom" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/black3</item>
         <item name="colorPrimaryVariant">@color/purple2</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -13,12 +12,13 @@
         <!-- Turn off android dark mode -->
         <item name="android:forceDarkAllowed">false</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Navigation bar color. -->
-        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <!-- ActionBar style -->
         <item name="actionBarWidgetTheme">@style/ActionBarStyle</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <!-- Texto da cor primária para o texto da SearchView da ActionBar -->
+        <item name="android:textColorPrimary">@color/white</item>
 
         <!-- Sheet Theme -->
         <item name="sheetsPrimaryColor">@color/purple1</item>
@@ -26,7 +26,7 @@
 
     <style name="Theme.BloomNoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/black3</item>
         <item name="colorPrimaryVariant">@color/purple2</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -36,33 +36,9 @@
         <!-- Turn off android dark mode -->
         <item name="android:forceDarkAllowed">false</item>
         <!-- Transparent status bar color. -->
-        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Transparent navigation bar color. -->
-        <item name="android:navigationBarColor">@android:color/white</item>
-        <!-- Ícones da status bar serão correspondentes a cor clara. -->
-        <item name="android:windowLightStatusBar">true</item>
-
-        <!-- Sheet Theme -->
-        <item name="sheetsPrimaryColor">@color/purple1</item>
-    </style>
-
-    <style name="Theme.BloomPlayer" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryVariant">@color/purple2</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/purple1</item>
-        <item name="colorSecondaryVariant">@color/purple2</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Turn off android dark mode -->
-        <item name="android:forceDarkAllowed">false</item>
-        <!-- Transparent status bar color. -->
-        <item name="android:windowTranslucentStatus">true</item>
-        <!-- Transparent navigation bar color. -->
-        <item name="android:windowTranslucentNavigation">true</item>
-        <!-- Para esconder a barra de status em uma activity de tela cheia -->
-        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
 
         <!-- Sheet Theme -->
         <item name="sheetsPrimaryColor">@color/purple1</item>
@@ -70,11 +46,10 @@
 
     <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowSplashScreenBackground">@android:color/transparent</item>
-        <item name="android:windowBackground">@drawable/ic_splash_light</item>
+        <item name="android:windowBackground">@drawable/ic_splash</item>
         <item name="postSplashScreenTheme">@style/Theme.Bloom</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="colorAccent">@color/white</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="colorAccent">@color/black3</item>
     </style>
 
     <!-- Texto da lista de itens do menu -->

@@ -1,6 +1,13 @@
 package com.example.bloom
 
+import android.content.Context
+import android.content.res.Configuration
 import android.media.MediaMetadataRetriever
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess

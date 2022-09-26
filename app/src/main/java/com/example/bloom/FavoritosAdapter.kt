@@ -7,13 +7,14 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.graphics.drawable.toDrawable
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.bloom.FavoritosActivity.Companion.listaFavoritos
 import com.example.bloom.databinding.FavoritosViewLayoutBinding
-import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.options.Option
@@ -56,7 +57,7 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
             // Carrega a posição da música e a uri da sua imagem
             .load(listaFavoritos[posicao].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-            .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
             // Alvo da aplicação da imagem
             .into(holder.imagem)
 
@@ -80,12 +81,8 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
                 style(SheetStyle.DIALOG)
                 // Título da sheet
                 title("Desfavoritar")
-                // Cor do título
-                titleColorRes(R.color.white)
                 // Mensagem do AlertDialog
                 content("Remover a música \"${listaFavoritos[posicao].titulo}\" da lista de favoritos?")
-                // Altera o botão de fechar o dialogo
-                closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                 // Torna o objeto clicável novamente quando o diálogo for fechado
                 onClose { holder.btnFav.isEnabled = true }
                 // Botão positivo que exclui a música em questão
@@ -112,6 +109,13 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
             }
         }
 
+        // Ajuste de cores para o modo escuro do Android
+        if (FavoritosActivity.escuroFav){
+            holder.btnExtra.setColorFilter(ContextCompat.getColor(context, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+        }else{
+            holder.btnExtra.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+        }
+
         // Quando o usuário clicar no botão de opções extras
         holder.btnExtra.setOnClickListener {
             // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
@@ -120,10 +124,6 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
             OptionsSheet().show(context) {
                 // Título da sheet
                 title("${listaFavoritos[posicao].titulo} | ${listaFavoritos[posicao].artista}")
-                // Cor do título
-                titleColorRes(R.color.white)
-                // Altera o botão de fechar o dialogo
-                closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                 // Marca como falso as múltiplas opções
                 multipleChoices(false)
                 // Mantém as cores dos ícones
@@ -165,8 +165,6 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
                                     style(SheetStyle.DIALOG)
                                     // Título do AlertDialog
                                     title("Deseja mesmo excluir a música?")
-                                    // Cor do título
-                                    titleColorRes(R.color.purple1)
                                     // Mensagem do AlertDialog
                                     content("Excluir a música \"${listaFavoritos[posicao].titulo}\" de ${listaFavoritos[posicao].artista}?\n\nAtenção: se a música que você estiver tentando excluir não for apagada, você precisará apaga-la manualmente no armazenamento do dispositivo.")
                                     // Botão positivo que exclui a música em questão
@@ -200,9 +198,9 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
                                 style(SheetStyle.DIALOG)
                                 // Mensagem do AlertDialog
                                 content("Título: ${listaFavoritos[posicao].titulo}" +
-                                        "\nArtista: ${listaFavoritos[posicao].artista}" +
-                                        "\nAlbum: ${listaFavoritos[posicao].album}" +
-                                        "\nDuração ${formatarDuracao(listaFavoritos[posicao].duracao)}" +
+                                        "\nArtista(s): ${listaFavoritos[posicao].artista}" +
+                                        "\nÁlbum: ${listaFavoritos[posicao].album}" +
+                                        "\nDuração: ${formatarDuracao(listaFavoritos[posicao].duracao)}" +
                                         "\n\nDiretório: ${listaFavoritos[posicao].caminho}")
                                 // Esconde os ambos os botões
                                 displayButtons(false)

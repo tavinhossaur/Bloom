@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.*
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -49,6 +50,11 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
             startActivity(context, playlistIntent, null)
         }
 
+        // Ajuste de cores para o modo escuro do Android
+        if (PlaylistsActivity.escuroPl){
+            holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.black6))
+        }
+
         // Se a playlist não estiver vazia
         if (PlaylistsActivity.playlists.modelo[posicao].playlist.isNotEmpty()){
             // Utilizando Glide, Procura na lista de músicas a posição da música em específico
@@ -58,14 +64,14 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                 .load(PlaylistsActivity.playlists.modelo[posicao].playlist[0].imagemUri)
                 // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
                 // junto do método centerCrop() para ajustar a imagem dentro da view
-                .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
                 // Alvo da aplicação da imagem
                 .into(holder.imagem)
         // Caso a playlist esteja vazia
         }else{
             Glide.with(context)
                 // Carrega a posição da imagem placeholder
-                .load(R.drawable.bloom_lotus_icon_grey)
+                .load(R.drawable.placeholder_bloom_grey)
                 // Faz a aplicação da imagem com o método centerCrop() para ajustar a imagem dentro da view
                 .apply(RequestOptions().centerCrop())
                 // Alvo da aplicação da imagem
@@ -91,12 +97,8 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                         InputSheet().show(context) {
                             // Estilo do sheet (BottomSheet)
                             style(SheetStyle.BOTTOM_SHEET)
-                            // Altera o botão de fechar o dialogo
-                            closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
                             // Título do BottomSheetDialog
                             title("Editar a playlist")
-                            // Cor do título
-                            titleColorRes(R.color.purple1)
                             // Conteúdo da sheet (Edit Texts)
                             with(InputEditText("nome_playlist") {
                                 required(true)
@@ -127,8 +129,6 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                             style(SheetStyle.DIALOG)
                             // Título do AlertDialog
                             title("Deseja mesmo excluir a playlist?")
-                            // Cor do título
-                            titleColorRes(R.color.purple1)
                             // Mensagem do AlertDialog
                             content("Excluir a playlist \"${listaPlaylists[posicao].nome}\"?")
                             // Botão positivo que exclui a playlist em questão

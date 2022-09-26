@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black3"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
     tools:context=".FavoritosActivity">
@@ -25,9 +24,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
-                android:rotation="270"
-                android:src="@drawable/ic_round_keyboard_arrow_up_24"
-                app:tint="@color/white" />
+                android:src="@drawable/ic_round_keyboard_arrow_left_24" />
 
                 <!-- Barra de título -->
                 <LinearLayout
@@ -41,14 +38,14 @@
 
                     <!-- Título -->
                     <TextView
-                        android:id="@+id/bar_title_text"
+                        android:id="@+id/titulo_activity_fav"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="0dp"
                         android:layout_gravity="center"
                         android:textAlignment="center"
-                        android:text="Favoritos"
-                        android:textColor="@color/white"
+                        android:text="Favoritas"
+                        android:textColor="@color/black2"
                         android:textStyle="bold"
                         android:textSize="18sp"/>
 
@@ -69,33 +66,37 @@
             android:id="@+id/cabecalho_fav"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:background="@drawable/button_style"
-            android:backgroundTint="@color/black3"
+            android:gravity="center"
+            android:layout_marginHorizontal="5dp"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/random_btn"
-                android:layout_width="0dp"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/bar_fav"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAlignment="textStart"
-                android:background="@drawable/button_style"
-                android:elevation="8dp"
-                android:ellipsize="end"
-                android:clickable="false"
-                android:maxLines="1"
-                android:text="Suas favoritas"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:layout_marginHorizontal="5dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                app:contentPadding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="textStart"
+                    android:elevation="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Suas favoritas"
+                    android:textSize="16sp"/>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
         <!-- ConstraintLayout para fazer o FAB -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/black3">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/aviso_favoritas"
@@ -106,7 +107,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/grey3"
                 android:textSize="20sp"
-                android:visibility="visible"
+                android:visibility="invisible"
                 android:padding="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +118,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="visible"
-                android:background="@color/black3"
                 android:fadingEdge="vertical"
                 android:requiresFadingEdge="vertical"
                 android:scrollbarAlwaysDrawVerticalTrack="true"
@@ -130,9 +130,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="35dp"
                 android:layout_marginBottom="35dp"
-                app:backgroundTint="@color/black3"
+                android:backgroundTint="@color/white"
                 app:icon="@drawable/ic_round_shuffle_24"
-                app:iconSize="35dp"
+                app:iconSize="40dp"
                 app:iconTint="@color/purple1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

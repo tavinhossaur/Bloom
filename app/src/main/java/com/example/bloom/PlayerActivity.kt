@@ -31,7 +31,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.bloom.databinding.ActivityPlayerBinding
-import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.input.InputSheet
@@ -70,7 +69,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     // Método chamado quando o aplicativo é iniciado
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
-        temaPlayer()
+        setTheme(R.style.Theme_BloomPlayer)
         super.onCreate(savedInstanceState)
         // Inicialização do binding
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -93,6 +92,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             popup.setForceShowIcon(true)
             // Infla o menu do card
             popup.inflate(R.menu.player_menu)
+            // Torna o objeto clicável novamente quando o diálogo for fechado
+            popup.setOnDismissListener { binding.btnExtraTpl.isEnabled = true }
             // Adicionando o listener das opções do menu
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
@@ -104,9 +105,9 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                             style(SheetStyle.DIALOG)
                             // Mensagem do AlertDialog
                             content("Título: ${filaMusica[posMusica].titulo}" +
-                                    "\nArtista: ${filaMusica[posMusica].artista}" +
-                                    "\nAlbum: ${filaMusica[posMusica].album}" +
-                                    "\nDuração ${formatarDuracao(filaMusica[posMusica].duracao)}" +
+                                    "\nArtista(s): ${filaMusica[posMusica].artista}" +
+                                    "\nÁlbum: ${filaMusica[posMusica].album}" +
+                                    "\nDuração: ${formatarDuracao(filaMusica[posMusica].duracao)}" +
                                     "\n\nDiretório: ${filaMusica[posMusica].caminho}")
                             // Esconde os ambos os botões
                             displayButtons(false)
@@ -211,10 +212,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 val permSheet = InfoSheet().build(this) {
                     // Estilo do sheet (BottomSheet)
                     style(SheetStyle.BOTTOM_SHEET)
-                    // Altera o botão de fechar o dialogo
-                    closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
-                    // Cor do título
-                    titleColorRes(R.color.purple1)
                     // Título do BottomSheetDialog
                     title("O timer já está ativado!")
                     // Mensagem do BottomSheetDialog
@@ -293,8 +290,9 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             mostrarFilaAtual()
         }
 
-        // Quando clicar no card fecha ele e mostra as views escondidas
+        // Quando clicar no botão do card, ele irá fechar e mostra as views escondidas
         binding.btnFecharCard.setOnClickListener {
+            binding.cabecalhoPlayer.visibility = View.VISIBLE
             binding.btnEspecial.visibility = View.VISIBLE
             binding.progressBar.visibility = View.VISIBLE
             binding.controlesBtnTpl.visibility = View.VISIBLE
@@ -352,13 +350,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Quando o usuário soltar o indicador ou a SeekBar
             override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
         })
-    }
-
-    // Método para deixar a tela do player com um tema personalizado
-    private fun temaPlayer(){
-        // Define o tema como sem actionBar
-        application.setTheme(R.style.Theme_BloomPlayer)
-        setTheme(R.style.Theme_BloomPlayer)
     }
 
     // Método para definir a reprodução normal da lista de músicas
@@ -437,7 +428,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Carrega a posição da música e a uri da sua imagem
             .load(filaMusica[posMusica].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-            .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
             // Alvo da aplicação da imagem
             .into(binding.imgMusicaTpl)
 
@@ -502,6 +493,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Para otimização do RecyclerView, 13 itens fora da tela serão "segurados"
         // para depois potencialmente usá-los de novo (Reciclagem de itens).
         binding.filaRv.setItemViewCacheSize(13)
+        // Desativa o nested scrolling para a rolagem ser mais suave
+        binding.filaRv.isNestedScrollingEnabled = false
         // O LayoutManager é responsável por medir e posicionar as visualizações dos itens dentro de um RecyclerView,
         // bem como determinar a política de quando reciclar visualizações de itens que não são mais visíveis para o usuário.
         binding.filaRv.layoutManager = LinearLayoutManager(this@PlayerActivity)
@@ -737,12 +730,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         InputSheet().show(this@PlayerActivity) {
             // Estilo do sheet (BottomSheet)
             style(SheetStyle.BOTTOM_SHEET)
-            // Altera o botão de fechar o dialogo
-            closeIconButton(IconButton(com.maxkeppeler.sheets.R.drawable.sheets_ic_close, R.color.white))
             // Título do BottomSheetDialog
             title("Timer da música")
-            // Cor do título
-            titleColorRes(R.color.purple1)
             // Conteúdo da sheet (Radio Buttons)
             with(InputRadioButtons("timer_opt") {
                 // Marca como um campo obrigatório ou não para liberar o botão "ok"
@@ -819,7 +808,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         musicaService!!.mPlayer!!.pause()
         // Troca o ícone para o ícone de play no player, no miniplaer e na barra de notificação
         binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
-        MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
         if(favoritado){
             musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
         }else{
@@ -901,6 +889,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
     // Método para mostrar o card com a fila de reprodução atual
     private fun mostrarFilaAtual(){
+        binding.cabecalhoPlayer.visibility = View.INVISIBLE
         binding.btnEspecial.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.controlesBtnTpl.visibility = View.GONE

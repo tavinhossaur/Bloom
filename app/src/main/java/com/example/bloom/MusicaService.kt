@@ -49,7 +49,7 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
     fun mostrarNotificacao(tocarPausarBtn : Int, favoritosBtn : Int){
 
         // Cria o objeto que contém a ação de randomizar a reprodução de músicas
-        //val repetirIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.REPETIR)
+        //val repetirIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.REPETIR)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
         //val repetirPendingIntent = PendingIntent.getBroadcast(baseContext, 0, repetirIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
@@ -59,27 +59,27 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
         val notifyContentIntent = PendingIntent.getActivity(this, 0, notifyPlayerIntent, 0)
 
         // Cria o objeto que contém a ação de voltar a música
-        val anteriorIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.ANTERIOR)
+        val anteriorIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.ANTERIOR)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
         val anteriorPendingIntent = PendingIntent.getBroadcast(baseContext, 0, anteriorIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // Cria o objeto que contém a ação de tocar/pausar a música atual
-        val tocarIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.TOCAR)
+        val tocarIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.TOCAR)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
         val tocarPendingIntent = PendingIntent.getBroadcast(baseContext, 0, tocarIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // Cria o objeto que contém a ação de ir para a próxima música da lista
-        val proximoIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.PROXIMO)
+        val proximoIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.PROXIMO)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
         val proximoPendingIntent = PendingIntent.getBroadcast(baseContext, 0, proximoIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // Cria o objeto que contém a ação de favoritar a música atual
-        val favoritarIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.FAVORITAR)
+        val favoritarIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.FAVORITAR)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
         val favoritarPendingIntent = PendingIntent.getBroadcast(baseContext, 0, favoritarIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         // Cria o objeto que contém a ação de limpar a barra de músicas
-        val limparIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(ClasseApplication.LIMPAR)
+        val limparIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.LIMPAR)
         // Cria a intent pendente para a intent de limpar a notificação
         val limparPendingIntent = PendingIntent.getBroadcast(baseContext, 0, limparIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
@@ -91,11 +91,11 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
                 BitmapFactory.decodeByteArray(imgMusica, 0, imgMusica.size)
                 // Caso contrário, será a imagem padrão definida abaixo
             }else{
-                BitmapFactory.decodeResource(resources, R.drawable.bloom_lotus_icon_grey)
+                BitmapFactory.decodeResource(resources, R.drawable.placeholder_bloom_grey)
             }
 
         // Criação da notificação
-        val notificacao = NotificationCompat.Builder(baseContext, ClasseApplication.ID_CANAL)
+        val notificacao = NotificationCompat.Builder(baseContext, Application.ID_CANAL)
             // Título da música na barra de notificação
             .setContentTitle(PlayerActivity.filaMusica[PlayerActivity.posMusica].titulo)
             // Artista da música na barra de notificação
@@ -155,7 +155,6 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
                 if(PlayerActivity.tocando){
                     // Então pausa a música
                     PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
-                    MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
                     PlayerActivity.tocando = false
                     mPlayer!!.pause()
                     setBtnsNotify()
@@ -163,7 +162,6 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
                 }else{
                     // Então toca a música
                     PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
-                    MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_pause_circle_24)
                     PlayerActivity.tocando = true
                     mPlayer!!.start()
                     setBtnsNotify()
@@ -248,7 +246,6 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
         if (foco <= 0){
             // Então pause a música
             PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
-            MiniPlayerFragment.binding.btnPpMp.setImageResource(R.drawable.ic_round_play_circle_24)
             if(PlayerActivity.favoritado){
                 mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
             }else{

@@ -5,7 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 
 // Classe Application utilizada para iniciar a funcionalidade das notificações junto do aplicativo
-class ClasseApplication : Application() {
+class Application : Application() {
 
     // Declaração de objetos/classes estáticas da barra de notificação
     companion object{

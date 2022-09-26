@@ -1,19 +1,22 @@
 package com.example.bloom
 
 import android.content.Context
+import android.content.Intent
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.provider.MediaStore
-import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import com.example.bloom.MainActivity.Companion.escuro
 import com.example.bloom.databinding.ActivityConfiguracoesBinding
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputEditText
+import java.security.AccessController.getContext
 import java.util.*
 import javax.mail.*
 import javax.mail.internet.InternetAddress
@@ -32,7 +35,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
 
     // Método chamado quando o aplicativo/activity é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
-        modoEscuro()
+        setTheme(R.style.Theme_BloomNoActionBar)
         super.onCreate(savedInstanceState)
 
         // Inicialização do binding
@@ -41,11 +44,18 @@ class ConfiguracoesActivity : AppCompatActivity() {
         // no caso, a ActivityMainBinding (activity_main.xml)
         setContentView(binding.root)
 
+        // Ajuste de cores para o modo escuro do Android
+        if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
+            binding.btnVoltarConfig.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.tituloActivityConfig.setTextColor(ContextCompat.getColor(this, R.color.grey2))
+            binding.btnFeedback.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
+        }
+
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
-        binding.btnVoltarConfig.setOnClickListener {finish()}
+        binding.btnVoltarConfig.setOnClickListener{ finish() }
 
         // Ao clicar no switch da configuração 1, passa o método para checar se o switch está ligado (true) ou desligado (false)
-        binding.switchConfig1.setOnClickListener { checarSwitch() }
+        binding.switchConfig1.setOnCheckedChangeListener{ _, _ -> checarSwitch() }
 
         // Ao clicar no botão de feedback, envia o usuário para a tela de feedback
         binding.btnFeedback.setOnClickListener {
@@ -68,18 +78,18 @@ class ConfiguracoesActivity : AppCompatActivity() {
                     label("Insira o assunto do feedback")
                     hint("Bug, sugestão, etc...")
                 })
-                // EditText do remetente do email
-                with(InputEditText("remetente_email") {
-                    required(false)
-                    drawable(R.drawable.ic_round_person_24)
-                    hint("Insira seu nome ou email (opcional)")
-                })
                 // EditText do conteúdo (feedback) do email
                 with(InputEditText("feedback_email") {
                     required(true)
                     drawable(R.drawable.ic_round_person_24)
                     label("Feedback")
                     hint("Eu amei o aplicativo!...")
+                })
+                // EditText do remetente do email
+                with(InputEditText("remetente_email") {
+                    required(false)
+                    drawable(R.drawable.ic_round_person_24)
+                    hint("Insira seu nome ou email (opcional)")
                 })
                 // Torna o objeto clicável novamente quando o diálogo for fechado
                 onClose { binding.btnFeedback.isEnabled = true }
@@ -178,16 +188,6 @@ class ConfiguracoesActivity : AppCompatActivity() {
         }
     }
 
-    // Método para deixar o aplicativo no seu modo padrão
-    private fun modoEscuro(){
-        application.setTheme(R.style.Theme_BloomNoActionBar)
-        setTheme(R.style.Theme_BloomNoActionBar)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black3)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.navigationBarColor = ContextCompat.getColor(this, R.color.black3)
-    }
-
     // Método para checar o switch quando o usuário clicar nele
     private fun checarSwitch(){
         // Se o switch estiver ligado
@@ -214,10 +214,10 @@ class ConfiguracoesActivity : AppCompatActivity() {
     // Método onResume, para quando o usuário volta a activity
     override fun onResume() {
         super.onResume()
-        // SharedPreferences, para salvar as definições do usuário
+        // SharedPreferences, para salvar as definições do usuário quanto a opção de esconder áudios do WhatsApp
         val switchEditor = getSharedPreferences("SWITCH1", MODE_PRIVATE)
         val switchAud = switchEditor.getBoolean("switchAud", switch1)
-        // Se o valor do switch for true
+        // Se o valor da configuração for true então liga o switch permanecerá ligado ao entrar na tela
         binding.switchConfig1.isChecked = switchAud
     }
 }

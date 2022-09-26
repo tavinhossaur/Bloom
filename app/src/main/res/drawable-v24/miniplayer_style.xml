@@ -2,8 +2,6 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true" >
         <shape>
-            <solid
-                android:color="@color/black"/>
             <corners
                 android:radius="5dp" />
         </shape>
@@ -11,7 +9,8 @@
     <item android:state_pressed="false">
         <shape>
             <solid
-                android:color="@color/black6" />
+                android:color="@color/black6"
+                />
             <corners
                 android:radius="5dp" />
         </shape>
