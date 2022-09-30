@@ -932,6 +932,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         criarPlayer()
         // E por fim, carrega os dados de layout da música (título, artista, imagem, etc.)
         carregarMusica()
+        // Atualiza a lista de músicas
+        musicaAdapter.atualizarLista(filaMusica)
 
         // Seleciona o texto do título para fazê-lo se movimentar e mostrar o texto inteiro
         MiniPlayerFragment.binding.tituloMusicaMp.isSelected = true

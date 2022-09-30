@@ -1,6 +1,7 @@
 package com.example.bloom
 
 import android.app.Application
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 
@@ -26,6 +27,8 @@ class Application : Application() {
         // Removendo som e vibração da notificação
         canalNotificacao.setSound(null, null)
         canalNotificacao.vibrationPattern = null
+        canalNotificacao.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+        canalNotificacao.importance = NotificationManager.IMPORTANCE_HIGH
         // Criando o gerenciador da notificação
         val gerenciadorNotificacao = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         // Registrando o canal notificação ao criador de canal de notificações (createNotificationChannel)

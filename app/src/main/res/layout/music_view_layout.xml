@@ -61,17 +61,16 @@
 
     </LinearLayout>
 
-    <!-- Ícone de sinalização de reprodução da música -->
-    <ImageView
+    <!-- Ícone (gif) de sinalização de reprodução da música -->
+    <pl.droidsonroids.gif.GifImageView
         android:id="@+id/play_anim"
-        android:layout_width="wrap_content"
+        android:layout_width="15dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="5dp"
+        android:layout_marginHorizontal="5dp"
         android:layout_toStartOf="@id/tempo_musica_view"
-        android:gravity="center"
-        android:src="@drawable/ic_round_equalizer_24"
-        android:visibility="gone"
-        app:tint="@color/purple1" />
+        android:src="@drawable/gif_music_playing"
+        android:tint="@color/purple1"
+        android:visibility="gone" />
 
     <!-- Duração da música -->
     <TextView

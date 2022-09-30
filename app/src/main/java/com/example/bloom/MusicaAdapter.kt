@@ -291,9 +291,32 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                     holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
                 }
 
+                // Se estiver reproduzindo músicas
+                if (PlayerActivity.musicaService != null) {
+                    // Verifica qual música está tocando e procura o id igual a ela na lista
+                    if (PlayerActivity.musicaAtual == listaMusicas[posicao].id) {
+                        // Muda a cor do título
+                        holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.purple1))
+                        // E torna visível a imagem de sinalização que a música está tocando
+                        holder.play.visibility = View.VISIBLE
+                    }else{
+                        // Muda a cor do título com base no modo escuro
+                        if (ConteudoPlaylistActivity.escuroContPl){
+                            // Cor clara do texto
+                            holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
+                        }else{
+                            // Cor escura do texto
+                            holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+                        }
+                        // E remove a imagem de sinalização que a música está tocando
+                        holder.play.visibility = View.GONE
+                    }
+                }
+
                 holder.root.setOnClickListener {
                     irParaMusica("ConteudoPlaylist", posicao)
                 }
+
                 holder.botao.setOnClickListener {
                     // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
                     holder.botao.isEnabled = false
@@ -459,6 +482,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                     // Muda a cor do título para uma cor mais clara
                     holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
                 }
+
                 // Esconde a duração da música que não tem utilidade nessa tela
                 holder.duracao.visibility = View.INVISIBLE
                 // Esconde o ícone de selecionado inicialmente
@@ -480,9 +504,49 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                 // Impede que o usuário clique em um dos botões das músicas
                 holder.botao.isEnabled = false
                 holder.botao.setImageResource(R.drawable.ic_round_queue_music_24)
+
+                // Cores padrão para esta tela
+                holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+                holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+
+                // Se estiver reproduzindo músicas
+                if (PlayerActivity.musicaService != null) {
+                    // Verifica qual música está tocando e procura o id igual a ela na lista
+                    if (PlayerActivity.musicaAtual == listaMusicas[posicao].id) {
+                        // Muda a cor do título
+                        holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.purple1))
+                        // E torna visível a imagem de sinalização que a música está tocando
+                        holder.play.visibility = View.VISIBLE
+                    }else{
+                        // A cor do título permanece a padrão para a tela
+                        // E remove a imagem de sinalização que a música está tocando
+                        holder.play.visibility = View.GONE
+                    }
+                }
             }
             // Em qualquer outra situação
             else -> {
+                // Se estiver reproduzindo músicas
+                if (PlayerActivity.musicaService != null) {
+                    // Verifica qual música está tocando e procura o id igual a ela na lista
+                    if (PlayerActivity.musicaAtual == listaMusicas[posicao].id) {
+                        // Muda a cor do título
+                        holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.purple1))
+                        // E torna visível a imagem de sinalização que a música está tocando
+                        holder.play.visibility = View.VISIBLE
+                    }else{
+                        // Muda a cor do título com base no modo escuro
+                        if (MainActivity.escuro){
+                            // Cor clara do texto
+                            holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
+                        }else{
+                            // Cor escura do texto
+                            holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+                        }
+                        // E remove a imagem de sinalização que a música está tocando
+                        holder.play.visibility = View.GONE
+                    }
+                }
                 // Quando clicado na view da música no RecyclerView, o usuário é levado para o player
                 holder.root.setOnClickListener {
                     when{

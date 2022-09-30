@@ -101,12 +101,14 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
             // Artista da música na barra de notificação
             .setContentText(PlayerActivity.filaMusica[PlayerActivity.posMusica].artista + " ● " + PlayerActivity.filaMusica[PlayerActivity.posMusica].album)
             // Ícone pequeno da barra de notificação
-            .setSmallIcon(R.drawable.ic_round_favorite_24)
+            .setSmallIcon(R.drawable.ic_round_queue_music_24)
             // Imagem da música atual na barra de notificação
             .setLargeIcon(imagemNotificacao)
             // Define o estilo da notificação, como o estilo padrão de notificações de um media player
             // juntamente de um token que representa a música atual sendo reproduzida para mostrá-la na notificação
             .setStyle(androidx.media.app.NotificationCompat.MediaStyle().setMediaSession(sessaoMusica.sessionToken))
+            // Prioridade da notificação para sempre dar prioridade alta para notificação do Bloom
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
             // Visibilidade da notificação, utilizado para mostrar a notificação até quando estiver na tela de bloqueio
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             // Fornece uma intent pendente para quando a barra de notificação for clicada pelo usuário
@@ -201,7 +203,7 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
             PlayerActivity.musicaService!!.mPlayer!!.prepare()
             // E o ícone do botão será o de pausa, já que está tocando
             PlayerActivity.binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_24)
-            // Chama o método para mostrar a barra de notificação da música
+            // Chama o método para definir os botões da barra de notificações
             setBtnsNotify()
             // Insere o texto do tempo decorrente formatado da seekBar, com base na posição atual da música no player
             PlayerActivity.binding.decTempoSeekBar.text = formatarDuracao(mPlayer!!.currentPosition.toLong())
@@ -212,6 +214,7 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
             PlayerActivity.binding.seekBarMusica.progress = 0
             // O progresso máximo do indicador da Seek Bar é definido pela duração total da música
             PlayerActivity.binding.seekBarMusica.max = mPlayer!!.duration
+            // Define a música atual do player a música que estiver tocando
             PlayerActivity.musicaAtual = PlayerActivity.filaMusica[PlayerActivity.posMusica].id
         } catch (e: Exception) {
             return
