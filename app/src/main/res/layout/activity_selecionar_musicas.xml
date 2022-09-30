@@ -57,7 +57,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
             android:text="Você ainda não possui músicas 🥺"
-            android:textAlignment="center"
             android:textColor="@color/grey3"
             android:textSize="20sp"
             android:visibility="invisible"

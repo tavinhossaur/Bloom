@@ -170,14 +170,12 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                     // Botão positivo que exclui a música em questão
                                     positiveButtonColorRes(R.color.purple1)
                                     onPositive("Sim, excluir") {
-                                        // Criando o objeto "musica" com base nos dados da música que foi selecionada
-                                        val musica = Musica(listaMusicas[posicao].id, listaMusicas[posicao].titulo, listaMusicas[posicao].artista, listaMusicas[posicao].album, listaMusicas[posicao].duracao, listaMusicas[posicao].imagemUri, listaMusicas[posicao].caminho)
                                         // Criando o objeto "arquivo" que leva o objeto "musica" e o seu caminho (url do arquivo no armazenamento do dispositivo)
                                         val arquivo = File(listaMusicas[posicao].caminho)
                                         // Exclui a música do armazenamento do dispositivo
                                         arquivo.delete()
                                         // Remove a música da lista
-                                        listaMusicas.remove(musica)
+                                        MainActivity.listaMusicaMain.removeAt(posicao)
                                         // Notifica que ela foi removida
                                         notifyItemRemoved(posicao)
                                         // E atualiza a lista de músicas
@@ -409,6 +407,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                             PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.removeAt(posicao)
                                             notifyItemRemoved(posicao)
                                             atualizarPlaylists()
+                                            // Se a playlist ficar com menos de uma música, esconde e mostra as views abaixo
                                             if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.size < 1){
                                                 ConteudoPlaylistActivity.binding.playlistImgCpl.setImageResource(R.drawable.bloom_lotus_icon_grey)
                                                 ConteudoPlaylistActivity.binding.fabRandomCpl.visibility = View.INVISIBLE
@@ -453,6 +452,15 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                                 notifyItemRemoved(posicao)
                                                 // E atualiza a lista
                                                 atualizarPlaylists()
+
+                                                // Se a playlist ficar com menos de uma música, esconde e mostra as views abaixo
+                                                if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.size < 1){
+                                                    ConteudoPlaylistActivity.binding.playlistImgCpl.setImageResource(R.drawable.bloom_lotus_icon_grey)
+                                                    ConteudoPlaylistActivity.binding.fabRandomCpl.visibility = View.INVISIBLE
+                                                    ConteudoPlaylistActivity.binding.musicasPlaylistRv.visibility = View.INVISIBLE
+                                                    ConteudoPlaylistActivity.binding.avisoCpl.visibility = View.VISIBLE
+                                                    ConteudoPlaylistActivity.binding.btnAddMusicas.visibility = View.VISIBLE
+                                                }
                                             }
                                             // Cor do botão negativo
                                             negativeButtonColorRes(R.color.grey3)

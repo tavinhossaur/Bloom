@@ -101,7 +101,7 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
             // Artista da música na barra de notificação
             .setContentText(PlayerActivity.filaMusica[PlayerActivity.posMusica].artista + " ● " + PlayerActivity.filaMusica[PlayerActivity.posMusica].album)
             // Ícone pequeno da barra de notificação
-            .setSmallIcon(R.drawable.ic_round_queue_music_24)
+            .setSmallIcon(R.drawable.bloom_logo_app)
             // Imagem da música atual na barra de notificação
             .setLargeIcon(imagemNotificacao)
             // Define o estilo da notificação, como o estilo padrão de notificações de um media player

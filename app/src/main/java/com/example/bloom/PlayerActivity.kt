@@ -835,9 +835,9 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 start()
             }
 
-            // Aplica a animação de translação vertical no bodyPlayer, levando 150px para cima
+            // Aplica a animação de translação vertical na progressBar, levando 150px para cima
             // em uma duração de 3000 milisegundos (3 segundos)
-            ObjectAnimator.ofFloat(binding.progressBar, "translationY", -150f).apply {
+            ObjectAnimator.ofFloat(binding.progressBar, "translationY", -60f).apply {
                 duration = 3000
                 start()
             }
@@ -867,7 +867,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 start()
             }
 
-            // Aplica a animação de translação vertical no bodyPlayer, levando para o lugar padrão
+            // Aplica a animação de translação vertical na progressBar, levando para o lugar padrão
             // em uma duração de 3000 milisegundos (3 segundos)
             ObjectAnimator.ofFloat(binding.progressBar, "translationY", 0f).apply {
                 duration = 3000

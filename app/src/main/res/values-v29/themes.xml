@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme. -->
     <style name="Theme.Bloom" parent="Theme.MaterialComponents.DayNight">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/white</item>
@@ -10,10 +10,12 @@
         <item name="colorSecondary">@color/purple1</item>
         <item name="colorSecondaryVariant">@color/purple2</item>
         <item name="colorOnSecondary">@color/black</item>
+        <!-- Turn off android dark mode -->
+        <item name="android:forceDarkAllowed">false</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@android:color/white</item>
-        <!-- Navigation bar color.
-        <item name="android:navigationBarColor">@android:color/white</item> -->
+        <!-- Navigation bar color. -->
+        <item name="android:navigationBarColor">@android:color/white</item>
         <!-- ActionBar style -->
         <item name="actionBarWidgetTheme">@style/ActionBarStyle</item>
         <item name="android:windowLightStatusBar">true</item>
@@ -31,10 +33,12 @@
         <item name="colorSecondary">@color/purple1</item>
         <item name="colorSecondaryVariant">@color/purple2</item>
         <item name="colorOnSecondary">@color/black</item>
+        <!-- Turn off android dark mode -->
+        <item name="android:forceDarkAllowed">false</item>
         <!-- Transparent status bar color. -->
         <item name="android:statusBarColor">@android:color/white</item>
-        <!-- Transparent navigation bar color.
-        <item name="android:navigationBarColor">@android:color/white</item> -->
+        <!-- Transparent navigation bar color. -->
+        <item name="android:navigationBarColor">@android:color/white</item>
         <!-- Ícones da status bar serão correspondentes a cor clara. -->
         <item name="android:windowLightStatusBar">true</item>
 
@@ -51,49 +55,17 @@
         <item name="colorSecondary">@color/purple1</item>
         <item name="colorSecondaryVariant">@color/purple2</item>
         <item name="colorOnSecondary">@color/black</item>
+        <!-- Turn off android dark mode -->
+        <item name="android:forceDarkAllowed">false</item>
         <!-- Transparent status bar color. -->
         <item name="android:windowTranslucentStatus">true</item>
         <!-- Transparent navigation bar color. -->
         <item name="android:windowTranslucentNavigation">true</item>
+        <!-- Para esconder a barra de status em uma activity de tela cheia -->
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
 
         <!-- Sheet Theme -->
         <item name="sheetsPrimaryColor">@color/purple1</item>
-    </style>
-
-    <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="windowSplashScreenBackground">@android:color/transparent</item>
-        <item name="android:windowBackground">@drawable/ic_splash_light</item>
-        <item name="postSplashScreenTheme">@style/Theme.Bloom</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="colorAccent">@color/white</item>
-    </style>
-
-    <!-- Texto da lista de itens do menu -->
-    <style name="menu_text_style" parent="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Menu">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textAllCaps">false</item>
-    </style>
-
-    <style name="ActionBarStyle" parent="@style/Theme.Bloom">
-        <item name="searchViewStyle">@drawable/pesquisa_style</item>
-        <!-- Support library compatibility -->
-        <item name="android:alwaysDrawnWithCache">true</item>
-        <item name="android:displayOptions">showTitle|showHome|homeAsUp</item>
-        <item name="searchIcon">@drawable/ic_round_search_24</item>
-        <item name="queryBackground">@android:color/transparent</item>
-        <item name="searchHintIcon">@null</item>
-    </style>
-
-    <!-- Sombra para o CardView -->
-    <style name="CardViewShadow" parent="CardView">
-        <item name="cardBackgroundColor">@android:color/transparent</item>
-        <item name="android:ambientShadowAlpha">1</item>
-        <item name="android:spotShadowAlpha">1</item>
-    </style>
-
-    <style name="PopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
-        <item name="android:popupElevation">10dp</item>
     </style>
 
 </resources>

@@ -324,15 +324,14 @@
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 
-        <!-- Botão repetir música (Repeat song) -->
-
     </LinearLayout>
 
+    <!-- Card da fila de reprodução -->
     <androidx.cardview.widget.CardView
         android:id="@+id/card_fila_rv"
         android:layout_width="350dp"
-        android:layout_height="300dp"
-        android:layout_marginBottom="30dp"
+        android:layout_height="250dp"
+        android:layout_marginBottom="50dp"
         android:visibility="gone"
         android:layout_gravity="center"
         app:cardElevation="8dp"
