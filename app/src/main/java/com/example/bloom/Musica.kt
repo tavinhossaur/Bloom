@@ -92,6 +92,7 @@ fun checarMusicasApagadas(lista: ArrayList<Musica>): ArrayList<Musica>{
 fun mudarPosMusica(adicionar : Boolean){
     // Se não estiver repetindo então execute o código abaixo
     if(!PlayerActivity.repetindo) {
+        PlayerActivity.musicaAdapter.atualizarLista(PlayerActivity.filaMusica)
         // Se estiver adicionando, e a posição da música for igual o tamanho da lista -1,
         // então a posição da música deverá ser 0, caso contrário apenas vá para próxima música
         if (adicionar) {
@@ -108,6 +109,13 @@ fun mudarPosMusica(adicionar : Boolean){
             } else {
                 --PlayerActivity.posMusica
             }
+        }
+        // Se o player estiver randomizando as músicas
+        if (PlayerActivity.randomizando){
+            // Aplica o método shuffle()
+            PlayerActivity.filaMusica.shuffle()
+            // E atualiza a lista
+            PlayerActivity.musicaAdapter.atualizarLista(PlayerActivity.filaMusica)
         }
     } // Se estiver repetindo, então não execute o código para ir para próxima música ou voltar para anterior
 }

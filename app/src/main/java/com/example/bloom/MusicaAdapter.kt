@@ -7,6 +7,7 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
@@ -32,7 +33,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
 
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
         // no caso, a MusicViewLayoutBinding (music_view_layout)
-        val root = binding.root
+        val root = binding.viewMusica
     }
 
     // Um ViewHolder descreve uma exibição de itens e metadados sobre seu lugar dentro do RecyclerView
@@ -56,7 +57,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
             // Carrega a posição da música e a uri da sua imagem
             .load(listaMusicas[posicao].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-            .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
             // Alvo da aplicação da imagem
             .into(holder.imagem)
 
@@ -66,15 +67,21 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
             holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
             // Muda a cor do título para uma cor mais clara
             holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
+            // Cor do background
+            holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.black1))
         }else{
             // Muda a cor do ícone preto
             holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
             // Muda a cor do título para uma cor mais escura
             holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+            // Cor do background
+            holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
         }
 
         // Quando o usuário clicar no botão de opções extras
         holder.botao.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            holder.botao.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
             holder.botao.isEnabled = false
             checarFavoritos(listaMusicas[posicao].id)
@@ -166,19 +173,21 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                     // Título do AlertDialog
                                     title("Deseja mesmo excluir a música?")
                                     // Mensagem do AlertDialog
-                                    content("Excluir a música \"${listaMusicas[posicao].titulo}\" de ${listaMusicas[posicao].artista}?\n\nAtenção: se a música que você estiver tentando excluir não for apagada, você precisará apaga-la manualmente no armazenamento do dispositivo.")
+                                    content("Excluir a música \"${listaMusicas[posicao].titulo}\" de ${listaMusicas[posicao].artista}?\n\nAtenção: se a música que você deseja excluir estiver localizada no armazenamento externo, você deverá excluí-la manualmente.")
                                     // Botão positivo que exclui a música em questão
                                     positiveButtonColorRes(R.color.purple1)
                                     onPositive("Sim, excluir") {
+                                        // Criando o objeto "musica" com base nos dados da música que foi selecionada
+                                        val musica = Musica(listaMusicas[posicao].id, listaMusicas[posicao].titulo, listaMusicas[posicao].artista, listaMusicas[posicao].album, listaMusicas[posicao].duracao, listaMusicas[posicao].imagemUri, listaMusicas[posicao].caminho)
                                         // Criando o objeto "arquivo" que leva o objeto "musica" e o seu caminho (url do arquivo no armazenamento do dispositivo)
                                         val arquivo = File(listaMusicas[posicao].caminho)
                                         // Exclui a música do armazenamento do dispositivo
                                         arquivo.delete()
                                         // Remove a música da lista
-                                        MainActivity.listaMusicaMain.removeAt(posicao)
+                                        MainActivity.listaMusicaMain.remove(musica)
                                         // Notifica que ela foi removida
                                         notifyItemRemoved(posicao)
-                                        // E atualiza a lista de músicas
+                                        // E atualiza a lista principal
                                         atualizarLista(MainActivity.listaMusicaMain)
                                     }
                                     // Cor do botão negativo
@@ -282,11 +291,15 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                     holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
                     // Muda a cor do título para uma cor mais clara
                     holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
+                    // Cor do background
+                    holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.black1))
                 }else{
                     // Muda a cor do ícone para branco
                     holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
                     // Muda a cor do título para uma cor mais clara
                     holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+                    // Cor do background
+                    holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
                 }
 
                 // Se estiver reproduzindo músicas
@@ -297,6 +310,8 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                         holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.purple1))
                         // E torna visível a imagem de sinalização que a música está tocando
                         holder.play.visibility = View.VISIBLE
+                        // Aplica uma animação pra troca de música
+                        holder.titulo.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
                     }else{
                         // Muda a cor do título com base no modo escuro
                         if (ConteudoPlaylistActivity.escuroContPl){
@@ -318,6 +333,8 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                 holder.botao.setOnClickListener {
                     // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
                     holder.botao.isEnabled = false
+                    // Muda a animação do botão ao ser clicado
+                    holder.botao.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
                     OptionsSheet().show(context) {
                         // Estilo da sheet (BottomSheetDialog)
                         style(SheetStyle.BOTTOM_SHEET)
@@ -436,7 +453,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                             // Título do AlertDialog
                                             title("Deseja mesmo excluir a música?")
                                             // Mensagem do AlertDialog
-                                            content("Excluir a música \"${listaMusicas[posicao].titulo}\" de ${listaMusicas[posicao].artista}?\n\nAtenção: se a música que você estiver tentando excluir não for apagada, você precisará apaga-la manualmente no armazenamento do dispositivo.")
+                                            content("Excluir a música \"${listaMusicas[posicao].titulo}\" de ${listaMusicas[posicao].artista}?\n\nAtenção: se a música que você deseja excluir estiver localizada no armazenamento externo, você deverá excluí-la manualmente.")
                                             // Botão positivo que exclui a música em questão
                                             positiveButtonColorRes(R.color.purple1)
                                             onPositive("Sim, excluir") {
@@ -450,8 +467,9 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                                 listaMusicas.remove(musica)
                                                 // Notifica que ela foi removida
                                                 notifyItemRemoved(posicao)
-                                                // E atualiza a lista
+                                                // E atualiza a lista da playlist e a principal
                                                 atualizarPlaylists()
+                                                atualizarLista(MainActivity.listaMusicaMain)
 
                                                 // Se a playlist ficar com menos de uma música, esconde e mostra as views abaixo
                                                 if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.size < 1){
@@ -484,11 +502,15 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                     holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
                     // Muda a cor do título para uma cor mais clara
                     holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
+                    // Cor do background
+                    holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.black1))
                 }else{
                     // Muda a cor do ícone para branco
                     holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
                     // Muda a cor do título para uma cor mais clara
                     holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+                    // Cor do background
+                    holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
                 }
 
                 // Esconde a duração da música que não tem utilidade nessa tela
@@ -516,6 +538,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                 // Cores padrão para esta tela
                 holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
                 holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+                holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
 
                 // Se estiver reproduzindo músicas
                 if (PlayerActivity.musicaService != null) {
@@ -525,6 +548,8 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                         holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.purple1))
                         // E torna visível a imagem de sinalização que a música está tocando
                         holder.play.visibility = View.VISIBLE
+                        // Aplica uma animação pra troca de música
+                        holder.titulo.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
                     }else{
                         // A cor do título permanece a padrão para a tela
                         // E remove a imagem de sinalização que a música está tocando
@@ -542,6 +567,8 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                         holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.purple1))
                         // E torna visível a imagem de sinalização que a música está tocando
                         holder.play.visibility = View.VISIBLE
+                        // Aplica uma animação pra troca de música
+                        holder.titulo.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
                     }else{
                         // Muda a cor do título com base no modo escuro
                         if (MainActivity.escuro){

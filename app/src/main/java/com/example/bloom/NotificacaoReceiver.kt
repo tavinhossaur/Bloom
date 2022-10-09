@@ -110,6 +110,15 @@ class NotificacaoReceiver : BroadcastReceiver() {
     // e sincronizar a música atual do player com a música atual que aparece na barra de notificação da música
     private fun proxMusicaAnte(proximo : Boolean, context: Context){
         if (!PlayerActivity.repetindo){
+            // ATUALIZAR LISTA PARA OS INDICADORES DE MÚSICA ATUAL MUDAREM
+            // Atualiza a lista de músicas da tela principal para mudar o indicador de música atual
+            // Não é necessario fazer a verificação de inicialização porque está é a tela principal, então ela sempre será inicializada queira ou não
+            MainActivity.musicaAdapter.atualizarLista(MainActivity.listaMusicaMain)
+            // O mesmo serve para a tela do player, que sempre será inicializada quando uma música for selecionada
+            PlayerActivity.musicaAdapter.atualizarLista(PlayerActivity.filaMusica)
+            // Verifica se a tela de playlists foi inicializada, caso tenha sido, então atualiza a lista dela também.
+            if (ConteudoPlaylistActivity.init){ ConteudoPlaylistActivity.musicaAdapter.atualizarPlaylists() }
+
             mudarPosMusica(adicionar = proximo)
             PlayerActivity.musicaService!!.criarPlayer()
             PlayerActivity.musicaService!!.carregarMusica()
@@ -168,7 +177,6 @@ class NotificacaoReceiver : BroadcastReceiver() {
                 PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_24)
                 MiniPlayerFragment.binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_miniplayer_24)
                 PlayerActivity.musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_24)
-
             }else{
                 PlayerActivity.binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_border_24)
                 MiniPlayerFragment.binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_border_miniplayer_24)

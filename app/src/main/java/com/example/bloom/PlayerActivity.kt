@@ -19,6 +19,7 @@ import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.AnimationUtils
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -42,8 +43,6 @@ import java.io.File
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
 class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {
 
-    private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
-
     // Declaração de objetos/classes estáticas
     companion object{
         var filaMusica : ArrayList<Musica> = ArrayList() // Fila de reprodução das músicas
@@ -51,11 +50,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         var tocando : Boolean = false                    // Variável para definir se a música está tocando ou não, por padrão: "false"
         var musicaService : MusicaService? = null        // Serviço da música, por padrão fica como null
         var musicaAtual : String = ""                    // Variável que recebe o id da música atual tocando
-        var repetindo : Boolean = false                  // Variável para definir se a música está repetindo ou não, por padrão: "false"
         var favoritado = false                           // Variável para definir se a música está favoritada ou não
         var favIndex : Int = -1                          // Variável indicadora da música favoritada
         var telaCheia : Boolean = false                  // Variável para definir se o player está em tela cheia ou não
-        // var randomizando : Boolean = false
+        var repetindo : Boolean = false                  // Variável para definir se a música está repetindo ou não, por padrão: "false"
+        var randomizando : Boolean = false               // Variável para definir se a reprodução está randomizada ou não, por padrão: "false"
+        var modoReproducao = 0                           // Por padrão o modo da reprodução é definido como 0 (Reprodução normal)
 
         // Variáveis para indentificar qual opção do timer o usuário selecionou
         var min15 : Boolean = false
@@ -64,6 +64,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityPlayerBinding // binding é a variável do ViewBinding para ligar as views ao código
+        @SuppressLint("StaticFieldLeak")
+        lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
     }
 
     // Método chamado quando o aplicativo é iniciado
@@ -71,6 +73,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_BloomPlayer)
         super.onCreate(savedInstanceState)
+        // Muda a animação de transição da tela
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         // Inicialização do binding
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
@@ -81,11 +85,19 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         // FUNÇÕES DA ACTIVITY (TELA)
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
-        binding.btnFecharTpl.setOnClickListener {finish()}
+        binding.btnFecharTpl.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnFecharTpl.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_popup_exit))
+            finish()
+            // Muda a animação de transição da tela
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        }
         // Texto do cabeçalho do player, mostrando ao usuário a quantidade total de músicas dele
         binding.musicaAtualTotal.text = "Você tem ${MainActivity.listaMusicaMain.size} músicas no total."
         // Ao clicar no botão de opções extras
         binding.btnExtraTpl.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnExtraTpl.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Cria o popup menu
             val contexto: Context = ContextThemeWrapper(this, R.style.PopupMenuStyle)
             val popup = PopupMenu(contexto, binding.btnExtraTpl, Gravity.CENTER)
@@ -161,6 +173,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Ao clicar no botão de favorito, favorita a música atual do player
         binding.btnFavTpl.setOnClickListener {
             favIndex = checarFavoritos(filaMusica[posMusica].id)
+            // Muda a animação do botão ao ser clicado
+            binding.btnFavTpl.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Se a música já estiver favoritada
             if (favoritado){
                 // Então defina a variável favoritado para false
@@ -184,6 +198,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         // Ao clicar no botão de compartilhar música
         binding.btnCompart.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnCompart.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Cria a intent para o compartilhamento
             val compartIntent = Intent()
             // Define a ação que será feita na intent (ACTION_SEND), ("enviar")
@@ -200,6 +216,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Quando clicado no botão de timer, uma BottomSheet bar aparece para o usuário
         // selecionar entre 3 opções de tempos em que ele quer que a música encerre.
         binding.btnTimer.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnTimer.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Tempo leva todos os booleans das opções de tempo
             val tempo = min15 || min30 || min60
             // Se caso nenhum deles forem "true", então chame o método para o BottomSheetBar
@@ -254,6 +272,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Quando clicado no botão de equalizador, ele tentará levar o usuário
         // para o painel de controle de equalizador de som padrão do Android.
         binding.btnEqual.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnEqual.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
             binding.btnEqual.isEnabled = false
             try {
@@ -280,15 +300,15 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         // Para deixar o player em tela cheia
         binding.btnFullScreen.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnFullScreen.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Chama o método "telaCheia()"
             telaCheia()
         }
 
         // Para mostrar a fila de reprodução atual
-        binding.btnFila.setOnClickListener {
-            // Chama o método "mostrarFilaAtual()"
-            mostrarFilaAtual()
-        }
+        // Chama o método "mostrarFilaAtual()"
+        binding.btnFila.setOnClickListener { mostrarFilaAtual() }
 
         // Quando clicar no botão do card, ele irá fechar e mostra as views escondidas
         binding.btnFecharCard.setOnClickListener {
@@ -308,22 +328,33 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
 
         // FUNÇÕES DE CONTROLE DO PLAYER
         // Ao clicar no botão play/pause, chama o método para tocar ou pausar a música
-        binding.btnPpTpl.setOnClickListener {tocarPausarMusica()}
+        binding.btnPpTpl.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnPpTpl.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
+            tocarPausarMusica()
+        }
         // Ao clicar no botão "previous", chama o método trocar música
         // com valor "false" para o Boolean "proximo"
-        binding.btnAnte.setOnClickListener {trocarMusica(false)}
+        binding.btnAnte.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnAnte.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
+            trocarMusica(false)
+        }
         // Ao clicar no botão "next", chama o método trocar música
         // com valor "true" para o Boolean "proximo"
-        binding.btnProx.setOnClickListener {trocarMusica(true)}
-
-        // Por padrão o modo da reprodução é definido como 0 (Reprodução normal)
-        var modoReproducao = 0
+        binding.btnProx.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnProx.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
+            trocarMusica(true)
+        }
 
         // Quando for clicado no botão de repetir a música, terão 3 opções
         binding.btnRepetir.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnRepetir.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Toda vez que é clicado aumenta +1 no modo de reprodução até 3
             // Quando chega no 3, as opções resetam
-            modoReproducao = (++modoReproducao) % 2 // % 3
+            modoReproducao = (++modoReproducao) % 3 // % 3
             // Quando o modo de reprodução for
             when(modoReproducao){
                 // 0 - Reprodução normal da música
@@ -331,7 +362,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 // 1 - Repete a música atual
                 1 -> reproducaoRepetir()
                 // 2 - Reproduz a playlist randômicamente
-                //2 -> reproducaoRandom()
+                2 -> reproducaoRandom()
             }
         }
 
@@ -356,29 +387,28 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     private fun reproducaoNormal(){
         // Se a reprodução for normal, então a música não está repetindo
         repetindo = false
-        //randomizando = false
+        randomizando = false
         // O ícone do botão muda para o ícone de reprodução normal
         binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_24)
     }
 
     // Método para definir a repetição da música atual
     private fun reproducaoRepetir() {
-        // Se a reprodução não for normal, então a música está repetindo
+        // Se a reprodução não for normal e nem randomizada, então a música está repetindo
         repetindo = true
-        //randomizando = false
+        randomizando = false
         // O ícone do botão muda para o ícone de reprodução de uma única música
         binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_one_24)
     }
 
-    /* Método para definir a reprodução randômica da lista de músicas
+    // Método para definir a reprodução randômica da lista de músicas
     private fun reproducaoRandom(){
+        // Se a reprodução não for normal e nem estiver repetindo então está randomizando
         repetindo = false
         randomizando = true
-        binding.btnRepetir.setImageResource(R.drawable.ic_baseline_shuffle_24)
-        binding.btnRepetir.setColorFilter(resources.getColor(R.color.purple1))
-        Toast.makeText(this, "Playlist randomizada", Toast.LENGTH_SHORT).show()
+        // O ícone do botão muda para o ícone de reprodução aleatória
+        binding.btnRepetir.setImageResource(R.drawable.ic_round_shuffle_24)
     }
-     */
 
     // Método que cria o player da música e faz ela reproduzir
     private fun criarPlayer() {
@@ -428,7 +458,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Carrega a posição da música e a uri da sua imagem
             .load(filaMusica[posMusica].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-            .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
             // Alvo da aplicação da imagem
             .into(binding.imgMusicaTpl)
 
@@ -470,13 +500,31 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Se estiver com o timer ligado, o botão permanece "ligado"
         if(min15 || min30 || min60) binding.btnTimer.setImageResource(R.drawable.ic_round_timer_24)
 
+        // Se a música for favorita, muda o ícone de favorito
         if (favoritado) {
             binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_24)
         } else{
             binding.btnFavTpl.setImageResource(R.drawable.ic_round_favorite_border_24)
         }
 
-        if (repetindo) binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_one_24)
+        // Evita um bug de troca de opção quando o usuário sai e entra do player
+        when{
+            // Se estiver repetindo
+            repetindo -> {
+                modoReproducao = 1
+                binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_one_24)
+            }
+            // Se estiver randomizando
+            randomizando ->{
+                modoReproducao = 2
+                binding.btnRepetir.setImageResource(R.drawable.ic_round_shuffle_24)
+            }
+            // Caso contrário (nenhum dos dois, reprodução normal)
+            else -> {
+                modoReproducao = 0
+                binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_24)
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -500,6 +548,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         binding.filaRv.layoutManager = LinearLayoutManager(this@PlayerActivity)
         // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
         binding.filaRv.isMotionEventSplittingEnabled = false
+
+        checarMusicasApagadas(filaMusica)
 
         // Para reprodução das músicas
         // Recebe os dados enviados ao ser enviado a tela pela intent
@@ -720,6 +770,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             carregarMusica()
             criarPlayer()
         }
+        // Atualiza a lista de músicas do player
+        musicaAdapter.atualizarLista(filaMusica)
     }
 
     // Método para poder chamar o BottomSheetDialog ao botão do timer ser clicado
@@ -888,7 +940,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     }
 
     // Método para mostrar o card com a fila de reprodução atual
-    private fun mostrarFilaAtual(){
+    private fun mostrarFilaAtual() {
         binding.cabecalhoPlayer.visibility = View.INVISIBLE
         binding.btnEspecial.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
@@ -908,7 +960,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Retorna o serviço do sistema "AUDIO_SERVICE" como o administrador de áudio
             musicaService!!.audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
             // Passa o método para requisitar o foco de áudio, passando como parâmetro a classe do listener (musicaService)
-            // o tipo de streaming (STREAM_MUSIC), e a operação a ser feita (AUDIOFOCUS_GAIN).
+            // o tipo de streaming (STREAM_MUSIC), e o evento a ser "notado" (AUDIOFOCUS_GAIN).
             musicaService!!.audioManager.requestAudioFocus(musicaService, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)
         }
         // Cria o reprodutor e reproduz a música selecionada
@@ -923,6 +975,13 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         musicaService = null
     }
 
+    // Quando o usuário utilizar do botão voltar do celular
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Muda a animação de transição da tela
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+    }
+
     // Método para que, quando a música for completada
     override fun onCompletion(mPlayer: MediaPlayer?) {
         // Será chamado o método para mudar a posição da música, com valor true, ou seja, irá para próxima música
@@ -932,8 +991,14 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         criarPlayer()
         // E por fim, carrega os dados de layout da música (título, artista, imagem, etc.)
         carregarMusica()
-        // Atualiza a lista de músicas
+        // ATUALIZAR LISTA PARA OS INDICADORES DE MÚSICA ATUAL MUDAREM
+        // Atualiza a lista de músicas da tela principal para mudar o indicador de música atual
+        // Não é necessario fazer a verificação de inicialização porque está é a tela principal, então ela sempre será inicializada queira ou não
+        MainActivity.musicaAdapter.atualizarLista(MainActivity.listaMusicaMain)
+        // Atualiza a lista de músicas do player
         musicaAdapter.atualizarLista(filaMusica)
+        // Verifica se a tela de playlists foi inicializada, caso tenha sido, então atualiza a lista dela também.
+        if (ConteudoPlaylistActivity.init){ ConteudoPlaylistActivity.musicaAdapter.atualizarPlaylists() }
 
         // Seleciona o texto do título para fazê-lo se movimentar e mostrar o texto inteiro
         MiniPlayerFragment.binding.tituloMusicaMp.isSelected = true

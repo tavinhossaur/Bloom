@@ -9,10 +9,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.TransformationUtils.centerCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.bloom.databinding.PlaylistViewLayoutBinding
-import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.input.InputSheet
@@ -64,14 +62,14 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
                 .load(PlaylistsActivity.playlists.modelo[posicao].playlist[0].imagemUri)
                 // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
                 // junto do método centerCrop() para ajustar a imagem dentro da view
-                .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
+                .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
                 // Alvo da aplicação da imagem
                 .into(holder.imagem)
         // Caso a playlist esteja vazia
         }else{
             Glide.with(context)
                 // Carrega a posição da imagem placeholder
-                .load(R.drawable.placeholder_bloom_grey)
+                .load(R.drawable.placeholder_grey)
                 // Faz a aplicação da imagem com o método centerCrop() para ajustar a imagem dentro da view
                 .apply(RequestOptions().centerCrop())
                 // Alvo da aplicação da imagem

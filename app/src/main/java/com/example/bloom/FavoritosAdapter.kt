@@ -6,11 +6,10 @@ import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
-import androidx.core.graphics.drawable.toDrawable
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -34,7 +33,7 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
 
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
         // no caso, a FavoritosViewLayoutBinding (favoritos_view_layout)
-        val root = binding.root
+        val root = binding.viewFavoritos
     }
 
     // Um ViewHolder descreve uma exibição de itens e metadados sobre seu lugar dentro do RecyclerView
@@ -57,7 +56,7 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
             // Carrega a posição da música e a uri da sua imagem
             .load(listaFavoritos[posicao].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-            .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
             // Alvo da aplicação da imagem
             .into(holder.imagem)
 
@@ -75,6 +74,8 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
         holder.btnFav.setOnClickListener {
             // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
             holder.btnFav.isEnabled = false
+            // Muda a animação do botão ao ser clicado
+            holder.btnFav.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Sheet de alerta
             InfoSheet().show(context){
                 // Estilo do sheet (AlertDialog)
@@ -112,14 +113,20 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
         // Ajuste de cores para o modo escuro do Android
         if (FavoritosActivity.escuroFav){
             holder.btnExtra.setColorFilter(ContextCompat.getColor(context, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+            // Cor do background
+            holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.black1))
         }else{
             holder.btnExtra.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+            // Cor do background
+            holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
         }
 
         // Quando o usuário clicar no botão de opções extras
         holder.btnExtra.setOnClickListener {
             // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
             holder.btnExtra.isEnabled = false
+            // Muda a animação do botão ao ser clicado
+            holder.btnExtra.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Sheet de opções
             OptionsSheet().show(context) {
                 // Título da sheet
@@ -166,7 +173,7 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
                                     // Título do AlertDialog
                                     title("Deseja mesmo excluir a música?")
                                     // Mensagem do AlertDialog
-                                    content("Excluir a música \"${listaFavoritos[posicao].titulo}\" de ${listaFavoritos[posicao].artista}?\n\nAtenção: se a música que você estiver tentando excluir não for apagada, você precisará apaga-la manualmente no armazenamento do dispositivo.")
+                                    content("Excluir a música \"${listaFavoritos[posicao].titulo}\" de ${listaFavoritos[posicao].artista}?\n\nAtenção: se a música que você deseja excluir estiver localizada no armazenamento externo, você deverá excluí-la manualmente.")
                                     // Botão positivo que exclui a música em questão
                                     positiveButtonColorRes(R.color.purple1)
                                     onPositive("Sim, excluir") {

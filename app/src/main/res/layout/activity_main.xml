@@ -54,6 +54,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="Definições"
+                        android:textStyle="bold"
                         android:textSize="14sp"/>
 
                 </com.google.android.material.card.MaterialCardView>
@@ -85,7 +86,8 @@
                         android:layout_marginTop="45dp"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="Favoritos"
+                        android:text="Favoritas"
+                        android:textStyle="bold"
                         android:textSize="14sp"/>
 
                 </com.google.android.material.card.MaterialCardView>
@@ -118,6 +120,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="Playlists"
+                        android:textStyle="bold"
                         android:textSize="14sp"/>
 
                 </com.google.android.material.card.MaterialCardView>
@@ -154,7 +157,7 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="Reprodução aleatória"
-                        android:textAllCaps="false"
+                        android:textStyle="bold"
                         android:textSize="16sp"
                         app:drawableStartCompat="@drawable/ic_round_play_circle_24"
                         app:drawableTint="@color/purple1" />
@@ -218,7 +221,7 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/mini_player"
             android:name="com.example.bloom.MiniPlayerFragment"
-            android:layout_width="370dp"
+            android:layout_width="360dp"
             android:layout_height="60dp"
             android:background="@drawable/miniplayer_style"
             android:layout_marginBottom="20dp"

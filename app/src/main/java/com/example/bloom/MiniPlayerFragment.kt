@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -21,6 +22,7 @@ class MiniPlayerFragment : Fragment(){
     companion object{
         @SuppressLint("StaticFieldLeak")
         lateinit var binding: FragmentMiniPlayerBinding // binding é a variável do ViewBinding para ligar as views ao código
+        var proxMusica : Boolean = false
     }
 
     // Criação da view do miniplayer
@@ -56,6 +58,8 @@ class MiniPlayerFragment : Fragment(){
         // Ao clicar no botão de favorito, favorita a música atual do player
         binding.btnFavMp.setOnClickListener {
             PlayerActivity.favIndex = checarFavoritos(PlayerActivity.filaMusica[PlayerActivity.posMusica].id)
+            // Muda a animação do botão ao ser clicado
+            binding.btnFavMp.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Se a música já estiver favoritada
             if (favoritado){
                 // Então defina a variável favoritado para false
@@ -80,12 +84,17 @@ class MiniPlayerFragment : Fragment(){
         // Ao clicar no botão "next", chama o método trocar música
         // com valor "true" para o Boolean "proximo"
         binding.btnProxMp.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnProxMp.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             mudarPosMusica(adicionar = true)
             PlayerActivity.musicaService!!.criarPlayer()
             carregarMusica()
             // Muda o ícone da barra de notificação
             setBtnsNotify()
             tocar()
+            // Define que a música mudou
+            proxMusica = true
+            MainActivity.musicaAdapter.atualizarLista(MainActivity.listaMusicaMain)
         }
         return viewMiniPlayer
     }
@@ -113,7 +122,7 @@ class MiniPlayerFragment : Fragment(){
             // Carrega a posição da música e a uri da sua imagem
             .load(PlayerActivity.filaMusica[PlayerActivity.posMusica].imagemUri)
             // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-            .apply(RequestOptions().placeholder(R.drawable.placeholder_bloom_grey).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
             // Alvo da aplicação da imagem
             .into(binding.imgMusicaMp)
 

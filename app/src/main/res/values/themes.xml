@@ -12,8 +12,6 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@android:color/white</item>
-        <!-- Navigation bar color.
-        <item name="android:navigationBarColor">@android:color/white</item> -->
         <!-- ActionBar style -->
         <item name="actionBarWidgetTheme">@style/ActionBarStyle</item>
         <item name="android:windowLightStatusBar">true</item>
@@ -64,6 +62,7 @@
         <item name="windowSplashScreenBackground">@android:color/transparent</item>
         <item name="android:windowBackground">@drawable/ic_splash_light</item>
         <item name="postSplashScreenTheme">@style/Theme.Bloom</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="colorAccent">@color/white</item>

@@ -2,12 +2,16 @@ package com.example.bloom
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.os.*
+import android.os.Binder
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -56,42 +60,45 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
         // Cria o objeto que contém a ação de abrir o app na tela principal
         val notifyPlayerIntent = Intent(baseContext, MainActivity::class.java)
         // Leva o usuário para a tela principal ao clicar na notificação
-        val notifyContentIntent = PendingIntent.getActivity(this, 0, notifyPlayerIntent, 0)
+        val notifyContentIntent = PendingIntent.getActivity(this, 0, notifyPlayerIntent, FLAG_IMMUTABLE)
 
         // Cria o objeto que contém a ação de voltar a música
         val anteriorIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.ANTERIOR)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
-        val anteriorPendingIntent = PendingIntent.getBroadcast(baseContext, 0, anteriorIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val anteriorPendingIntent = PendingIntent.getBroadcast(baseContext, 0, anteriorIntent, FLAG_IMMUTABLE)
 
         // Cria o objeto que contém a ação de tocar/pausar a música atual
         val tocarIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.TOCAR)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
-        val tocarPendingIntent = PendingIntent.getBroadcast(baseContext, 0, tocarIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val tocarPendingIntent = PendingIntent.getBroadcast(baseContext, 0, tocarIntent, FLAG_IMMUTABLE)
 
         // Cria o objeto que contém a ação de ir para a próxima música da lista
         val proximoIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.PROXIMO)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
-        val proximoPendingIntent = PendingIntent.getBroadcast(baseContext, 0, proximoIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val proximoPendingIntent = PendingIntent.getBroadcast(baseContext, 0, proximoIntent, FLAG_IMMUTABLE)
 
         // Cria o objeto que contém a ação de favoritar a música atual
         val favoritarIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.FAVORITAR)
         // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
-        val favoritarPendingIntent = PendingIntent.getBroadcast(baseContext, 0, favoritarIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val favoritarPendingIntent = PendingIntent.getBroadcast(baseContext, 0, favoritarIntent, FLAG_IMMUTABLE)
 
         // Cria o objeto que contém a ação de limpar a barra de músicas
         val limparIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.LIMPAR)
         // Cria a intent pendente para a intent de limpar a notificação
-        val limparPendingIntent = PendingIntent.getBroadcast(baseContext, 0, limparIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val limparPendingIntent = PendingIntent.getBroadcast(baseContext, 0, limparIntent, FLAG_IMMUTABLE)
 
         // Utiliza o método de Musica.kt para retornar a imagem da música com base no caminho da música da lista
-        val imgMusica = retornarImgMusica(PlayerActivity.filaMusica[PlayerActivity.posMusica].caminho)
+        // O try catch evita que um crash aconteça caso o usuário exclua a música anterior ou a próxima da atual e a reprodução mude para uma delas
+        val imgMusica = try{
+            retornarImgMusica(PlayerActivity.filaMusica[PlayerActivity.posMusica].caminho)
+        }catch (e: Exception){return}
         val imagemNotificacao =
             // Se o objeto imgMusica for diferente de nulo, então "imagemNotificação" será a decodificação do array de bytes da imagem da música
             if(imgMusica != null){
                 BitmapFactory.decodeByteArray(imgMusica, 0, imgMusica.size)
                 // Caso contrário, será a imagem padrão definida abaixo
             }else{
-                BitmapFactory.decodeResource(resources, R.drawable.placeholder_bloom_grey)
+                BitmapFactory.decodeResource(resources, R.drawable.placeholder_grey)
             }
 
         // Criação da notificação

@@ -30,12 +30,12 @@ import java.io.File
 // Classe da activity
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
-
     // Declaração de objetos/classes estáticas para poder utilizar
     companion object{
         lateinit var listaMusicaMain : ArrayList<Musica>     // Lista de músicas da tela principal
         lateinit var listaMusicaPesquisa : ArrayList<Musica> // Lista de músicas que aparecerá na pesquisa
+        @SuppressLint("StaticFieldLeak")
+        lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityMainBinding           // binding é a variável do ViewBinding para ligar as views ao código
         var pesquisando : Boolean = false                    // Variável para indentificar se o usuário está fazendo uma pesquisa de músicas

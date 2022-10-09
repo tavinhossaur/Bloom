@@ -68,4 +68,14 @@
         <item name="sheetsPrimaryColor">@color/purple1</item>
     </style>
 
+    <style name="SplashScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="windowSplashScreenBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@drawable/ic_splash_light</item>
+        <item name="postSplashScreenTheme">@style/Theme.Bloom</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+
 </resources>

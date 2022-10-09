@@ -5,8 +5,8 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bloom.databinding.ActivityFavoritosBinding
@@ -34,7 +34,7 @@ class FavoritosActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Faz a checagem de músicas apagadas que poderiam estar favoritadas
-        listaFavoritos = checarMusicasApagadas(listaFavoritos)
+        checarMusicasApagadas(listaFavoritos)
 
         // Para otimização do RecyclerView, o seu tamanho é fixo,
         // mesmo quando itens são adicionados ou removidos.
@@ -57,7 +57,11 @@ class FavoritosActivity : AppCompatActivity() {
         binding.favoritosRv.isMotionEventSplittingEnabled = false
 
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
-        binding.btnVoltarFav.setOnClickListener {finish()}
+        binding.btnVoltarFav.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnVoltarFav.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_popup_exit))
+            finish()
+        }
 
         // Quando clicado no botão de randomizar músicas da tela de favoritos
         binding.fabFavRandom.setOnClickListener {

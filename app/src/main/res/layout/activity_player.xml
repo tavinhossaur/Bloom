@@ -81,24 +81,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <!-- Botão para acessar as letras da música
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_letras_tpl"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_margin="5dp"
-                android:padding="-1dp"
-                android:textSize="12sp"
-                android:text="Letras"
-                android:textAllCaps="false"
-                android:textColor="@color/grey3"
-                android:drawableStart="@drawable/ic_round_clear_all_24"
-                android:drawableTint="@color/purple1"
-                app:strokeWidth="0dp"
-                style="@style/Widget.Material3.Button.OutlinedButton"/>
-            -->
-
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Título da música -->
@@ -170,7 +152,7 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <!-- Botão compartilhar (Share) -->
+        <!-- Botão compartilhar -->
         <ImageView
             android:id="@+id/btn_compart"
             android:layout_width="27dp"
@@ -181,7 +163,7 @@
             app:tint="@color/white"
             tools:ignore="NestedWeights"/>
 
-        <!-- Botão temporizador (Timer) -->
+        <!-- Botão temporizador -->
         <ImageView
             android:id="@+id/btn_timer"
             android:layout_width="27dp"
@@ -191,7 +173,7 @@
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 
-        <!-- Botão equalizador (Equalizer) -->
+        <!-- Botão equalizador -->
         <ImageView
             android:id="@+id/btn_equal"
             android:layout_width="27dp"
@@ -201,7 +183,17 @@
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 
-        <!-- Botão adicionar à playlist (Add to playlist) -->
+        <!-- Botão de letras
+        <ImageView
+            android:id="@+id/btn_letras"
+            android:layout_width="27dp"
+            android:layout_height="27dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_round_clear_all_24"
+            android:forceDarkAllowed="false"
+            app:tint="@color/white"/> -->
+
+        <!-- Botão de visibilidade -->
         <ImageView
             android:id="@+id/btn_full_screen"
             android:layout_width="27dp"
@@ -330,8 +322,8 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/card_fila_rv"
         android:layout_width="350dp"
-        android:layout_height="250dp"
-        android:layout_marginBottom="50dp"
+        android:layout_height="230dp"
+        android:layout_marginBottom="70dp"
         android:visibility="gone"
         android:layout_gravity="center"
         app:cardElevation="8dp"

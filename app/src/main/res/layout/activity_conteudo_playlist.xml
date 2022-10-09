@@ -44,11 +44,11 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="Nome da playlist"
+                android:fontFamily="@font/baloo_semibold"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textStyle="bold"
                 android:textColor="@color/black2"
-                android:textSize="18sp"/>
+                android:textSize="20sp"/>
 
             <!-- Título -->
             <TextView
@@ -58,9 +58,10 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="por Usuário"
+                android:fontFamily="@font/baloo_semibold"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:textSize="14sp"/>
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
@@ -89,17 +90,6 @@
             app:cardElevation="5dp"
             app:cardCornerRadius="10dp"
             app:cardPreventCornerOverlap="false">
-
-            <!-- Botão para mudar a imagem da playlist
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_img_playlist"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:layout_gravity="end|bottom"
-                android:background="@drawable/ic_twotone_image_24"
-                android:backgroundTint="@color/black3"/>
-            -->
 
             <ImageView
                 android:id="@+id/playlist_img_cpl"

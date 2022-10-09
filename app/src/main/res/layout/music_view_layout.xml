@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/viewMusica"
     android:layout_width="match_parent"
-    android:layout_height="75dp"
-    android:gravity="center">
+    android:layout_height="75dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/viewMusica"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
 
     <!-- Card que contém a foto de capa da música -->
     <androidx.cardview.widget.CardView
@@ -93,5 +104,9 @@
         android:layout_marginEnd="10dp"
         android:gravity="center"
         android:src="@drawable/ic_baseline_more_vert_24" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>

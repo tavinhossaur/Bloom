@@ -4,20 +4,15 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.bloom.databinding.ActivityPlaylistsBinding
-import com.maxkeppeler.sheets.core.IconButton
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputEditText
-import java.lang.Math.random
-import java.util.Collections.shuffle
 
 class PlaylistsActivity : AppCompatActivity() {
 
@@ -62,7 +57,11 @@ class PlaylistsActivity : AppCompatActivity() {
         binding.playlistsRv.isMotionEventSplittingEnabled = false
 
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
-        binding.btnVoltarPl.setOnClickListener {finish()}
+        binding.btnVoltarPl.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnVoltarPl.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_popup_exit))
+            finish()
+        }
 
         // Ao clicar no botão de criar playlists, chama o método para criar uma playlist
         binding.fabCriarPl.setOnClickListener {criarPlaylist()}

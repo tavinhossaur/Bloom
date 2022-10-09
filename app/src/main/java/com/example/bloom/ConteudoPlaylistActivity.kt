@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
@@ -24,18 +25,20 @@ import com.maxkeppeler.sheets.input.type.InputEditText
 
 class ConteudoPlaylistActivity : AppCompatActivity() {
 
-    private lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
-
     companion object {
         var posPlaylistAtual : Int = -1 // Posição da playlist selecionada
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityConteudoPlaylistBinding // binding é a variável do ViewBinding para ligar as views ao código
+        @SuppressLint("StaticFieldLeak")
+        lateinit var musicaAdapter : MusicaAdapter // Variável que leva a classe MusicAdapter
         var escuroContPl : Boolean = false // Variável para definir se o modo escuro está ligado ou desligado
+        var init = false
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_BloomNoActionBar)
         super.onCreate(savedInstanceState)
+        init = true
         // Inicialização do binding
         binding = ActivityConteudoPlaylistBinding.inflate(layoutInflater)
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
@@ -71,7 +74,11 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         binding.musicasPlaylistRv.isMotionEventSplittingEnabled = false
 
         // Ao clicar no botão voltar, encerra a activity
-        binding.btnVoltarCpl.setOnClickListener { finish() }
+        binding.btnVoltarCpl.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnVoltarCpl.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_popup_exit))
+            finish()
+        }
 
         // Quando clicado no botão para adicionar músicas, leva o usuário para tela de seleção de músicas
         binding.btnAddMusicas.setOnClickListener{
@@ -90,6 +97,8 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
 
         // Quando clicado no botão de opções extra mostra um popup menu
         binding.btnExtraCpl.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnExtraCpl.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Previne que o usuário crie dois menus ao dar dois cliques rápidos
             binding.btnExtraCpl.isEnabled = false
             // Cria o popup menu

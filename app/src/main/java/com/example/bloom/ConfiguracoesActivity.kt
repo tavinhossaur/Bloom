@@ -1,22 +1,18 @@
 package com.example.bloom
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-import com.example.bloom.MainActivity.Companion.escuro
 import com.example.bloom.databinding.ActivityConfiguracoesBinding
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputEditText
-import java.security.AccessController.getContext
 import java.util.*
 import javax.mail.*
 import javax.mail.internet.InternetAddress
@@ -47,12 +43,42 @@ class ConfiguracoesActivity : AppCompatActivity() {
         // Ajuste de cores para o modo escuro do Android
         if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
             binding.btnVoltarConfig.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.btnBugs.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
             binding.tituloActivityConfig.setTextColor(ContextCompat.getColor(this, R.color.grey2))
             binding.btnFeedback.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
         }
 
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
-        binding.btnVoltarConfig.setOnClickListener{ finish() }
+        binding.btnVoltarConfig.setOnClickListener{
+            // Muda a animação do botão ao ser clicado
+            binding.btnVoltarConfig.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_popup_exit))
+            finish()
+        }
+
+        binding.btnBugs.setOnClickListener{
+            // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
+            binding.btnBugs.isEnabled = false
+            // Muda a animação do botão ao ser clicado
+            binding.btnBugs.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
+            // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
+            val bugsSheet = InfoSheet().build(this) {
+                // Estilo do sheet (AlertDialog)
+                style(SheetStyle.DIALOG)
+                // Título
+                title("Bugs conhecidos")
+                // Mensagem do AlertDialog
+                content("Segue abaixo bugs conhecidos pelos desenvolvedores:" +
+                        "\n\n● Ao pausar a música, mudar o tema do Android (claro ou escuro) e voltar para tela principal ou já estiver nela quando mudar, o aplicativo fecha." +
+                        "\n● Ao favoritar ou desfavoritar a música, e mudar o tema do Android (claro ou escuro) a música não é salva nos favoritos." +
+                        "\n\nOs bugs são analisados para serem resolvidos.\nCaso houver mais algum que você identificou e não está nesta lista, por favor, nos envie um feedback de preferência com seu e-mail, versão do Android e modelo do telefone.")
+                // Esconde os ambos os botões
+                displayButtons(false)
+                // Torna o objeto clicável novamente quando o diálogo for fechado
+                onClose { binding.btnBugs.isEnabled = true }
+            }
+            // Mostra o AlertDialog
+            bugsSheet.show()
+        }
 
         // Ao clicar no switch da configuração 1, passa o método para checar se o switch está ligado (true) ou desligado (false)
         binding.switchConfig1.setOnCheckedChangeListener{ _, _ -> checarSwitch() }
@@ -155,10 +181,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
                                Transport.send(email)
 
                            // Caso o email não seja enviado
-                           }catch (e: Exception){
-                               // Mostra um toast com o erro que aconteceu
-                               Toast.makeText(this@ConfiguracoesActivity, e.toString(), Toast.LENGTH_SHORT).show()
-                           }
+                           }catch (e: Exception){ return@Thread }
                        // Inicia a Thread
                        }.start()
 

@@ -4,12 +4,11 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.bloom.MainActivity.Companion.escuro
 import com.example.bloom.databinding.ActivitySelecionarMusicasBinding
 
 // Classe da activity
@@ -52,7 +51,11 @@ class SelecionarMusicasActivity : AppCompatActivity() {
         // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
         binding.slcMusicaRv.isMotionEventSplittingEnabled = false
 
-        binding.btnVoltarSlc.setOnClickListener {finish()}
+        binding.btnVoltarSlc.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.btnVoltarSlc.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_popup_exit))
+            finish()
+        }
 
         if (MainActivity.listaMusicaMain.size < 1){
             binding.slcMusicaRv.visibility = View.GONE
