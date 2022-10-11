@@ -52,11 +52,6 @@ class MusicaService : Service(), AudioManager.OnAudioFocusChangeListener {
     @SuppressLint("UnspecifiedImmutableFlag", "LaunchActivityFromNotification")
     fun mostrarNotificacao(tocarPausarBtn : Int, favoritosBtn : Int){
 
-        // Cria o objeto que contém a ação de randomizar a reprodução de músicas
-        //val repetirIntent = Intent(baseContext, NotificacaoReceiver::class.java).setAction(Application.REPETIR)
-        // Cria a intent pendente, que é passada para a ação dos botões da barra de notificação
-        //val repetirPendingIntent = PendingIntent.getBroadcast(baseContext, 0, repetirIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
         // Cria o objeto que contém a ação de abrir o app na tela principal
         val notifyPlayerIntent = Intent(baseContext, MainActivity::class.java)
         // Leva o usuário para a tela principal ao clicar na notificação

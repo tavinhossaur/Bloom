@@ -349,12 +349,12 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         }
 
         // Quando for clicado no botão de repetir a música, terão 3 opções
-        binding.btnRepetir.setOnClickListener {
+        binding.btnModo.setOnClickListener {
             // Muda a animação do botão ao ser clicado
-            binding.btnRepetir.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
+            binding.btnModo.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             // Toda vez que é clicado aumenta +1 no modo de reprodução até 3
             // Quando chega no 3, as opções resetam
-            modoReproducao = (++modoReproducao) % 3 // % 3
+            modoReproducao = (++modoReproducao) % 3
             // Quando o modo de reprodução for
             when(modoReproducao){
                 // 0 - Reprodução normal da música
@@ -389,7 +389,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         repetindo = false
         randomizando = false
         // O ícone do botão muda para o ícone de reprodução normal
-        binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_24)
+        binding.btnModo.setImageResource(R.drawable.ic_round_repeat_24)
     }
 
     // Método para definir a repetição da música atual
@@ -398,7 +398,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         repetindo = true
         randomizando = false
         // O ícone do botão muda para o ícone de reprodução de uma única música
-        binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_one_24)
+        binding.btnModo.setImageResource(R.drawable.ic_round_repeat_one_24)
     }
 
     // Método para definir a reprodução randômica da lista de músicas
@@ -407,7 +407,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         repetindo = false
         randomizando = true
         // O ícone do botão muda para o ícone de reprodução aleatória
-        binding.btnRepetir.setImageResource(R.drawable.ic_round_shuffle_24)
+        binding.btnModo.setImageResource(R.drawable.ic_round_shuffle_24)
     }
 
     // Método que cria o player da música e faz ela reproduzir
@@ -512,17 +512,17 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Se estiver repetindo
             repetindo -> {
                 modoReproducao = 1
-                binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_one_24)
+                binding.btnModo.setImageResource(R.drawable.ic_round_repeat_one_24)
             }
             // Se estiver randomizando
             randomizando ->{
                 modoReproducao = 2
-                binding.btnRepetir.setImageResource(R.drawable.ic_round_shuffle_24)
+                binding.btnModo.setImageResource(R.drawable.ic_round_shuffle_24)
             }
             // Caso contrário (nenhum dos dois, reprodução normal)
             else -> {
                 modoReproducao = 0
-                binding.btnRepetir.setImageResource(R.drawable.ic_round_repeat_24)
+                binding.btnModo.setImageResource(R.drawable.ic_round_repeat_24)
             }
         }
     }
