@@ -14,7 +14,6 @@ class Application : Application() {
         const val TOCAR = "tocar"
         const val PROXIMO = "proximo"
         const val ANTERIOR = "anterior"
-        //const val REPETIR = "repetir"
         const val FAVORITAR = "favoritar"
         const val LIMPAR = "apagar"
     }

@@ -70,7 +70,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
                 content("Segue abaixo bugs conhecidos pelos desenvolvedores:" +
                         "\n\n● Ao pausar a música, mudar o tema do Android (claro ou escuro) e voltar para tela principal ou já estiver nela quando mudar, o aplicativo fecha." +
                         "\n● Ao favoritar ou desfavoritar a música, e mudar o tema do Android (claro ou escuro) a música não é salva nos favoritos." +
-                        "\n\nOs bugs são analisados para serem resolvidos.\nCaso houver mais algum que você identificou e não está nesta lista, por favor, nos envie um feedback de preferência com seu e-mail, versão do Android e modelo do telefone.")
+                        "\n\nOs bugs são analisados para serem resolvidos.\nCaso houver mais algum que você identificou e não está nesta lista, por favor, nos envie um feedback explicando o problema de preferência com seu e-mail, versão do Android e modelo do telefone.")
                 // Esconde os ambos os botões
                 displayButtons(false)
                 // Torna o objeto clicável novamente quando o diálogo for fechado

@@ -22,13 +22,6 @@ class NotificacaoReceiver : BroadcastReceiver() {
         // Analisará se ela é, por meio da declaração when, a intent de randomizar, voltar uma música, tocar, etc.
         // E executará a ação da intent específica.
         when(intent?.action){
-            // Chama o método para randomizar as músicas
-            /* Application.REPETIR ->
-                if(!PlayerActivity.repetindo){
-                    reproducaoNormal()
-                }else{
-                    reproducaoRepetir()
-                } */
             // Chama o método para voltar para música anterior
             Application.ANTERIOR -> proxMusicaAnte(proximo = false, context = context!!)
             // Chama o método para tocar ou pausar a música atual
@@ -38,9 +31,7 @@ class NotificacaoReceiver : BroadcastReceiver() {
                     pausar()
                     PlayerActivity.musicaService!!.stopForeground(false)
                 // Caso contrário (Não estiver tocando), então toque a música
-                }else{
-                    tocar()
-                }
+                }else{ tocar() }
             // Chama o método para ir para próxima música
             Application.PROXIMO -> proxMusicaAnte(proximo = true, context = context!!)
             // Chama o método para favoritar a música
@@ -197,15 +188,3 @@ class NotificacaoReceiver : BroadcastReceiver() {
             return
         }
     }
-
-   /* private fun reproducaoNormal(){
-        PlayerActivity.repetindo = false
-        PlayerActivity.binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_24)
-        PlayerActivity.binding.btnRepetir.setColorFilter(R.color.black1)
-    }
-
-    private fun reproducaoRepetir(){
-        PlayerActivity.repetindo = true
-        PlayerActivity.binding.btnRepetir.setImageResource(R.drawable.ic_baseline_repeat_one_24)
-        PlayerActivity.binding.btnRepetir.setColorFilter(R.color.purple1)
-    } */
