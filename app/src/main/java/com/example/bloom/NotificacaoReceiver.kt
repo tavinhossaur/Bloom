@@ -1,5 +1,6 @@
 package com.example.bloom
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -99,6 +100,7 @@ class NotificacaoReceiver : BroadcastReceiver() {
 
     // Método para checar se o usuário clicou no botão próxima música ou música anterior,
     // e sincronizar a música atual do player com a música atual que aparece na barra de notificação da música
+    @SuppressLint("SetTextI18n")
     private fun proxMusicaAnte(proximo : Boolean, context: Context){
         if (!PlayerActivity.repetindo){
             // ATUALIZAR LISTA PARA OS INDICADORES DE MÚSICA ATUAL MUDAREM
@@ -113,6 +115,12 @@ class NotificacaoReceiver : BroadcastReceiver() {
             mudarPosMusica(adicionar = proximo)
             PlayerActivity.musicaService!!.criarPlayer()
             PlayerActivity.musicaService!!.carregarMusica()
+
+            // Se não conseguir retornar a letra da música, por padrão ficará o texto abaixo
+            PlayerActivity.binding.letrasText.text = "Não foi possível retornar a letra desta música, tente atualizar."
+            // Chama a clase para fazer a procura da letra da música
+            PlayerActivity.ProcurarLetra().execute()
+
             Glide.with(context)
                 // Carrega a posição da música e a uri da sua imagem
                 .load(PlayerActivity.filaMusica[PlayerActivity.posMusica].imagemUri)

@@ -236,7 +236,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
     // Método onResume, para quando o usuário volta a activity
     override fun onResume() {
         super.onResume()
-        // SharedPreferences, para salvar as definições do usuário quanto a opção de esconder áudios do WhatsApp
+        // SharedPreferences, para retornar as definições do usuário quanto a opção de esconder áudios do WhatsApp
         val switchEditor = getSharedPreferences("SWITCH1", MODE_PRIVATE)
         val switchAud = switchEditor.getBoolean("switchAud", switch1)
         // Se o valor da configuração for true então liga o switch permanecerá ligado ao entrar na tela

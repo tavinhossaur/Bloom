@@ -52,7 +52,8 @@ class MainActivity : AppCompatActivity() {
             // Pela data adicionada de forma decrescente, ou seja, o mais recente primeiro
             MediaStore.Audio.Media.DATE_ADDED + " DESC",
             // E pela duração também de forma decrescente, a música mais longa música primeiro
-            MediaStore.Audio.Media.DURATION + " DESC",)
+            MediaStore.Audio.Media.DURATION + " DESC",
+        )
         var selectMusica : String  = "" // Variável de seleção da música no armazenamento
         var escuro : Boolean = false // Variável para definir se o modo escuro está ligado ou desligado
     }
@@ -227,16 +228,16 @@ class MainActivity : AppCompatActivity() {
         ordem = ordemEditor.getInt("ordemSet", 0)
         // E procura as músicas
         listaMusicaMain = procurarMusicas()
-        // Se a quantidade de músicas for menor que um
-        if(listaMusicaMain.size < 1){
-            // Esconde a lista e mostra o aviso de que não há músicas
-            binding.avisoMusicas.visibility = View.VISIBLE
-            binding.musicasRv.visibility = View.GONE
-        // Caso contrário (há músicas)
-        }else{
+        // Se a quantidade de músicas for maior ou igual a 1
+        if(listaMusicaMain.size >= 1){
             // Mostra a lista e esconde o aviso
             binding.avisoMusicas.visibility = View.GONE
             binding.musicasRv.visibility = View.VISIBLE
+        // Caso contrário (não há músicas)
+        }else{
+            // Esconde a lista e mostra o aviso de que não há músicas
+            binding.avisoMusicas.visibility = View.VISIBLE
+            binding.musicasRv.visibility = View.GONE
         }
         // Para otimização do RecyclerView, o seu tamanho é fixo,
         // mesmo quando itens são adicionados ou removidos.
@@ -271,7 +272,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("Recycle", "Range")
     private fun procurarMusicas(): ArrayList<Musica> {
         // Lista temporária de músicas
-        val tempLista = ArrayList<Musica>()
+        val lista = ArrayList<Musica>()
         // Condições para a seleção das músicas dos arquivos "!= 0" (diferente de 0) significa que o cursor procurará apenas músicas
         // e não ringtones do android " AND " título não igual a "AUD%" ou seja, o título da música não pode ser igual a
         // AUD + zero ou outros caracteres.
@@ -335,12 +336,12 @@ class MainActivity : AppCompatActivity() {
                     // Se o arquivo existir, ele será adicionado para a lista de músicas,
                     // se ele foi excluído, não aparecerá mais na lista quando o aplicativo for iniciado novamente
                     if (arquivo.exists())
-                        tempLista.add(musica)
+                        lista.add(musica)
 
                 } while (cursor.moveToNext())
             cursor.close() // Termina o cursor, para que ele não fique executando o loop de pesquisa infinitamente
             }
-        return tempLista // Retorna a lista de músicas para o ArrayList<Musica>
+        return lista // Retorna a lista de músicas para o ArrayList<Musica>
     }
 
     // Método para mostrar (inflar) a pesquisa na action bar
@@ -350,8 +351,6 @@ class MainActivity : AppCompatActivity() {
 
         // Texto da hint
         pesquisaView.queryHint = "Procure por título, artista, álbum..."
-        // Muda a cor da hint da textView da pesquisa
-        // pesquisaView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text).setTextColor(ContextCompat.getColor(this, R.color.black3))
 
         // Fica lendo o que o usuário está digitando na barra de pesquisa
         pesquisaView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
@@ -366,7 +365,9 @@ class MainActivity : AppCompatActivity() {
                 // Se o texto da pesquisa não for nulo
                 if (textoPesquisa != null){
                     // Passa o texto dela para caixa baixa para pode encontrar a música de forma mais fácil
-                    val pesquisa = textoPesquisa.lowercase()
+                    var pesquisa = textoPesquisa.lowercase()
+                    // Evita um bug que pode ocorrer ao usuário procurar uma música com caracteres especiais na pesquisa
+                    pesquisa = pesquisa.replace(" ", "")
                     // Para cada música na lista de músicas da tela principal
                     for (musica in listaMusicaMain)
                         // Se o título, artista ou álbum da música, em caixa baixa conter o texto da pesquisa
@@ -396,6 +397,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Método onResume, para quando o usuário volta a activity
+    @SuppressLint("RestrictedApi")
     override fun onResume() {
         super.onResume()
         // Se o usuário já tiver dado a permissão pro aplicativo, então pode retornar as preferencias salvas
@@ -437,6 +439,8 @@ class MainActivity : AppCompatActivity() {
                 listaMusicaMain = procurarMusicas()
                 musicaAdapter.atualizarLista(listaMusicaMain)
             }
+            // Se o usuário abriu a barra de pesquisa e saiu da tela, quando ele voltar a barra de pesquisa estará fechada
+            supportActionBar?.collapseActionView()
         }
         // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
         if (PlayerActivity.musicaService != null) {
