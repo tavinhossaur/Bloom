@@ -32,9 +32,9 @@
             android:forceDarkAllowed="false"
             app:tint="@color/white" />
 
-        <!-- Texto que mostra o número da música atual e o total de músicas -->
+        <!-- Texto que mostra o total de músicas -->
         <TextView
-            android:id="@+id/musica_atual_total"
+            android:id="@+id/total_musicas"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -218,7 +218,7 @@
 
     <!-- Botões de opções especiais -->
     <LinearLayout
-        android:id="@+id/btn_especial"
+        android:id="@+id/funcionalides_extras"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.0"

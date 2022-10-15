@@ -49,18 +49,30 @@
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".PlayerActivity"
-            android:configChanges="uiMode"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            tools:ignore="LockedOrientationActivity" />
-        <activity
             android:name=".FavoritosActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".PlayerActivity"
+            android:exported="true"
+            android:configChanges="uiMode"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:noHistory="true"
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity">
+            <!-- Torna possível a utilização do app para abrir arquivos de áudios de outros lugares -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:mimeType="audio/*"
+                    android:scheme="content"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -69,9 +81,9 @@
             android:theme="@style/SplashScreen"
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity">
+            <!-- Indica que esta activity é a Main e será a tela a ser aberta quando o usuário abrir o app -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

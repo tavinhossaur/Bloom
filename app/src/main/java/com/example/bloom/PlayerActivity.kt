@@ -7,6 +7,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.database.Cursor
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
@@ -17,6 +18,7 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.IBinder
+import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
 import android.view.ContextThemeWrapper
 import android.view.Gravity
@@ -89,7 +91,29 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // no caso, a ActivityPlayerBinding (activity_player.xml)
         setContentView(binding.root)
 
-        iniciarLayout()
+        // Se o aplicativo estiver sendo iniciado para reproduzir um arquivo de áudio externo (nos arquivos ou em outro lugar)
+        if (intent.data?.scheme.contentEquals("content")){
+            musicaService = null
+            posMusica = 0
+            // Então Cria a intent com a classe MusicService
+            val bindIntent = Intent(this, MusicaService::class.java)
+            // Conecta o serviço ao player e automaticamente cria o serviço enquanto a conexão existir,
+            // essa conexão, define uma dependência do player ao serviço
+            bindService(bindIntent, this, BIND_AUTO_CREATE)
+            startService(bindIntent)
+            filaMusica = ArrayList()
+            filaMusica.add(procurarMusica(intent.data!!))
+
+            // Chama o método para carregar o layout da tela para música externa
+            carregarMusicaExterna()
+
+            // Muda o comportamento do botão de fechar
+            binding.btnFecharTpl.setOnClickListener { onBackPressed() }
+
+        // Caso contrário (inicialização normal)
+        }else{
+            iniciarLayout()
+        }
 
         // FUNÇÕES DA ACTIVITY (TELA)
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
@@ -100,8 +124,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Muda a animação de transição da tela
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         }
-        // Texto do cabeçalho do player, mostrando ao usuário a quantidade total de músicas dele
-        binding.musicaAtualTotal.text = "Você tem ${MainActivity.listaMusicaMain.size} músicas no total."
         // Ao clicar no botão de opções extras
         binding.btnExtraTpl.setOnClickListener {
             // Muda a animação do botão ao ser clicado
@@ -368,7 +390,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             binding.btnFecharLetras.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             binding.cabecalhoPlayer.visibility = View.VISIBLE
             binding.bodyPlayer.visibility = View.VISIBLE
-            binding.btnEspecial.visibility = View.VISIBLE
+            binding.funcionalidesExtras.visibility = View.VISIBLE
             binding.progressBar.visibility = View.VISIBLE
             binding.controlesBtnTpl.visibility = View.VISIBLE
             binding.letrasCard.visibility = View.GONE
@@ -383,7 +405,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Muda a animação do botão ao ser clicado
             binding.btnFecharCard.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             binding.cabecalhoPlayer.visibility = View.VISIBLE
-            binding.btnEspecial.visibility = View.VISIBLE
+            binding.funcionalidesExtras.visibility = View.VISIBLE
             binding.progressBar.visibility = View.VISIBLE
             binding.controlesBtnTpl.visibility = View.VISIBLE
             binding.cardFilaRv.visibility = View.GONE
@@ -443,7 +465,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 // Verificará se foi mudado pelo usuário, e então irá para o lugar onde foi clicado (progresso)
                 if (fromUser) {
                     musicaService!!.mPlayer!!.seekTo(progresso)
-                    setBtnsNotify()
+                    // Se não estiver reproduzindo uma música externa então atualize a barra de notificação
+                    if (filaMusica[posMusica].id != "Externo") { setBtnsNotify() }
                 }
             }
             // Quando o usuário tocar no indicador ou na SeekBar
@@ -498,8 +521,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             tocando = true
             // E o ícone do botão será o de pausa, já que está tocando
             binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
-            // Chama o método para mostrar a barra de notificação da música com os devidos botões
-            setBtnsNotify()
+            // Chama o método para mostrar a barra de notificação da música com os devidos botões apenas se não for reprodução externa
+            if (filaMusica[posMusica].id != "Externo") { setBtnsNotify() }
             // Insere o texto do tempo decorrente formatado da seekBar, com base na posição atual da música no player
             binding.decTempoSeekBar.text = formatarDuracao(musicaService!!.mPlayer!!.currentPosition.toLong())
             // Insere o texto do tempo final formatado da Seek Bar, com base na duração total da música no player
@@ -623,7 +646,90 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     }
 
     @SuppressLint("SetTextI18n")
+    private fun carregarMusicaExterna(){
+        // Glide para a imagem da música no player
+        Glide.with(applicationContext)
+            // Carrega a posição da música e a uri da sua imagem
+            .load(retornarImgMusica(filaMusica[posMusica].caminho))
+            // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+            .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
+            // Alvo da aplicação da imagem
+            .into(binding.imgMusicaTpl)
+
+        // Objeto que leva todas as transformações da imagem do background do player
+        val multiTransform = MultiTransformation(
+            // Efeito embaçado na imagem
+            BlurTransformation(40, 5),
+            // Filtro de cor escuro na imagem
+            ColorFilterTransformation(Color.argb(70, 40, 40, 40))
+        )
+
+        // Utilizando Glide, está sendo retornado a imagem da música e colocado como background do Player
+        Glide.with(applicationContext)
+            // Carrega a posição da música e a uri da sua imagem
+            .load(retornarImgMusica(filaMusica[posMusica].caminho))
+            // Faz a aplicação da imagem com as transformações e um placeholder caso a música não tenha nenhuma imagem
+            // ou ela ainda não tenha sido carregada
+            .apply(RequestOptions.bitmapTransform(multiTransform))
+            // Alvo da aplicação da imagem, como o alvo da aplicação não é um componente simples, e sim, o background de um LinearLayout
+            // é necessário utilizar o método CustomTraget do Glide.
+            .into(object : CustomTarget<Drawable?>() {
+                // Quando retornar a imagem
+                override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
+                    // Aplica a imagem da música ao background do root da activity, ou seja, o LinearLayout que engloba todas as views.
+                    binding.root.background = resource
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    return
+                }
+            })
+
+        // Texto do cabeçalho do player, mostrando ao usuário a quantidade total de músicas dele
+        binding.totalMusicas.text = "Reproduzindo áudio externo"
+
+        // Insere os dados da música retornada nas views respectivas
+        binding.tituloMusicaTpl.text = filaMusica[posMusica].titulo
+        binding.artistaMusicaTpl.text = filaMusica[posMusica].artista
+        binding.albumMusicaTpl.text = filaMusica[posMusica].album
+
+        // Esconde botão extra
+        binding.btnExtraTpl.visibility = View.INVISIBLE
+        // Esconde botão de favoritar
+        binding.btnFavTpl.visibility = View.INVISIBLE
+        // Esconde funcionalidades extras
+        binding.funcionalidesExtras.visibility = View.INVISIBLE
+        // Esconde botão de ver a fila de reprodução
+        binding.btnFila.visibility = View.INVISIBLE
+        // Esconde botões de pular ou voltar música
+        binding.btnProx.visibility = View.INVISIBLE
+        binding.btnAnte.visibility = View.INVISIBLE
+        // Esconde botão de mudar a reprodução
+        binding.btnModo.visibility = View.INVISIBLE
+
+        // Altera o ícone do botão fechar do player
+        binding.btnFecharTpl.setImageResource(R.drawable.ic_round_close_24)
+
+        binding.btnFecharTpl.setOnClickListener { onDestroy() }
+
+        // Impede que o usuário clique na raiz do layout do player
+        binding.root.isEnabled = false
+
+        // O modo de reprodução será sempre o mesmo (Repetindo)
+        modoReproducao = 1
+
+        // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+        // ao RecyclerView por meio do mesmo Adapter
+        musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+        // Setando o Adapter para este RecyclerView
+        binding.filaRv.adapter = musicaAdapter
+    }
+
+    @SuppressLint("SetTextI18n")
     private fun iniciarLayout(){
+        // Texto do cabeçalho do player, mostrando ao usuário a quantidade total de músicas dele
+        binding.totalMusicas.text = "Você tem ${MainActivity.listaMusicaMain.size} músicas no total."
+
         // Marca como selecionado a caixa de texto do nome da música, para fazer a animação de correr o texto
         binding.tituloMusicaTpl.isSelected = true
 
@@ -824,23 +930,23 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         if (tocando){
             // Troca o ícone para o ícone de play no player e na barra de notificação
             binding.btnPpTpl.setImageResource(R.drawable.ic_round_play_circle_24)
-            if (favoritado){
+            if (favoritado) {
                 musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_24)
-            }else{
+            } else {
                 musicaService!!.mostrarNotificacao(R.drawable.ic_round_play_arrow_notify_24, R.drawable.ic_round_favorite_border_24)
             }
+            musicaService!!.stopForeground(false)
             // Muda o valor da variável tocando para false
             tocando = false
             // E o player pausa a musica
-            musicaService!!.stopForeground(false)
             musicaService!!.mPlayer!!.pause()
             // Caso contrário (se estiver pausada), toque a música
         }else{
             // Troca o ícone para o ícone de pause no player e na barra de notificação
             binding.btnPpTpl.setImageResource(R.drawable.ic_round_pause_circle_24)
-            if (favoritado){
+            if (favoritado) {
                 musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_24)
-            }else{
+            } else {
                 musicaService!!.mostrarNotificacao(R.drawable.ic_round_pause_notify_24, R.drawable.ic_round_favorite_border_24)
             }
             // Muda o valor da variável tocando para true
@@ -976,7 +1082,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Esconde os seguintes layouts da tela
             binding.cabecalhoPlayer.visibility = View.INVISIBLE
             binding.controlesBtnTpl.visibility = View.INVISIBLE
-            binding.btnEspecial.visibility = View.INVISIBLE
+            binding.funcionalidesExtras.visibility = View.INVISIBLE
 
             // Aplica a animação de translação vertical no bodyPlayer, levando 200px para baixo
             // em uma duração de 3000 milisegundos (3 segundos)
@@ -1008,7 +1114,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Mostra os seguintes layouts da tela
             binding.cabecalhoPlayer.visibility = View.VISIBLE
             binding.controlesBtnTpl.visibility = View.VISIBLE
-            binding.btnEspecial.visibility = View.VISIBLE
+            binding.funcionalidesExtras.visibility = View.VISIBLE
 
             // Aplica a animação de translação vertical no bodyPlayer, levando para o lugar padrão
             // em uma duração de 3000 milisegundos (3 segundos)
@@ -1040,7 +1146,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     // Método para mostrar o card com a fila de reprodução atual
     private fun mostrarFilaAtual() {
         binding.cabecalhoPlayer.visibility = View.INVISIBLE
-        binding.btnEspecial.visibility = View.GONE
+        binding.funcionalidesExtras.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.controlesBtnTpl.visibility = View.GONE
         binding.cardFilaRv.visibility = View.VISIBLE
@@ -1052,7 +1158,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         // Esconde todas as views e mostra apenas o card com as letras
         binding.cabecalhoPlayer.visibility = View.GONE
         binding.bodyPlayer.visibility = View.GONE
-        binding.btnEspecial.visibility = View.GONE
+        binding.funcionalidesExtras.visibility = View.GONE
         binding.controlesBtnTpl.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
         binding.letrasCard.visibility = View.VISIBLE
@@ -1094,48 +1200,63 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     // Quando o usuário utilizar do botão voltar do celular
     override fun onBackPressed() {
         super.onBackPressed()
+        if (filaMusica[posMusica].id == "Externo") {
+            musicaService!!.mPlayer!!.stop()
+            musicaService!!.mPlayer!!.reset()
+            musicaService = null
+            encerrarProcesso()
+        }
         // Muda a animação de transição da tela
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
     // Método para que, quando a música for completada
     override fun onCompletion(mPlayer: MediaPlayer?) {
-        // Será chamado o método para mudar a posição da música, com valor true, ou seja, irá para próxima música
-        mudarPosMusica(adicionar = true)
-        setBtnsNotify()
-        // Também é chamado o método para requisição dos dados para reprodução da próxima música
-        criarPlayer()
-        // E por fim, carrega os dados de layout da música (título, artista, imagem, etc.)
-        carregarMusica()
-        // ATUALIZAR LISTA PARA OS INDICADORES DE MÚSICA ATUAL MUDAREM
-        // Atualiza a lista de músicas da tela principal para mudar o indicador de música atual
-        // Não é necessario fazer a verificação de inicialização porque está é a tela principal, então ela sempre será inicializada queira ou não
-        MainActivity.musicaAdapter.atualizarLista(MainActivity.listaMusicaMain)
-        // Atualiza a lista de músicas do player
-        musicaAdapter.atualizarLista(filaMusica)
-        // Verifica se a tela de playlists foi inicializada, caso tenha sido, então atualiza a lista dela também.
-        if (ConteudoPlaylistActivity.init){ ConteudoPlaylistActivity.musicaAdapter.atualizarPlaylists() }
+        // Se não estiver reproduzindo uma música externa
+        if (filaMusica[posMusica].id == "Externo"){
+            mudarPosMusica(adicionar = true)
+            criarPlayer()
+        }else {
+            // Será chamado o método para mudar a posição da música, com valor true, ou seja, irá para próxima música
+            mudarPosMusica(adicionar = true)
+            setBtnsNotify()
+            // Também é chamado o método para requisição dos dados para reprodução da próxima música
+            criarPlayer()
+            // E por fim, carrega os dados de layout da música (título, artista, imagem, etc.)
+            carregarMusica()
 
-        // Chama o método para começar a procura da letra da música atual
-        procurarLetras()
+            // ATUALIZAR LISTA PARA OS INDICADORES DE MÚSICA ATUAL MUDAREM
+            // Atualiza a lista de músicas da tela principal para mudar o indicador de música atual
+            // Não é necessario fazer a verificação de inicialização porque está é a tela principal, então ela sempre será inicializada queira ou não
+            MainActivity.musicaAdapter.atualizarLista(MainActivity.listaMusicaMain)
+            // Atualiza a lista de músicas do player
+            musicaAdapter.atualizarLista(filaMusica)
 
-        // Seleciona o texto do título para fazê-lo se movimentar e mostrar o texto inteiro
-        MiniPlayerFragment.binding.tituloMusicaMp.isSelected = true
-        Glide.with(applicationContext)
-            // Carrega a posição da música e a uri da sua imagem
-            .load(filaMusica[posMusica].imagemUri)
-            // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-            .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
-            // Alvo da aplicação da imagem
-            .into(MiniPlayerFragment.binding.imgMusicaMp)
+            // Verifica se a tela de playlists foi inicializada, caso tenha sido, então atualiza a lista dela também.
+            if (ConteudoPlaylistActivity.init) {
+                ConteudoPlaylistActivity.musicaAdapter.atualizarPlaylists()
+            }
+            // Chama o método para começar a procura da letra da música atual
+            procurarLetras()
 
-        // Carrega os dados corretos para a música atual sendo reproduzida
-        MiniPlayerFragment.binding.tituloMusicaMp.text = filaMusica[posMusica].titulo
-        MiniPlayerFragment.binding.artistaMusicaMp.text = filaMusica[posMusica].artista
-        if (favoritado){
-            MiniPlayerFragment.binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_miniplayer_24)
-        }else{
-            MiniPlayerFragment.binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_border_miniplayer_24)
+            // Seleciona o texto do título para fazê-lo se movimentar e mostrar o texto inteiro
+            MiniPlayerFragment.binding.tituloMusicaMp.isSelected = true
+            Glide.with(applicationContext)
+                // Carrega a posição da música e a uri da sua imagem
+                .load(filaMusica[posMusica].imagemUri)
+                // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                // Alvo da aplicação da imagem
+                .into(MiniPlayerFragment.binding.imgMusicaMp)
+
+            // Carrega os dados corretos para a música atual sendo reproduzida
+            MiniPlayerFragment.binding.tituloMusicaMp.text = filaMusica[posMusica].titulo
+            MiniPlayerFragment.binding.artistaMusicaMp.text = filaMusica[posMusica].artista
+            if (favoritado) {
+                MiniPlayerFragment.binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_miniplayer_24)
+            } else {
+                MiniPlayerFragment.binding.btnFavMp.setImageResource(R.drawable.ic_round_favorite_border_miniplayer_24)
+            }
         }
     }
 
@@ -1152,6 +1273,36 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             resultado.data
             // retorna esses dados e os registra no resultado da activity.
             return@registerForActivityResult
+        }
+    }
+
+    // Método para retornar os dados de um arquivo de áudio externo do celular (acessado pelos arquivos ou outro lugar)
+    private fun procurarMusica(contentUri: Uri) : Musica{
+        var cursor : Cursor? = null
+        try {
+            // Array de dados que serão retornados dos arquivos
+            val dadosMusica = arrayOf(MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DURATION)
+
+            // Cursor é o mecanismo que faz a busca e seleciona as músicas e as organiza com base nas condições passadas nos parâmetros
+            cursor = this.contentResolver.query(contentUri, dadosMusica, null, null, null)
+            val caminhoC = cursor?.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+            val duracaoC = cursor?.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
+
+            cursor!!.moveToFirst()
+
+            // Passando os valores obtidos a variáveis com .let
+            // A scoping function "let" retorna qualquer valor a partir de um objeto do qual o escopo se originou e refere-se a esse objeto como "it".
+            val caminho = caminhoC?.let { cursor.getString(it) }
+            val duracao = duracaoC?.let { cursor.getLong(it) }!!
+
+            // Passando os dados retornados da música para a classe Musica
+            val musica = Musica(id = "Externo", titulo = caminho.toString(), artista = "Desconhecido", album = "Desconhecido", duracao = duracao, imagemUri = "Desconhecido", caminho = caminho.toString())
+
+            // Retorna a música ao fim da execução do método
+            return musica
+        }finally {
+            // Encerra o cursor
+            cursor?.close()
         }
     }
 
@@ -1297,6 +1448,16 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 return null
             }
             return null
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (filaMusica[posMusica].id == "Externo"){
+            musicaService!!.mPlayer!!.stop()
+            musicaService!!.mPlayer!!.reset()
+            musicaService = null
+            encerrarProcesso()
         }
     }
 }

@@ -288,7 +288,7 @@ class MainActivity : AppCompatActivity() {
             MediaStore.Audio.Media.DATA
         ) // Caminho da música
 
-        // Cursor é o mecanismo que faz a busca e seleciona as músicas e as organiza com base nas condições passadas nos parâmetros,
+        // Cursor é o mecanismo que faz a busca e seleciona as músicas e as organiza com base nas condições passadas nos parâmetros
         val cursor = this.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             dadosMusica,
@@ -321,7 +321,7 @@ class MainActivity : AppCompatActivity() {
                     val imagemUriC = Uri.withAppendedPath(uri, albumIdC).toString() // A imagemUri é a junção do id com o link da imagem
                     val caminhoC = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA)) // Cursor procura e adiciona o caminho da música
 
-                    // Passando os dados retornados da música para o modelo do array da música (Musica.kt)
+                    // Passando os dados retornados da música para a classe Musica
                     val musica = Musica(
                         id = idC,
                         titulo = tituloC,
