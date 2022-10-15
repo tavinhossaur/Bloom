@@ -366,8 +366,8 @@ class MainActivity : AppCompatActivity() {
                 if (textoPesquisa != null){
                     // Passa o texto dela para caixa baixa para pode encontrar a música de forma mais fácil
                     var pesquisa = textoPesquisa.lowercase()
-                    // Evita um bug que pode ocorrer ao usuário procurar uma música com caracteres especiais na pesquisa
-                    pesquisa = pesquisa.replace(" ", "")
+                    // Evita um bug que pode ocorrer ao usuário procurar uma música com espaços em branco na pesquisa
+                    pesquisa = pesquisa.trim()
                     // Para cada música na lista de músicas da tela principal
                     for (musica in listaMusicaMain)
                         // Se o título, artista ou álbum da música, em caixa baixa conter o texto da pesquisa
