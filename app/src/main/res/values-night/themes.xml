@@ -58,7 +58,7 @@
         <item name="searchViewStyle">@drawable/pesquisa_style</item>
         <!-- Support library compatibility -->
         <!-- Digitos possíveis na caixa de texto da pesquisa -->
-        <item name="android:digits">"0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertzuiopasdfghjklyxcvbnmãáàăâéèêìíîõóòôúùûçÃÁÀĂÂÉÈÊÌÍÎÕÓÒÔÚÙÛÇ</item>
+        <item name="android:digits">0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertzuiopasdfghjkly xcvbnmãáàăâéèêìíîõóòôúùûçÃÁÀĂÂÉÈÊÌÍÎÕÓÒÔÚÙÛÇ</item>
         <item name="android:alwaysDrawnWithCache">true</item>
         <item name="android:displayOptions">showTitle|showHome|homeAsUp</item>
         <item name="searchIcon">@drawable/ic_round_search_24</item>
