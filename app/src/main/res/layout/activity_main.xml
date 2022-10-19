@@ -1,246 +1,350 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-        <LinearLayout
+    <!-- Cabeçalho -->
+    <RelativeLayout
+        android:id="@+id/cabecalho_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        tools:ignore="UselessParent">
+
+        <!-- Texto de saudação do cabeçalho -->
+        <TextView
+            android:id="@+id/text_main"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_toStartOf="@id/configs_btn"
+            android:fontFamily="@font/baloo_semibold"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="26sp" />
 
-            <!-- Barra dos botões playlist, favoritos e randomizar -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:gravity="center"
-                android:layout_marginHorizontal="10dp"
-                android:orientation="horizontal">
+        <!-- Botão de configurações -->
+        <ImageButton
+            android:id="@+id/configs_btn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentEnd="true"
+            android:backgroundTint="@android:color/transparent"
+            android:src="@drawable/ic_round_settings_24"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
-                <!-- Botão "Definições -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/configs_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="4dp"
-                    app:contentPadding="10dp">
+    </RelativeLayout>
 
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:src="@drawable/ic_round_settings_24"
-                        app:tint="@color/purple1" />
+    <!-- Menu de sugestão e opções -->
+    <RelativeLayout
+        android:id="@+id/menu_main"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:gravity="center"
+        android:layout_below="@id/cabecalho_main">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|bottom"
-                        android:layout_marginTop="45dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Definições"
-                        android:textStyle="bold"
-                        android:textSize="14sp"/>
+        <!-- Texto da música sugerida -->
+        <TextView
+            android:id="@+id/text_sugestao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/card_sugestao"
+            android:layout_marginHorizontal="10dp"
+            android:ellipsize="end"
+            android:text="Clique no card ao lado para escolhermos uma música para você!"
+            android:textSize="16sp" />
 
-                </com.google.android.material.card.MaterialCardView>
+        <!-- Card que contém a foto de capa da música -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_sugestao"
+            style="@style/CardViewShadow"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:layout_marginStart="10dp"
+            android:layout_alignParentStart="true"
+            app:cardBackgroundColor="@color/purple2"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="6dp">
 
-                <!-- Botão "Favoritos" -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/favoritos_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="4dp"
-                    app:contentPadding="10dp">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:src="@drawable/ic_round_favorite_24"
-                        app:tint="@color/purple1" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|bottom"
-                        android:layout_marginTop="45dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Favoritas"
-                        android:textStyle="bold"
-                        android:textSize="14sp"/>
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <!-- Botão "Playlists" -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/playlists_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="4dp"
-                    app:contentPadding="10dp">
-
-                    <ImageView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="10dp"
-                        android:src="@drawable/ic_round_library_music_24"
-                        app:tint="@color/purple1" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|bottom"
-                        android:layout_marginTop="45dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Playlists"
-                        android:textStyle="bold"
-                        android:textSize="14sp"/>
-
-                </com.google.android.material.card.MaterialCardView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginHorizontal="10dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/random_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:minHeight="48dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="4dp"
-                    app:contentPadding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
-                        android:drawablePadding="5dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Reprodução aleatória"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        app:drawableStartCompat="@drawable/ic_round_play_circle_24"
-                        app:drawableTint="@color/purple1" />
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/filtro_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_weight="0.01"
-                    android:layout_marginEnd="5dp"
-                    android:clickable="true"
-                    android:minWidth="48dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="4dp"
-                    app:contentPadding="10dp">
-
-                    <ImageView
-                        android:id="@+id/filtro_img"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:src="@drawable/ic_round_swap_vert_24" />
-
-                </com.google.android.material.card.MaterialCardView>
-
-            </LinearLayout>
-
-            <!-- Lista de músicas -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/musicas_rv"
+            <!-- Capa da música -->
+            <ImageView
+                android:id="@+id/img_musica_sugestao"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
-                android:visibility="gone"
-                android:fadingEdge="vertical"
-                android:fadingEdgeLength="30dp"
-                android:requiresFadingEdge="vertical"
-                android:scrollbarAlwaysDrawVerticalTrack="true"
-                android:scrollbarThumbVertical="@drawable/ic_baseline_scrollbar_24"
-                android:scrollbars="vertical">
+                android:src="@drawable/gradient_card"/>
 
-            </androidx.recyclerview.widget.RecyclerView>
+            <!-- Imagem da música -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="15dp"
+                android:src="@drawable/ic_round_audiotrack_24"
+                android:elevation="8dp"
+                tools:ignore="ContentDescription"
+                app:tint="@color/purple1" />
 
             <TextView
-                android:id="@+id/aviso_musicas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:layout_gravity="bottom"
+                android:fontFamily="@font/baloo_semibold"
+                android:textSize="18sp"
+                android:textColor="@color/grey2"
+                android:text="Para você"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Controles -->
+        <RelativeLayout
+            android:id="@+id/card_controles"
+            android:layout_width="match_parent"
+            android:layout_height="51dp"
+            android:layout_below="@id/text_sugestao"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@id/card_sugestao"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <!-- Botão de reprodução aleatória -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/random_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/filtro_btn"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="10dp"
+                android:clickable="true"
+                android:minHeight="48dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="2dp">
+
+                <!-- Texto do botão de reprodução aleatória -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="5dp"
+                    android:drawablePadding="5dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Reprodução aleatória"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    app:drawableStartCompat="@drawable/ic_round_play_circle_24"
+                    app:drawableTint="@color/purple1" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Botão do filtro -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/filtro_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:clickable="true"
+                android:minWidth="48dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="2dp"
+                app:contentPadding="12dp">
+
+                <!-- Imagem do filtro -->
+                <ImageView
+                    android:id="@+id/filtro_img"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_round_swap_vert_24" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <!-- Lista de músicas -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/musicas_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/menu_main"
+        android:visibility="gone"
+        android:fadingEdge="vertical"
+        android:fadingEdgeLength="100dp"
+        android:requiresFadingEdge="vertical"
+        tools:itemCount="10"
+        tools:listitem="@layout/music_view_layout"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarThumbVertical="@drawable/ic_baseline_scrollbar_24"
+        android:scrollbars="vertical">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <!-- Aviso da lista de músicas -->
+    <TextView
+        android:id="@+id/aviso_musicas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/menu_main"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"
+        android:text="Você ainda não possui músicas 🥺"
+        android:textColor="@color/grey3"
+        android:textSize="16sp"
+        android:visibility="visible" />
+
+    <!-- Miniplayer -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mini_player"
+        android:name="com.example.bloom.MiniPlayerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="20dp"
+        android:layout_above="@id/bottom_navigation"
+        android:layout_centerHorizontal="true"
+        android:elevation="8dp"
+        android:background="@drawable/miniplayer_style"
+        android:visibility="invisible"
+        tools:layout="@layout/fragment_mini_player" />
+
+    <!-- Botões de navegação inferior -->
+    <RelativeLayout
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true"
+        android:alpha="0.5">
+
+        <!-- Botão da tela de playlists -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/playlists_btn"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="30dp"
+            android:orientation="vertical"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp">
+
+            <!-- Imagem playlists -->
+            <ImageButton
+                android:id="@+id/playlists_img"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="@android:color/transparent"
+                android:clickable="false"
+                android:src="@drawable/ic_round_library_music_24"
+                app:tint="@color/black"
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+            <!-- Texto playlists -->
+            <TextView
+                android:id="@+id/playlists_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_gravity="center"
-                android:visibility="visible"
-                android:textSize="16sp"
-                android:textColor="@color/grey3"
-                android:text="Você ainda não possui músicas 🥺"/>
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="5dp"
+                android:clickable="false"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Playlists"
+                android:textColor="@color/black"
+                tools:ignore="TextContrastCheck" />
 
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-        <!-- Miniplayer -->
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/mini_player"
-            android:name="com.example.bloom.MiniPlayerFragment"
-            android:layout_width="360dp"
-            android:layout_height="60dp"
-            android:background="@drawable/miniplayer_style"
-            android:layout_marginBottom="20dp"
-            android:layout_gravity="center_horizontal"
-            android:visibility="invisible"
-            android:elevation="4dp"
-            app:layout_constraintBottom_toTopOf="@+id/bottom_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout="@layout/fragment_mini_player" />
+        <!-- Botão da tela de pesquisa -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/pesquisar_btn"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp">
 
-        <View
-            android:id="@+id/bottom_view"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="@android:color/transparent"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            <!-- Imagem de pesquisa -->
+            <ImageButton
+                android:id="@+id/pesquisar_img"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="@android:color/transparent"
+                android:clickable="false"
+                android:src="@drawable/ic_round_search_24"
+                app:tint="@color/black"
+                tools:ignore="SpeakableTextPresentCheck" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Texto da pesquisa -->
+            <TextView
+                android:id="@+id/pesquisar_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="5dp"
+                android:clickable="false"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Pesquisar"
+                android:textColor="@color/black"
+                tools:ignore="TextContrastCheck" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Botão da tela de favoritas -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/favoritas_btn"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="30dp"
+            android:orientation="vertical"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp">
+
+            <!-- Imagem de favoritas -->
+            <ImageButton
+                android:id="@+id/favoritas_img"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="@android:color/transparent"
+                android:clickable="false"
+                android:src="@drawable/ic_round_favorite_24"
+                app:tint="@color/black"
+                tools:ignore="SpeakableTextPresentCheck" />
+
+            <!-- Texto de favoritos -->
+            <TextView
+                android:id="@+id/favoritas_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="5dp"
+                android:clickable="false"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Favoritas"
+                android:textColor="@color/black"
+                tools:ignore="TextContrastCheck" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
+
+</RelativeLayout>
