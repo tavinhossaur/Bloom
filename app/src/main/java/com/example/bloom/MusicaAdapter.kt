@@ -22,7 +22,7 @@ import com.maxkeppeler.sheets.options.OptionsSheet
 import java.io.File
 
 // Classe do Adapter que liga a lista de músicas aos itens do RecyclerView
-class MusicaAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>, private val conteudoPlaylist : Boolean = false, private val activitySelecionar : Boolean = false, private val filaReproducao : Boolean = false) : RecyclerView.Adapter<MusicaAdapter.Holder>() {
+class MusicaAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>, private val activityPesquisar : Boolean = false, private val conteudoPlaylist : Boolean = false, private val activitySelecionar : Boolean = false, private val filaReproducao : Boolean = false) : RecyclerView.Adapter<MusicaAdapter.Holder>() {
     class Holder(binding: MusicViewLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val titulo = binding.tituloMusicaView    // Título da música
         val artista = binding.artistaMusicaView  // Artista da música
@@ -505,9 +505,9 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                     // Cor do background
                     holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.black1))
                 }else{
-                    // Muda a cor do ícone para branco
+                    // Muda a cor do ícone para preto
                     holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
-                    // Muda a cor do título para uma cor mais clara
+                    // Muda a cor do título para uma cor mais escura
                     holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
                     // Cor do background
                     holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
@@ -557,6 +557,26 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                     }
                 }
             }
+            // Na tela de pesquisar música
+            activityPesquisar -> {
+                if (PesquisarMusicasActivity.escuroPesquisar){
+                    // Muda a cor do ícone para branco
+                    holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
+                    // Muda a cor do título para uma cor mais clara
+                    holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
+                    // Cor do background
+                    holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.black1))
+                }else{
+                    // Muda a cor do ícone para preto
+                    holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
+                    // Muda a cor do título para uma cor mais escura
+                    holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
+                    // Cor do background
+                    holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.white))
+                }
+                // A operação padrão a ser executada quando a música for clicada
+                holder.root.setOnClickListener { irParaMusica("Pesquisa", posicao) }
+            }
             // Em qualquer outra situação
             else -> {
                 // Se estiver reproduzindo músicas
@@ -584,14 +604,11 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                 }
                 // Quando clicado na view da música no RecyclerView, o usuário é levado para o player
                 holder.root.setOnClickListener {
-                    when{
-                        // Quando pesquisando for true, chame o método irParaMusica e passe a referência: "Pesquisa", e a posição da música
-                        MainActivity.pesquisando -> irParaMusica("Pesquisa", posicao)
+                    if (listaMusicas[posicao].id == PlayerActivity.musicaAtual) {
                         // Quando a música que for selecionada já estiver tocando, chame o método irParaMusica e passe a referência: "MiniPlayer", e a posição da música no Player
-                        listaMusicas[posicao].id == PlayerActivity.musicaAtual -> irParaMusica("MiniPlayer", PlayerActivity.posMusica)
+                        irParaMusica("MiniPlayer", PlayerActivity.posMusica)
                         // Em qualquer outro caso, chame o método irParaMusica e passe a referência: "Adapter" e a posição da música
-                        else -> irParaMusica("Adapter", posicao)
-                    }
+                    }else { irParaMusica("Adapter", posicao) }
                 }
             }
         }

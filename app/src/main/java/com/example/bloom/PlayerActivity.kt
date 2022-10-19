@@ -46,6 +46,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
 import org.jsoup.Jsoup
 import java.io.File
+import java.util.*
 
 
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
@@ -895,6 +896,44 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 // Setando o Adapter para este RecyclerView
                 binding.filaRv.adapter = musicaAdapter
             }
+            // Caso o valor da string "classe" seja "Sugerida", a fila de reprodução do player se torna um ArrayList
+            // e então, será criado uma lista com músicas selecionadas randomicamente a ela
+            // e o método para carregar os dados da música são chamados
+            "Sugerida" ->{
+                // Cria a intent com a classe MusicService
+                val bindIntent = Intent(this, MusicaService::class.java)
+                // Conecta o serviço ao player e automaticamente cria o serviço enquanto a conexão existir,
+                // essa conexão, define uma dependência do player ao serviço
+                bindService(bindIntent, this, BIND_AUTO_CREATE)
+                startService(bindIntent)
+                filaMusica = ArrayList()
+
+                // Passa o caminha da música sugerida para uma variável do tipo File
+                val musica = File(MainActivity.musicaSugerida.caminho)
+
+                // Verifica se a música existe
+                if (musica.exists()) {
+                    // E se ela existe, é adicionada normalmente
+                    filaMusica.add(MainActivity.musicaSugerida)
+                }else{
+                    // Caso contrário, uma nova música sera retornada
+                    MainActivity.listaMusicaMain.shuffle()
+                    var novaMusicaSugerida = MainActivity.listaMusicaMain.random()
+                    // Passa um while para verificar se a música sugerida tem menos de 1 minuto, se verdadeiro, então gera uma nova
+                    while (novaMusicaSugerida.duracao <= 60000) { novaMusicaSugerida = MainActivity.listaMusicaMain.random() }
+                    // Adiciona a música nova
+                    filaMusica.add(novaMusicaSugerida)
+                    // E dispara um toast avisando que a música sugerida foi alterada para uma nova
+                    Toast.makeText(this, "Não foi possível executar a música sugerida, então sugerimos uma nova", Toast.LENGTH_LONG).show()
+                }
+                carregarMusica()
+
+                // Passando ao adapter o contexto (tela) e a lista de músicas que será adicionada
+                // ao RecyclerView por meio do mesmo Adapter
+                musicaAdapter = MusicaAdapter(this@PlayerActivity, filaMusica, filaReproducao = true)
+                // Setando o Adapter para este RecyclerView
+                binding.filaRv.adapter = musicaAdapter
+            }
             // Caso o valor da string "classe" seja "MiniPlayer", apenas carregue os dados da música,
             // assim nenhuma alteração no media player é feito e o usuário é jogado para tela do player.
             "MiniPlayer" ->{
@@ -903,6 +942,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         }
     }
 
+    // Método para utilização do MiniPlayer
     private fun reproducaoAtual(){
         carregarMusica()
         binding.decTempoSeekBar.text =
@@ -1245,7 +1285,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 // Carrega a posição da música e a uri da sua imagem
                 .load(filaMusica[posMusica].imagemUri)
                 // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-                .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
                 // Alvo da aplicação da imagem
                 .into(MiniPlayerFragment.binding.imgMusicaMp)
 
@@ -1399,8 +1439,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             // Delimita a string a apenas a parte que importa para fazer a busca
             // em músicas com títulos extendidos por () ou -, essa parte é cortada
             // e em artistas que sejam mais de 1, separados por vírgula, apenas o primeiro é retornado
-            titulo = titulo.split("(")[0]
-            titulo = titulo.split("-")[0]
+            titulo = titulo.split("(", "-")[0]
             artista = artista.split(",")[0]
 
             // Corta espaços no início e fim da string

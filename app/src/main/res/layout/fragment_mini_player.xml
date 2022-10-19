@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="360dp"
+    android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_gravity="center_horizontal"
     tools:context=".MiniPlayerFragment">
 
+    <!-- Card clicável do fundo do miniplayer -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/miniplayer_view"
         android:layout_width="wrap_content"

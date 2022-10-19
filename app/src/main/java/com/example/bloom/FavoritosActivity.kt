@@ -24,7 +24,7 @@ class FavoritosActivity : AppCompatActivity() {
 
     // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_BloomNoActionBar)
+        setTheme(R.style.Theme_Bloom)
         super.onCreate(savedInstanceState)
 
         // Inicialização do binding

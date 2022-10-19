@@ -22,16 +22,17 @@ import javax.mail.internet.MimeMessage
 class ConfiguracoesActivity : AppCompatActivity() {
 
     // binding é a variável do ViewBinding para ligar as views ao código
-    lateinit var binding: ActivityConfiguracoesBinding
+    private lateinit var binding: ActivityConfiguracoesBinding
 
     // Declaração de objetos/classes estáticas para poder utilizar
     companion object{
         var switch1 : Boolean = false
+        var nomeUserNovo : String = ""
     }
 
     // Método chamado quando o aplicativo/activity é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_BloomNoActionBar)
+        setTheme(R.style.Theme_Bloom)
         super.onCreate(savedInstanceState)
 
         // Inicialização do binding
@@ -46,6 +47,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
             binding.btnBugs.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
             binding.tituloActivityConfig.setTextColor(ContextCompat.getColor(this, R.color.grey2))
             binding.btnFeedback.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
+            binding.btnMudarNome.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
         }
 
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
@@ -81,7 +83,51 @@ class ConfiguracoesActivity : AppCompatActivity() {
         }
 
         // Ao clicar no switch da configuração 1, passa o método para checar se o switch está ligado (true) ou desligado (false)
-        binding.switchConfig1.setOnCheckedChangeListener{ _, _ -> checarSwitch() }
+        binding.switchConfig.setOnCheckedChangeListener{ _, _ -> checarSwitch() }
+
+        // Ao clicar no botão de mudar o nome do usuário
+        binding.btnMudarNome.setOnClickListener {
+            // SharedPreferences, para retornar o nome do usuário
+            val nomeEditor = getSharedPreferences("NOME", MODE_PRIVATE)
+            val nomeUser = nomeEditor.getString("nomeUser", PermissaoActivity.nomeUser)
+
+            // Diálogo para o usuário inserir o seu nome
+            InputSheet().show(this) {
+                // Estilo do sheet (BottomSheet)
+                style(SheetStyle.DIALOG)
+                // Título do BottomSheetDialog
+                title("Como devemos te chamar agora?")
+                // Conteúdo da sheet (Edit Texts)
+                with(InputEditText("nome") {
+                    required(true)
+                    drawable(R.drawable.ic_round_person_24)
+                    // Se o valor do nome do usuário não for nulo
+                    // Então mostra como valor padrão
+                    if (nomeUser != null) {
+                        defaultValue(nomeUser)
+                    }
+                    label("Insira seu novo nome ou apelido...")
+                })
+                // Cor do botão "confirmar"
+                positiveButtonColorRes(R.color.purple1)
+                // Botão confirmar do BottomSheet
+                onPositive("Confirmar") { result ->
+                    // Retorna o valor string da input "nome_playlist"
+                    nomeUserNovo = result.getString("nome").toString()
+
+                    // Aplica o getSharedPreferences para salvar o nome do usuário
+                    val editor = getSharedPreferences("NOME", MODE_PRIVATE).edit()
+                    // E salva e aplica o valor da string
+                    editor.putString("nomeUser", nomeUserNovo)
+                    editor.apply()
+
+                    // Mostra um toast confirmando a troca de nome
+                    Toast.makeText(this@ConfiguracoesActivity, "Nome atualizado", Toast.LENGTH_SHORT).show()
+                }
+                // Cor do botão negativo
+                negativeButtonColorRes(R.color.grey3)
+            }
+        }
 
         // Ao clicar no botão de feedback, envia o usuário para a tela de feedback
         binding.btnFeedback.setOnClickListener {
@@ -213,7 +259,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
     // Método para checar o switch quando o usuário clicar nele
     private fun checarSwitch(){
         // Se o switch estiver ligado
-        if (binding.switchConfig1.isChecked){
+        if (binding.switchConfig.isChecked){
             // Então switch1 é verdadeiro
             switch1 = true
             // Aplica o getSharedPreferences para salvar a escolha do usuário
@@ -240,6 +286,6 @@ class ConfiguracoesActivity : AppCompatActivity() {
         val switchEditor = getSharedPreferences("SWITCH1", MODE_PRIVATE)
         val switchAud = switchEditor.getBoolean("switchAud", switch1)
         // Se o valor da configuração for true então liga o switch permanecerá ligado ao entrar na tela
-        binding.switchConfig1.isChecked = switchAud
+        binding.switchConfig.isChecked = switchAud
     }
 }

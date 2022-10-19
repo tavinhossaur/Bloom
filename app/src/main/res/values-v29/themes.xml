@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Bloom" parent="Theme.MaterialComponents.DayNight">
+    <style name="Theme.Bloom" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/purple2</item>
@@ -17,14 +17,13 @@
         <!-- Navigation bar color. -->
         <item name="android:navigationBarColor">@android:color/white</item>
         <!-- ActionBar style -->
-        <item name="actionBarWidgetTheme">@style/ActionBarStyle</item>
         <item name="android:windowLightStatusBar">true</item>
 
         <!-- Sheet Theme -->
         <item name="sheetsPrimaryColor">@color/purple1</item>
     </style>
 
-    <style name="Theme.BloomNoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.BloomPesquisar" parent="Theme.MaterialComponents.DayNight">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/purple2</item>
@@ -41,6 +40,8 @@
         <item name="android:navigationBarColor">@android:color/white</item>
         <!-- Ícones da status bar serão correspondentes a cor clara. -->
         <item name="android:windowLightStatusBar">true</item>
+        <!-- ActionBar style -->
+        <item name="actionBarWidgetTheme">@style/ActionBarStyle</item>
 
         <!-- Sheet Theme -->
         <item name="sheetsPrimaryColor">@color/purple1</item>

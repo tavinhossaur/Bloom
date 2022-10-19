@@ -36,7 +36,7 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_BloomNoActionBar)
+        setTheme(R.style.Theme_Bloom)
         super.onCreate(savedInstanceState)
         init = true
         // Inicialização do binding

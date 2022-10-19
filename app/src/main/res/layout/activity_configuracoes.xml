@@ -51,6 +51,7 @@
 
         </LinearLayout>
 
+        <!-- Botão de informação dos bugs -->
         <ImageView
             android:id="@+id/btn_bugs"
             android:layout_width="30dp"
@@ -62,11 +63,13 @@
 
     </RelativeLayout>
 
+    <!-- Conteúdo da activity -->
     <RelativeLayout
         android:id="@+id/content_activity"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- Configuração de ocultar áudios do WhatsApp -->
         <RelativeLayout
             android:id="@+id/content_config"
             android:layout_width="match_parent"
@@ -78,7 +81,7 @@
                 android:id="@+id/titulo_config"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/switch_config1"
+                android:layout_toStartOf="@id/switch_config"
                 android:text="Ocultar áudios do WhatsApp"
                 android:textColor="@color/purple1"
                 android:textSize="18sp" />
@@ -88,32 +91,74 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/titulo_config"
-                android:layout_toStartOf="@id/switch_config1"
+                android:layout_toStartOf="@id/switch_config"
                 android:text="Remove mensagens de áudio do WhatsApp"
                 android:textSize="14sp" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_config1"
+                android:id="@+id/switch_config"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textOn="On"
-                android:textOff="Off"
                 android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/btn_feedback"
+        <!-- Configuração de editar o nome do usuário -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_mudar_nome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/content_config"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:clickable="true"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:contentPadding="10dp">
+
+            <TextView
+                android:id="@+id/titulo_mudar_nome"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/content_config"
-                android:layout_marginHorizontal="15dp"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:clickable="true"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:contentPadding="10dp">
+                android:text="Alterar nome de usuário"
+                android:textColor="@color/purple1"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/sub_mudar_nome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="40dp"
+                android:text="Edite seu nome no aplicativo"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/img_arrow_nome"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center|end"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/ic_round_keyboard_arrow_left_24"
+                android:backgroundTint="@color/purple1"
+                android:rotation="180" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Feedback -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_mudar_nome"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:clickable="true"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:contentPadding="10dp">
 
                 <TextView
                     android:id="@+id/titulo_feedback"
@@ -133,7 +178,7 @@
                     android:textSize="16sp" />
 
                 <ImageView
-                    android:id="@+id/img_arrow"
+                    android:id="@+id/img_arrow_feedback"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center|end"
@@ -153,6 +198,7 @@
             app:dividerInsetStart="20dp"
             app:dividerInsetEnd="20dp"/>
 
+        <!-- Sobre o aplicativo -->
         <RelativeLayout
             android:id="@+id/content_sobre"
             android:layout_width="match_parent"

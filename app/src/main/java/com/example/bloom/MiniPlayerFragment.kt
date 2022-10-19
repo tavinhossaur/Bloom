@@ -36,9 +36,9 @@ class MiniPlayerFragment : Fragment(){
         // Ajuste de cores para o modo escuro do Android
         if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_NO){
             binding.root.setBackgroundResource(R.drawable.miniplayer_style)
-            binding.root.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.white)
+            binding.miniplayerView.setCardBackgroundColor(ContextCompat.getColorStateList(requireContext(), R.color.white))
         }else{
-            binding.root.backgroundTintList = ContextCompat.getColorStateList(requireContext(), R.color.white)
+            binding.miniplayerView.setCardBackgroundColor(ContextCompat.getColorStateList(requireContext(), R.color.black3))
             binding.tituloMusicaMp.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey2))
             binding.btnFavMp.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
             binding.btnProxMp.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)

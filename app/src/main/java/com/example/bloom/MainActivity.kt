@@ -9,12 +9,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.view.Menu
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.Toast
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -26,6 +24,7 @@ import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.options.Option
 import com.maxkeppeler.sheets.options.OptionsSheet
 import java.io.File
+import java.util.*
 
 // Classe da activity
 class MainActivity : AppCompatActivity() {
@@ -54,8 +53,10 @@ class MainActivity : AppCompatActivity() {
             // E pela duração também de forma decrescente, a música mais longa música primeiro
             MediaStore.Audio.Media.DURATION + " DESC",
         )
-        var selectMusica : String  = "" // Variável de seleção da música no armazenamento
+        var selectMusica : String = "" // Variável de seleção da música no armazenamento, seu valor padrão é para que retorne qualquer áudio .mp3
         var escuro : Boolean = false // Variável para definir se o modo escuro está ligado ou desligado
+        lateinit var saudacao : String // Variável para definir qual saudação será utilizada na tela principal
+        lateinit var musicaSugerida : Musica // Variável que armazena uma música aleatória do usuário
     }
 
     // Método chamado quando o aplicativo/activity é iniciado
@@ -66,17 +67,14 @@ class MainActivity : AppCompatActivity() {
         // Método da api da Google para gerar uma Splash Screen
         installSplashScreen()
 
-        // Define o estilo customizado da action bar
-        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
-        supportActionBar?.setCustomView(R.layout.action_bar_layout)
-        // Elevação 0 na actionBar
-        supportActionBar?.elevation = 0F
-
         // Inicialização do binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         // root ou getRoot retorna a view mais externa no arquivo de layout associado ao binding
         // no caso, a ActivityMainBinding (activity_main.xml)
         setContentView(binding.root)
+
+        // Esconde a tela principal até que o layout seja iniciado
+        binding.root.visibility = View.GONE
 
         // Checagem de permissões quando o usuário entrar na tela principal
         if(checarPermissoes()){
@@ -103,22 +101,54 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Ao clicar no switch da configuração 2, chama o método para ativar ou desligar o modo escuro
-        // binding.modoEscuroBtn.setOnClickListener{ modoEscuro() }
-
         // Abrir tela de configurações
         binding.configsBtn.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.configsBtn.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             startActivity(Intent(this, ConfiguracoesActivity::class.java))
         }
 
-        // Abrir a tela de favoritos
-        binding.favoritosBtn.setOnClickListener {
+        // Abrir tela de playlists
+        binding.playlistsBtn.setOnClickListener {
+            // Muda a animação do botão ao ser clicado
+            binding.playlistsBtn.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
+            startActivity(Intent(this, PlaylistsActivity::class.java))
+        }
+
+        // Abrir tela de pesquisa
+        binding.pesquisarBtn.setOnClickListener {
+            // A lista de músicas precisa conter pelo menos uma música para o usuário poder fazer pesquisas
+            if (listaMusicaMain.size < 1){
+                // Criação de um toast para informar o usuário de que ele não possui músicas suficientes para utilizar a funcionalidade
+                Toast.makeText(this, "Você não possui músicas!", Toast.LENGTH_SHORT).show()
+            }else{
+                binding.pesquisarBtn.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
+                startActivity(Intent(this, PesquisarMusicasActivity::class.java))
+            }
+        }
+
+        // Abrir tela de favoritas
+        binding.favoritasBtn.setOnClickListener {
+            binding.favoritasBtn.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             startActivity(Intent(this, FavoritosActivity::class.java))
         }
 
-        // Abrir a tela de playlists
-        binding.playlistsBtn.setOnClickListener {
-            startActivity(Intent(this, PlaylistsActivity::class.java))
+        binding.cardSugestao.setOnClickListener {
+            // A funcionalidade de músicas precisa conter pelo menos uma música para funcionar
+            if (listaMusicaMain.size < 1){
+                // Criação de um toast para informar o usuário de que ele não possui músicas suficientes para utilizar a funcionalidade
+                Toast.makeText(this, "Você não possui músicas!", Toast.LENGTH_SHORT).show()
+            }else {
+                // Chama o método para selecionar uma música aleatória e mostrar no menu da tela principal
+                sugerirMusica()
+                // Se houver uma ou mais músicas, leve o usuário para o player com os dados para randomizá-la
+                val sugestIntent = Intent(this@MainActivity, PlayerActivity::class.java)
+                // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
+                sugestIntent.putExtra("indicador", 0)
+                // Quando o usuário é levado a tela do player, também é enviado os dados da intent (String)
+                sugestIntent.putExtra("classe", "Sugerida")
+                startActivity(sugestIntent)
+            }
         }
 
         // Randomizar as músicas
@@ -132,7 +162,7 @@ class MainActivity : AppCompatActivity() {
             val mainIntent = Intent(this@MainActivity, PlayerActivity::class.java)
             // Quando o usuário é levado a tela do player, também é enviado os dados de posição da música (Int)
             mainIntent.putExtra("indicador", 0)
-            // Quando o usuário é levado a tela do player, também é enviado os dados da classe da MainActivity (String)
+            // Quando o usuário é levado a tela do player, também é enviado os dados da intent (String)
             mainIntent.putExtra("classe", "Main")
             startActivity(mainIntent)
             }
@@ -155,7 +185,7 @@ class MainActivity : AppCompatActivity() {
                 // Conteúdo da sheet (Radio Buttons)
                 with(
                     Option(R.drawable.ic_round_person_24, "Por artista"),
-                    Option(R.drawable.ic_round_library_music_24, "Por título"),
+                    Option(R.drawable.ic_round_audiotrack_24, "Por título"),
                     Option(R.drawable.ic_round_calendar_today_24, "Por data adicionada"),
                     Option(R.drawable.ic_round_access_time_filled_24, "Por duração")
                 )
@@ -220,7 +250,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Método para chamar tudo que será a inicialização do layout da tela inicial
+    @SuppressLint("SetTextI18n")
     private fun iniciarLayout(){
+        binding.root.visibility = View.VISIBLE
         pesquisando = false
         // Lista de músicas
         val ordemEditor = getSharedPreferences("ORDEM", MODE_PRIVATE)
@@ -228,6 +260,7 @@ class MainActivity : AppCompatActivity() {
         ordem = ordemEditor.getInt("ordemSet", 0)
         // E procura as músicas
         listaMusicaMain = procurarMusicas()
+        listaMusicaPesquisa = listaMusicaMain
         // Se a quantidade de músicas for maior ou igual a 1
         if(listaMusicaMain.size >= 1){
             // Mostra a lista e esconde o aviso
@@ -259,10 +292,49 @@ class MainActivity : AppCompatActivity() {
         // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
         binding.musicasRv.isMotionEventSplittingEnabled = false
 
+        // Chama o método para checar o horário atual e passar a saudação correta na string
+        checarHorario()
+
+        // SharedPreferences, para retornar o nome do usuário
+        val nomeEditor = getSharedPreferences("NOME", MODE_PRIVATE)
+        val nomeUser = nomeEditor.getString("nomeUser", PermissaoActivity.nomeUser)
+        val nomeUserNovo = nomeEditor.getString("nomeUser", ConfiguracoesActivity.nomeUserNovo)
+
+        // When para definir a saudação correta para cada possível situação
+        when{
+            // Quando o nome do usuário estiver vazio
+            nomeUser!!.isBlank() -> {
+                binding.textMain.text = saudacao
+            }
+            // Quando o nome novo do usuário for nulo
+            nomeUserNovo == null -> {
+                val nomeUserText = ", $nomeUser"
+                binding.textMain.text = "$saudacao${nomeUserText.trim()}"
+            }
+            // Quando o nome novo do usuário estiver vazio
+            nomeUserNovo.isBlank() -> {
+                binding.textMain.text = saudacao
+            }
+            // Qualquer outra situação
+            else -> {
+                val nomeUserNovoText = ", $nomeUserNovo"
+                binding.textMain.text = "$saudacao${nomeUserNovoText.trim()}"
+            }
+        }
+
         // Ajuste de cores para o modo escuro do Android
         if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
             escuro = true
+            binding.textMain.setTextColor(ContextCompat.getColor(this, R.color.grey2))
             binding.filtroImg.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.configsBtn.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.bottomNavigation.setBackgroundColor(ContextCompat.getColor(this, R.color.black1))
+            binding.playlistsImg.setColorFilter(ContextCompat.getColor(this, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.pesquisarImg.setColorFilter(ContextCompat.getColor(this, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.favoritasImg.setColorFilter(ContextCompat.getColor(this, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
+            binding.playlistsText.setTextColor(ContextCompat.getColor(this, R.color.white))
+            binding.pesquisarText.setTextColor(ContextCompat.getColor(this, R.color.white))
+            binding.favoritasText.setTextColor(ContextCompat.getColor(this, R.color.white))
         }else{
             escuro = false
         }
@@ -344,107 +416,113 @@ class MainActivity : AppCompatActivity() {
         return lista // Retorna a lista de músicas para o ArrayList<Musica>
     }
 
-    // Método para mostrar (inflar) a pesquisa na action bar
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.pesquisa_menu, menu)
-        val pesquisaView = menu.findItem(R.id.pesquisa_view)?.actionView as SearchView
+    private fun checarHorario(){
+        val calendario = Calendar.getInstance()
 
-        // Texto da hint
-        pesquisaView.queryHint = "Procure por título, artista, álbum..."
+        when (calendario[Calendar.HOUR_OF_DAY]) {
+            // Se o horário for maior ou igual a 0:00 e menor que 12:00
+            in 0..11 -> {
+                saudacao = "Bom dia"
+            }
+            // Se o horário for maior ou igual a 12:00 e menor que 18:00
+            in 12..17 -> {
+                saudacao = "Boa tarde"
+            }
+            // Se o horário for maior ou igual a 18:00 e menor que 24:00
+            in 18..23 -> {
+                saudacao = "Boa noite"
+            }
+        }
+    }
 
-        // Fica lendo o que o usuário está digitando na barra de pesquisa
-        pesquisaView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
-            // O texto é sempre enviado, com ou sem a confirmação de pesquisa do usuário
-            // Dessa forma, a lista atualiza na hora com base na pesquisa do usuário
-            override fun onQueryTextSubmit(query: String?): Boolean = true
+    // Método para retornar uma música aleatória para o usuário
+    private fun sugerirMusica() {
+        // Retorna uma música
+        listaMusicaMain.shuffle()
+        musicaSugerida = listaMusicaMain.random()
+        // Passa um while para verificar se a música sugerida tem menos de 1 minuto, se verdadeiro, então gera uma nova
+        while (musicaSugerida.duracao <= 60000) { musicaSugerida = listaMusicaMain.random() }
+    }
 
-            // Quando o texto muda
-            override fun onQueryTextChange(textoPesquisa: String?): Boolean {
-                // Cria a lista de músicas da pesquisa
-                listaMusicaPesquisa = ArrayList()
-                // Se o texto da pesquisa não for nulo
-                if (textoPesquisa != null){
-                    // Passa o texto dela para caixa baixa para pode encontrar a música de forma mais fácil
-                    var pesquisa = textoPesquisa.lowercase()
-                    // Evita um bug que pode ocorrer ao usuário procurar uma música com espaços em branco na pesquisa
-                    pesquisa = pesquisa.trim()
-                    // Para cada música na lista de músicas da tela principal
-                    for (musica in listaMusicaMain)
-                        // Se o título, artista ou álbum da música, em caixa baixa conter o texto da pesquisa
-                        if (musica.titulo.lowercase().contains(pesquisa) || musica.artista.lowercase().contains(pesquisa) || musica.album.lowercase().contains(pesquisa)){
-                            // Então adicione essa música a lista de pesquisa
-                            listaMusicaPesquisa.add(musica)
-                            // Defina pesquisando como true
-                            pesquisando = true
-                            // E atualize a lista de músicas pesquisadas
-                            musicaAdapter.atualizarLista(listaMusicaPesquisa)
-                        }
+        // Método onDestroy, para encerrar o processo do aplicativo
+        override fun onDestroy() {
+            super.onDestroy()
+            // Se a música não estiver tocando e a reprodução de músicas for nula
+            if (!PlayerActivity.tocando && PlayerActivity.musicaService != null) {
+                // Então chame o método para encerrar o processo inteiro do app.
+                encerrarProcesso()
+            }
+        }
+
+        // Método onResume, para quando o usuário volta a activity
+        @SuppressLint("RestrictedApi", "SetTextI18n")
+        override fun onResume() {
+            super.onResume()
+            // Se o usuário já tiver dado a permissão pro aplicativo, então pode retornar as preferencias salvas
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                // SharedPreferences, para salvar a lista de favoritos do usuário
+                val editor = getSharedPreferences("Favoritos", MODE_PRIVATE).edit()
+                val jsonStringFavoritos = GsonBuilder().create().toJson(FavoritosActivity.listaFavoritos)
+                editor.putString("Lista de favoritos", jsonStringFavoritos)
+                // SharedPreferences, para salvar a lista de playlists do usuário
+                val jsonStringPlaylists = GsonBuilder().create().toJson(PlaylistsActivity.playlists)
+                editor.putString("Lista de playlists", jsonStringPlaylists)
+                editor.apply()
+                // SharedPreferences, para retornar a ordenação da lista de músicas do usuário
+                val ordemEditor = getSharedPreferences("ORDEM", MODE_PRIVATE)
+                val valorOrdem = ordemEditor.getInt("ordemSet", 0)
+                // Se o valor da ordem atual for diferente do valor selecionado
+                if (ordem != valorOrdem) {
+                    // Então iguala o valor
+                    ordem = valorOrdem
+                    // E atualiza a lista de músicas procurando e armazenando elas com a nova ordem
+                    listaMusicaMain = procurarMusicas()
+                    musicaAdapter.atualizarLista(listaMusicaMain)
                 }
-                return true
-            }
-        })
-        return super.onCreateOptionsMenu(menu)
-    }
+                // SharedPreferences, para retornar as definições do usuário
+                val switchEditor = getSharedPreferences("SWITCH1", MODE_PRIVATE)
+                val switchAud = switchEditor.getBoolean("switchAud", ConfiguracoesActivity.switch1)
+                // Se o valor do switch for true
+                if (switchAud) {
+                    // Então os áudios do WhatsApp serão ignorados
+                    selectMusica = MediaStore.Audio.Media.IS_MUSIC + " != 0" + " AND " + MediaStore.Audio.Media.TITLE + " NOT  LIKE  '%AUD%'"
+                    // E atualiza a lista de músicas procurando novamente por elas com os parâmetros de seleção acima
+                    listaMusicaMain = procurarMusicas()
+                    musicaAdapter.atualizarLista(listaMusicaMain)
+                    // Caso contrário (valor false para o switch)
+                } else {
+                    // Então a seleção será de todos os áudios encontrados
+                    selectMusica = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+                    // E atualiza a lista de músicas procurando novamente por elas com os parâmetros de seleção acima
+                    listaMusicaMain = procurarMusicas()
+                    musicaAdapter.atualizarLista(listaMusicaMain)
+                }
+                checarHorario()
+                // SharedPreferences, para retornar o nome do usuário
+                val nomeEditor = getSharedPreferences("NOME", MODE_PRIVATE)
+                val nomeUser = nomeEditor.getString("nomeUser", PermissaoActivity.nomeUser)
+                val nomeUserNovo = nomeEditor.getString("nomeUser", ConfiguracoesActivity.nomeUserNovo)
 
-    // Método onDestroy, para encerrar o processo do aplicativo
-    override fun onDestroy() {
-        super.onDestroy()
-        // Se a música não estiver tocando e a reprodução de músicas for nula
-        if (!PlayerActivity.tocando && PlayerActivity.musicaService != null){
-            // Então chame o método para encerrar o processo inteiro do app.
-            encerrarProcesso()
-        }
-    }
-
-    // Método onResume, para quando o usuário volta a activity
-    @SuppressLint("RestrictedApi")
-    override fun onResume() {
-        super.onResume()
-        // Se o usuário já tiver dado a permissão pro aplicativo, então pode retornar as preferencias salvas
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            // SharedPreferences, para salvar a lista de favoritos do usuário
-            val editor = getSharedPreferences("Favoritos", MODE_PRIVATE).edit()
-            val jsonStringFavoritos = GsonBuilder().create().toJson(FavoritosActivity.listaFavoritos)
-            editor.putString("Lista de favoritos", jsonStringFavoritos)
-            // SharedPreferences, para salvar a lista de playlists do usuário
-            val jsonStringPlaylists = GsonBuilder().create().toJson(PlaylistsActivity.playlists)
-            editor.putString("Lista de playlists", jsonStringPlaylists)
-            editor.apply()
-            // SharedPreferences, para retornar a ordenação da lista de músicas do usuário
-            val ordemEditor = getSharedPreferences("ORDEM", MODE_PRIVATE)
-            val valorOrdem = ordemEditor.getInt("ordemSet", 0)
-            // Se o valor da ordem atual for diferente do valor selecionado
-            if (ordem != valorOrdem) {
-                // Então iguala o valor
-                ordem = valorOrdem
-                // E atualiza a lista de músicas procurando e armazenando elas com a nova ordem
-                listaMusicaMain = procurarMusicas()
-                musicaAdapter.atualizarLista(listaMusicaMain)
+                when {
+                    nomeUser == "" -> {
+                        binding.textMain.text = saudacao
+                    }
+                    nomeUserNovo == null -> {
+                        val nomeUserText = ", $nomeUser"
+                        binding.textMain.text = "$saudacao${nomeUserText.trim()}"
+                    }
+                    nomeUserNovo.isBlank() -> {
+                        binding.textMain.text = saudacao
+                    }
+                    else -> {
+                        val nomeUserNovoText = ", $nomeUserNovo"
+                        binding.textMain.text = "$saudacao${nomeUserNovoText.trim()}"
+                    }
+                }
             }
-            // SharedPreferences, para retornar as definições do usuário
-            val switchEditor = getSharedPreferences("SWITCH1", MODE_PRIVATE)
-            val switchAud = switchEditor.getBoolean("switchAud", ConfiguracoesActivity.switch1)
-            // Se o valor do switch for true
-            if (switchAud) {
-                // Então os áudios do WhatsApp serão ignorados
-                selectMusica = MediaStore.Audio.Media.IS_MUSIC + " != 0" + " AND " + MediaStore.Audio.Media.TITLE + " NOT  LIKE  'AUD%'"
-                // E atualiza a lista de músicas procurando novamente por elas com os parâmetros de seleção acima
-                listaMusicaMain = procurarMusicas()
-                musicaAdapter.atualizarLista(listaMusicaMain)
-                // Caso contrário (valor false para o switch)
-            } else {
-                // Então a seleção será de todos os áudios encontrados
-                selectMusica = MediaStore.Audio.Media.IS_MUSIC + " != 0"
-                // E atualiza a lista de músicas procurando novamente por elas com os parâmetros de seleção acima
-                listaMusicaMain = procurarMusicas()
-                musicaAdapter.atualizarLista(listaMusicaMain)
-            }
-            // Se o usuário abriu a barra de pesquisa e saiu da tela, quando ele voltar a barra de pesquisa estará fechada
-            supportActionBar?.collapseActionView()
-        }
-        // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
-        if (PlayerActivity.musicaService != null) {
-            binding.miniPlayer.visibility = View.VISIBLE
+            // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
+            if (PlayerActivity.musicaService != null) {
+                binding.miniPlayer.visibility = View.VISIBLE
         }
     }
 }

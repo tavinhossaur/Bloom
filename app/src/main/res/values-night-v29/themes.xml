@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Bloom" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Bloom" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black3</item>
         <item name="colorPrimaryVariant">@color/purple2</item>
@@ -15,16 +15,15 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Navigation bar color. -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
-        <!-- ActionBar style -->
-        <item name="actionBarWidgetTheme">@style/ActionBarStyle</item>
         <!-- Texto da cor primária para o texto da SearchView da ActionBar -->
         <item name="android:textColorPrimary">@color/white</item>
 
         <!-- Sheet Theme -->
         <item name="sheetsPrimaryColor">@color/purple1</item>
+
     </style>
 
-    <style name="Theme.BloomNoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.BloomPesquisar" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black3</item>
         <item name="colorPrimaryVariant">@color/purple2</item>
@@ -39,10 +38,11 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Transparent navigation bar color. -->
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <!-- ActionBar style -->
+        <item name="actionBarWidgetTheme">@style/ActionBarStyle</item>
 
         <!-- Sheet Theme -->
         <item name="sheetsPrimaryColor">@color/purple1</item>
     </style>
-
 
 </resources>

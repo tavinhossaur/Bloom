@@ -7,6 +7,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -14,14 +15,20 @@ import androidx.core.content.ContextCompat
 import com.example.bloom.databinding.ActivityPermissaoBinding
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
+import com.maxkeppeler.sheets.input.InputSheet
+import com.maxkeppeler.sheets.input.type.InputEditText
 
 class PermissaoActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityPermissaoBinding // binding é a variável do ViewBinding para ligar as views ao código
 
+    companion object{
+       var nomeUser : String = ""
+    }
+
     // Método chamado quando o aplicativo é iniciado
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.Theme_BloomNoActionBar)
+        setTheme(R.style.Theme_Bloom)
         super.onCreate(savedInstanceState)
 
         // Inicialização do binding
@@ -53,9 +60,49 @@ class PermissaoActivity : AppCompatActivity() {
             // Caso os resultados não forem vazios e o array conter o elemento [0], então as permissões foram concedidas
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permissões concedidas!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(applicationContext, MainActivity::class.java))
-                finish()
+                binding.root.visibility = View.GONE
+                // Diálogo para o usuário inserir o seu nome
+                InputSheet().show(this) {
+                    // Estilo do sheet (BottomSheet)
+                    style(SheetStyle.DIALOG)
+                    // Título do BottomSheetDialog
+                    title("Como devemos te chamar?")
+                    // Conteúdo da sheet (Edit Texts)
+                    with(InputEditText("nome") {
+                        required(true)
+                        drawable(R.drawable.ic_round_person_24)
+                        label("Você pode também pode editar seu nome mais tarde nas configurações se desejar.")
+                        hint("Insira seu nome ou apelido...")
+                    })
+                    // Cor do botão "confirmar"
+                    positiveButtonColorRes(R.color.purple1)
+                    // Botão confirmar do AlertDialog
+                    onPositive("Confirmar") { result ->
+                        // Retorna o valor string da input "nome_playlist"
+                        nomeUser = result.getString("nome").toString()
 
+                        // Aplica o getSharedPreferences para salvar o nome do usuário
+                        val editor = getSharedPreferences("NOME", MODE_PRIVATE).edit()
+                        // E salva e aplica o valor da string
+                        editor.putString("nomeUser", nomeUser)
+                        editor.apply()
+
+                        Toast.makeText(this@PermissaoActivity, "Nome salvo", Toast.LENGTH_SHORT).show()
+
+                        // E então o usuário é enviado para tela principal
+                        startActivity(Intent(applicationContext, MainActivity::class.java))
+                        finish()
+                    }
+                    // Cor do botão negativo
+                    negativeButtonColorRes(R.color.grey3)
+                    // Botão cancelar do AlertDialog
+                    onNegative {
+                        nomeUser = ""
+                        // E o usuário é enviado para tela principal
+                        startActivity(Intent(applicationContext, MainActivity::class.java))
+                        finish()
+                    }
+                }
             // Caso o usuário selecione 2x para negar a permissão, marque a checkbox para não perguntar novamente,
             // ou diretamente escolha para negar e não pedir mais a permissão
             // Um AlertDialog surgirá para dizer que o app não pedirá mais a permissão e portanto, ela deve ser concedida nas configurações do aplicativo

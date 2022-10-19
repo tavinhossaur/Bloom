@@ -34,6 +34,11 @@
             android:windowSoftInputMode="adjustPan"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:name=".PesquisarMusicasActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".ConteudoPlaylistActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
