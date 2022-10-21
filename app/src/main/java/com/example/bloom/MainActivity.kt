@@ -104,14 +104,12 @@ class MainActivity : AppCompatActivity() {
         // Abrir tela de configurações
         binding.configsBtn.setOnClickListener {
             // Muda a animação do botão ao ser clicado
-            binding.configsBtn.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
+            binding.configsBtn.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_popup_exit))
             startActivity(Intent(this, ConfiguracoesActivity::class.java))
         }
 
         // Abrir tela de playlists
         binding.playlistsBtn.setOnClickListener {
-            // Muda a animação do botão ao ser clicado
-            binding.playlistsBtn.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             startActivity(Intent(this, PlaylistsActivity::class.java))
         }
 
@@ -122,14 +120,12 @@ class MainActivity : AppCompatActivity() {
                 // Criação de um toast para informar o usuário de que ele não possui músicas suficientes para utilizar a funcionalidade
                 Toast.makeText(this, "Você não possui músicas!", Toast.LENGTH_SHORT).show()
             }else{
-                binding.pesquisarBtn.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
                 startActivity(Intent(this, PesquisarMusicasActivity::class.java))
             }
         }
 
         // Abrir tela de favoritas
         binding.favoritasBtn.setOnClickListener {
-            binding.favoritasBtn.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
             startActivity(Intent(this, FavoritosActivity::class.java))
         }
 
@@ -497,32 +493,40 @@ class MainActivity : AppCompatActivity() {
                     listaMusicaMain = procurarMusicas()
                     musicaAdapter.atualizarLista(listaMusicaMain)
                 }
+                // Faz a checagem do horário
                 checarHorario()
                 // SharedPreferences, para retornar o nome do usuário
                 val nomeEditor = getSharedPreferences("NOME", MODE_PRIVATE)
                 val nomeUser = nomeEditor.getString("nomeUser", PermissaoActivity.nomeUser)
                 val nomeUserNovo = nomeEditor.getString("nomeUser", ConfiguracoesActivity.nomeUserNovo)
 
-                when {
-                    nomeUser == "" -> {
+                // When para definir a saudação correta para cada possível situação
+                when{
+                    // Quando o nome do usuário estiver vazio
+                    nomeUser!!.isBlank() -> {
                         binding.textMain.text = saudacao
                     }
+                    // Quando o nome novo do usuário for nulo
                     nomeUserNovo == null -> {
                         val nomeUserText = ", $nomeUser"
                         binding.textMain.text = "$saudacao${nomeUserText.trim()}"
                     }
+                    // Quando o nome novo do usuário estiver vazio
                     nomeUserNovo.isBlank() -> {
                         binding.textMain.text = saudacao
                     }
+                    // Qualquer outra situação
                     else -> {
                         val nomeUserNovoText = ", $nomeUserNovo"
                         binding.textMain.text = "$saudacao${nomeUserNovoText.trim()}"
                     }
                 }
+
+                // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
+                if (PlayerActivity.musicaService != null) {
+                    binding.miniPlayer.visibility = View.VISIBLE
+                    setBtnsNotify()
             }
-            // Quando retornado a tela, e o serviço de música não for nulo, então torne o Miniplayer visível.
-            if (PlayerActivity.musicaService != null) {
-                binding.miniPlayer.visibility = View.VISIBLE
         }
     }
 }

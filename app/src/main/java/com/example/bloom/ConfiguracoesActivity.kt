@@ -1,8 +1,10 @@
 package com.example.bloom
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -41,6 +43,8 @@ class ConfiguracoesActivity : AppCompatActivity() {
         // no caso, a ActivityMainBinding (activity_main.xml)
         setContentView(binding.root)
 
+        binding.switchRickRoll.isChecked = false
+
         // Ajuste de cores para o modo escuro do Android
         if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
             binding.btnVoltarConfig.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
@@ -61,7 +65,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
             // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
             binding.btnBugs.isEnabled = false
             // Muda a animação do botão ao ser clicado
-            binding.btnBugs.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
+            binding.btnBugs.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_popup_exit))
             // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
             val bugsSheet = InfoSheet().build(this) {
                 // Estilo do sheet (AlertDialog)
@@ -85,6 +89,18 @@ class ConfiguracoesActivity : AppCompatActivity() {
         // Ao clicar no switch da configuração 1, passa o método para checar se o switch está ligado (true) ou desligado (false)
         binding.switchConfig.setOnCheckedChangeListener{ _, _ -> checarSwitch() }
 
+        // Switch que faz um "rick roll" no usuário
+        binding.switchRickRoll.setOnCheckedChangeListener{ _, _ ->
+        val url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
+            val rickRoll = Intent(Intent.ACTION_VIEW)
+            rickRoll.data = Uri.parse(url)
+            startActivity(rickRoll)
+            PlayerActivity.musicaService!!.mPlayer!!.pause()
+            PlayerActivity.tocando = false
+            setBtnsNotify()
+            finish()
+        }
+
         // Ao clicar no botão de mudar o nome do usuário
         binding.btnMudarNome.setOnClickListener {
             // SharedPreferences, para retornar o nome do usuário
@@ -106,7 +122,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
                     if (nomeUser != null) {
                         defaultValue(nomeUser)
                     }
-                    label("Insira seu novo nome ou apelido...")
+                    label("Insira seu novo nome ou apelido")
                 })
                 // Cor do botão "confirmar"
                 positiveButtonColorRes(R.color.purple1)
@@ -287,5 +303,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
         val switchAud = switchEditor.getBoolean("switchAud", switch1)
         // Se o valor da configuração for true então liga o switch permanecerá ligado ao entrar na tela
         binding.switchConfig.isChecked = switchAud
+        // O valor do switch do RickRoll é sempre falso
+        binding.switchRickRoll.isChecked = false
     }
 }

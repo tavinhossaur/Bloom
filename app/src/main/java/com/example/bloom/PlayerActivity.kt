@@ -1465,7 +1465,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 val div = site!!.select("div[id=lyrics]").first()
 
                 // Se a div contém texto
-                if (div.hasText()){
+                if (div != null){
                     // Retorna o texto em HTML para string
                     letra = div.html().toString()
                     // Retornamos em HTML, porque queremos aplicar uma formatação de letra de música, como no próprio site
@@ -1475,7 +1475,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                     // Filtro para músicas instrumentais
                     letra = letra.replace("<img src=\"/img/etc/instrumental.png\" class=\"instrumental-icon\" alt=\"Instrumental\">", "")
                     // Passa a letra da música para a TextView onde é mostrado a letra
-                    binding.letrasText.text = "● ${binding.tituloMusicaTpl.text}\n\n\n\n$letra"
+                    binding.letrasText.text = "● ${binding.tituloMusicaTpl.text}\n\n$letra"
                 // Caso contrário (Não há texto)
                 }else{
                     // Mostra o texto avisando que não conseguiu retornar a letra

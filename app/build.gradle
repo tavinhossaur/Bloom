@@ -41,17 +41,18 @@ android {
 dependencies {
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation "androidx.core:core-splashscreen:1.0.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     // Glide (Biblioteca de carregamento e cache de imagens para Android, para otimização da rolagem da tela)
-    implementation 'com.github.bumptech.glide:glide:4.13.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+    implementation 'com.github.bumptech.glide:glide:4.14.2'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
     // Background translúcido do player
     implementation 'jp.wasabeef:glide-transformations:4.3.0'
 
@@ -65,15 +66,15 @@ dependencies {
     implementation 'com.maxkeppeler.sheets:info:2.2.9'
 
     // SharedPreferences
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     // Para enviar emails diretamente do app
     implementation 'com.sun.mail:android-mail:1.6.2'
     implementation 'com.sun.mail:android-activation:1.6.2'
 
     // Gif
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 
     // jsoup HTML parser
-    implementation 'org.jsoup:jsoup:1.13.1'
+    implementation 'org.jsoup:jsoup:1.15.3'
 }

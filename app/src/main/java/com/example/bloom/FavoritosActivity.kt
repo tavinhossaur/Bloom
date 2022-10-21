@@ -94,6 +94,7 @@ class FavoritosActivity : AppCompatActivity() {
             binding.favoritosRv.visibility = View.GONE
             // E mostra o aviso dizendo que não há músicas favoritas
             binding.avisoFavoritas.visibility = View.VISIBLE
+            binding.imgCoracao.visibility = View.VISIBLE
         }
     }
 }
