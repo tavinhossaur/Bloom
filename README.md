@@ -17,4 +17,3 @@ Details:
 ### Player screen
 ![HiShoot_20221026_194342](https://user-images.githubusercontent.com/64261696/198156143-f815177b-9656-46b9-a3c4-66b1aee7488d.png) 
 ![HiShoot_20221026_194213](https://user-images.githubusercontent.com/64261696/198156247-974edf71-70ad-41b0-a579-08bd4270351b.png)
-![HiShoot_20221026_195629](https://user-images.githubusercontent.com/64261696/198156538-0d733e5d-7156-40cb-8ba8-e4d039cfe1a7.png)
