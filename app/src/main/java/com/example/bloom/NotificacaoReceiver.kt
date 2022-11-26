@@ -116,11 +116,6 @@ class NotificacaoReceiver : BroadcastReceiver() {
             PlayerActivity.musicaService!!.criarPlayer()
             PlayerActivity.musicaService!!.carregarMusica()
 
-            // Se não conseguir retornar a letra da música, por padrão ficará o texto abaixo
-            PlayerActivity.binding.letrasText.text = "Não foi possível retornar a letra desta música, tente atualizar."
-            // Chama a clase para fazer a procura da letra da música
-            PlayerActivity.ProcurarLetra().execute()
-
             Glide.with(context)
                 // Carrega a posição da música e a uri da sua imagem
                 .load(PlayerActivity.filaMusica[PlayerActivity.posMusica].imagemUri)

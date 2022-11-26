@@ -92,6 +92,28 @@
         <entry key="..\:/Users/Lab5-1/StudioProjects/Bloom/app/src/main/res/layout/activity_player.xml" value="0.18819655521783182" />
         <entry key="..\:/Users/Lab5-1/StudioProjects/Bloom/app/src/main/res/layout/activity_splash_screen.xml" value="0.1175925925925926" />
         <entry key="..\:/Users/Lab5-1/StudioProjects/Bloom/app/src/main/res/layout/music_item_layout.xml" value="0.46600741656365885" />
+        <entry key="..\:/asd/app/src/main/res/drawable/ic_round_article_24.xml" value="0.2955" />
+        <entry key="..\:/asd/app/src/main/res/drawable/ic_round_check_circle_24.xml" value="0.2955" />
+        <entry key="..\:/asd/app/src/main/res/drawable/ic_round_circle_24.xml" value="0.2955" />
+        <entry key="..\:/asd/app/src/main/res/drawable/ic_round_dark_mode_24.xml" value="0.2955" />
+        <entry key="..\:/asd/app/src/main/res/drawable/ic_round_delete_forever_24.xml" value="0.2955" />
+        <entry key="..\:/asd/app/src/main/res/drawable/ic_round_refresh_24.xml" value="0.2955" />
+        <entry key="..\:/asd/app/src/main/res/drawable/ic_round_search_24.xml" value="0.2955" />
+        <entry key="..\:/asd/app/src/main/res/drawable/ic_round_settings_24.xml" value="0.2955" />
+        <entry key="..\:/asd/app/src/main/res/layout/action_bar_layout.xml" value="0.15625" />
+        <entry key="..\:/asd/app/src/main/res/layout/activity_configuracoes.xml" value="0.33" />
+        <entry key="..\:/asd/app/src/main/res/layout/activity_conteudo_playlist.xml" value="0.15625" />
+        <entry key="..\:/asd/app/src/main/res/layout/activity_favoritos.xml" value="0.15625" />
+        <entry key="..\:/asd/app/src/main/res/layout/activity_main.xml" value="0.25651988029072254" />
+        <entry key="..\:/asd/app/src/main/res/layout/activity_permissao.xml" value="0.13932291666666666" />
+        <entry key="..\:/asd/app/src/main/res/layout/activity_pesquisar_musicas.xml" value="0.15625" />
+        <entry key="..\:/asd/app/src/main/res/layout/activity_player.xml" value="0.25" />
+        <entry key="..\:/asd/app/src/main/res/layout/activity_playlists.xml" value="0.15625" />
+        <entry key="..\:/asd/app/src/main/res/layout/activity_selecionar_musicas.xml" value="0.15625" />
+        <entry key="..\:/asd/app/src/main/res/layout/favoritos_view_layout.xml" value="0.15625" />
+        <entry key="..\:/asd/app/src/main/res/layout/fragment_mini_player.xml" value="0.15625" />
+        <entry key="..\:/asd/app/src/main/res/layout/music_view_layout.xml" value="0.15625" />
+        <entry key="..\:/asd/app/src/main/res/layout/playlist_view_layout.xml" value="0.15625" />
         <entry key="..\:/bloomapp/app/src/main/res/drawable-v24/button_play_style.xml" value="0.1515" />
         <entry key="..\:/bloomapp/app/src/main/res/drawable-v24/button_style_dark.xml" value="0.177" />
         <entry key="..\:/bloomapp/app/src/main/res/drawable-v24/card_playlist_style.xml" value="0.177" />

@@ -2,4 +2,10 @@
     <string name="app_name">Bloom</string>
     <string name="drawer_aberto">Aberto</string>
     <string name="drawer_fechado">Fechado</string>
+    <string name="android_link"><a href="https://developer.android.com/studio">Android Studio</a></string>
+    <string name="intellij_link"><a href="https://www.jetbrains.com/idea/">IntelliJ IDEA Community Edition</a></string>
+    <string name="glide_link"><a href="https://github.com/bumptech/glide">Glide</a></string>
+    <string name="sheets_link"><a href="https://github.com/maxkeppeler/sheets">Sheets</a></string>
+    <string name="gif_link"><a href="https://github.com/koral--/android-gif-drawable">Android Gif Drawable</a></string>
+    <string name="javamail_link"><a href="https://github.com/brandonjenniges/JavaMail-API-Android">JavaMail-API-Android</a></string>
 </resources>

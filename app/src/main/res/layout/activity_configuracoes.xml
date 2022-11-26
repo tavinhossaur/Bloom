@@ -82,8 +82,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toStartOf="@id/switch_config"
-                android:maxLines="1"
                 android:ellipsize="end"
+                android:maxLines="1"
                 android:text="Ocultar áudios do WhatsApp"
                 android:textColor="@color/purple1"
                 android:textSize="18sp"/>
@@ -107,51 +107,12 @@
 
         </RelativeLayout>
 
-        <!-- Configuração de ocultar áudios do WhatsApp -->
-        <RelativeLayout
-            android:id="@+id/rick_roll"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/content_config"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp">
-
-            <TextView
-                android:id="@+id/titulo_rick_roll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/switch_rick_roll"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:text="Melhorar qualidade do áudio (BETA)"
-                android:textColor="@color/purple1"
-                android:textSize="18sp"/>
-
-            <TextView
-                android:id="@+id/sub_rick_roll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/titulo_rick_roll"
-                android:layout_toStartOf="@id/switch_rick_roll"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="Utiliza um algoritmo para melhorar o áudio"
-                android:textSize="14sp"/>
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switch_rick_roll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"/>
-
-        </RelativeLayout>
-
         <!-- Configuração de editar o nome do usuário -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/btn_mudar_nome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rick_roll"
+            android:layout_below="@id/content_config"
             android:layout_marginHorizontal="15dp"
             android:layout_marginTop="10dp"
             android:gravity="center"
@@ -237,6 +198,39 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Softwares de terceiros -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btn_terceiros"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_feedback"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:clickable="true"
+            android:gravity="center"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:contentPadding="10dp">
+
+            <TextView
+                android:id="@+id/titulo_terceiros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="SOFTWARES DE TERCEIROS"
+                android:textColor="@color/purple1"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/sub_terceiros"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Softwares utlizados no desenvolvimento do Bloom"
+                android:textSize="16sp"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -271,7 +265,7 @@
                 android:layout_below="@id/titulo_sobre"
                 android:text="Bloom foi desenvolvido por:
             \nJoão Fontinelli, Matheus Martinelli e Octávio Barassa.
-            \n\nEsse aplicativo se trata do nosso TCC do curso de Desenvolvimento de Sistemas na ETEC João Belarmino em Amparo. " />
+            \n\nEsse aplicativo se trata do nosso TCC do curso de Desenvolvimento de Sistemas na ETEC João Belarmino em Amparo-SP. "/>
 
         </RelativeLayout>
 

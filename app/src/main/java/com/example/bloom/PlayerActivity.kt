@@ -13,13 +13,10 @@ import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
-import android.net.ConnectivityManager
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.MediaStore
-import android.text.method.ScrollingMovementMethod
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
@@ -30,7 +27,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
@@ -44,7 +40,6 @@ import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputRadioButtons
 import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
-import org.jsoup.Jsoup
 import java.io.File
 import java.util.*
 
@@ -65,8 +60,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         var repetindo : Boolean = false                  // Variável para definir se a música está repetindo ou não, por padrão: "false"
         var randomizando : Boolean = false               // Variável para definir se a reprodução está randomizada ou não, por padrão: "false"
         var modoReproducao = 0                           // Por padrão o modo da reprodução é definido como 0 (Reprodução normal)
-        var temaBtn = 0                                  // Por padrão o botão do tema é definido como 0 (Claro)
-        var tema : Boolean = false                       // Por padrão o tema é definido como false (Claro)
 
         // Variáveis para indentificar qual opção do timer o usuário selecionou
         var min15 : Boolean = false
@@ -337,66 +330,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             telaCheia()
         }
 
-        // Botão que chama a função para mostrar a letra da música e esconder as outras views
-        binding.btnLetras.setOnClickListener {
-            // Muda a animação do botão ao ser clicado
-            binding.btnLetras.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
-            // Chama o método "telaCheia()"
-            mostrarLetra()
-        }
-
-        // Botão que recarrega o card com a letra da música
-        binding.btnRecarregar.setOnClickListener {
-            // Chama o método para começar a procura da letra da música atual
-            procurarLetras()
-        }
-
-        // Botão para mudar o tema do card da letra da música
-        binding.btnTema.setOnClickListener {
-            // Toda vez que é clicado aumenta +1 até 2
-            // Quando chega no 2, as opções resetam
-            temaBtn = (++temaBtn) % 2
-            // Quando o tema for
-            when(temaBtn){
-                // 0 - Modo claro
-                0 -> {
-                    tema = false
-                    binding.letrasCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white))
-                    binding.tituloLetra.setTextColor(ContextCompat.getColor(this, R.color.black))
-                    binding.btnRecarregar.setColorFilter(ContextCompat.getColor(this, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
-                    binding.btnTema.setImageResource(R.drawable.ic_round_dark_mode_24)
-                    binding.btnTema.setColorFilter(ContextCompat.getColor(this, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
-                    binding.btnFecharLetras.setColorFilter(ContextCompat.getColor(this, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
-                    binding.letrasText.setTextColor(ContextCompat.getColor(this, R.color.black3))
-                }
-                // 1 - Modo escuro
-                1 -> {
-                    tema = true
-                    binding.letrasCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
-                    binding.tituloLetra.setTextColor(ContextCompat.getColor(this, R.color.white))
-                    binding.btnRecarregar.setColorFilter(ContextCompat.getColor(this, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
-                    binding.btnTema.setImageResource(R.drawable.ic_round_light_mode_24)
-                    binding.btnTema.setColorFilter(ContextCompat.getColor(this, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
-                    binding.btnFecharLetras.setColorFilter(ContextCompat.getColor(this, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
-                    binding.letrasText.setTextColor(ContextCompat.getColor(this, R.color.white))
-                }
-            }
-            // Muda a animação do botão ao ser clicado
-            binding.btnTema.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
-        }
-
-        // Quando clicar no botão de fechar do card de letra da música, ele irá fechar e mostra as views escondidas
-        binding.btnFecharLetras.setOnClickListener {
-            // Muda a animação do botão ao ser clicado
-            binding.btnFecharLetras.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
-            binding.cabecalhoPlayer.visibility = View.VISIBLE
-            binding.bodyPlayer.visibility = View.VISIBLE
-            binding.funcionalidesExtras.visibility = View.VISIBLE
-            binding.progressBar.visibility = View.VISIBLE
-            binding.controlesBtnTpl.visibility = View.VISIBLE
-            binding.letrasCard.visibility = View.GONE
-        }
-
         // Para mostrar a fila de reprodução atual
         // Chama o método "mostrarFilaAtual()"
         binding.btnFila.setOnClickListener { mostrarFilaAtual() }
@@ -621,29 +554,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                 binding.btnModo.setImageResource(R.drawable.ic_round_repeat_24)
             }
         }
-
-        // Evita um bug de troca de opção quando o usuário sai e entra do player
-        if (!tema){
-            // Se estiver no modo claro
-            temaBtn = 0
-            binding.letrasCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white))
-            binding.tituloLetra.setTextColor(ContextCompat.getColor(this, R.color.black))
-            binding.btnRecarregar.setColorFilter(ContextCompat.getColor(this, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
-            binding.btnTema.setImageResource(R.drawable.ic_round_dark_mode_24)
-            binding.btnTema.setColorFilter(ContextCompat.getColor(this, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
-            binding.btnFecharLetras.setColorFilter(ContextCompat.getColor(this, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
-            binding.letrasText.setTextColor(ContextCompat.getColor(this, R.color.black3))
-        }else{
-            // Se estiver no modo escuro
-            temaBtn = 1
-            binding.letrasCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
-            binding.tituloLetra.setTextColor(ContextCompat.getColor(this, R.color.white))
-            binding.btnRecarregar.setColorFilter(ContextCompat.getColor(this, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
-            binding.btnTema.setImageResource(R.drawable.ic_round_light_mode_24)
-            binding.btnTema.setColorFilter(ContextCompat.getColor(this, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
-            binding.btnFecharLetras.setColorFilter(ContextCompat.getColor(this, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
-            binding.letrasText.setTextColor(ContextCompat.getColor(this, R.color.white))
-        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -750,9 +660,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         binding.filaRv.layoutManager = LinearLayoutManager(this@PlayerActivity)
         // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
         binding.filaRv.isMotionEventSplittingEnabled = false
-
-        // Desativa o nested scrolling para a rolagem ser mais suave
-        binding.letrasText.isNestedScrollingEnabled
 
         // Para reprodução das músicas
         // Recebe os dados enviados ao ser enviado a tela pela intent
@@ -1014,8 +921,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         }
         // Atualiza a lista de músicas do player
         musicaAdapter.atualizarLista(filaMusica)
-        // Chama o método para começar a procura da letra da música atual
-        procurarLetras()
     }
 
     // Método para poder chamar o BottomSheetDialog ao botão do timer ser clicado
@@ -1192,24 +1097,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         binding.cardFilaRv.visibility = View.VISIBLE
     }
 
-    // Método para mostrar a letra da música atual
-    @SuppressLint("SetTextI18n")
-    private fun mostrarLetra(){
-        // Esconde todas as views e mostra apenas o card com as letras
-        binding.cabecalhoPlayer.visibility = View.GONE
-        binding.bodyPlayer.visibility = View.GONE
-        binding.funcionalidesExtras.visibility = View.GONE
-        binding.controlesBtnTpl.visibility = View.GONE
-        binding.progressBar.visibility = View.GONE
-        binding.letrasCard.visibility = View.VISIBLE
-
-        // Torna a textView com a letra rodável (scrollable)
-        binding.letrasText.movementMethod = ScrollingMovementMethod()
-
-        // Chama o método para começar a procura da letra da música atual
-        procurarLetras()
-    }
-
     // Método quando o serviço se conectar ao player
     override fun onServiceConnected(name: ComponentName?, servico: IBinder?) {
         // Se o serviço da música estiver inicialmente nulo, assim não executará duas vezes o código abaixo
@@ -1276,8 +1163,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             if (ConteudoPlaylistActivity.init) {
                 ConteudoPlaylistActivity.musicaAdapter.atualizarPlaylists()
             }
-            // Chama o método para começar a procura da letra da música atual
-            procurarLetras()
 
             // Seleciona o texto do título para fazê-lo se movimentar e mostrar o texto inteiro
             MiniPlayerFragment.binding.tituloMusicaMp.isSelected = true
@@ -1343,150 +1228,6 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         }finally {
             // Encerra o cursor
             cursor?.close()
-        }
-    }
-
-    // Método para começar a fazer a procura das letras
-    @SuppressLint("SetTextI18n")
-    private fun procurarLetras(){
-        // Texto padrão para avisar o usuário que a letra da música não pode ser obtida
-        binding.letrasText.text = "Procurando.... Se estiver procurando por muito tempo, sua conexão pode estar lenta ou a letra não pode ser retornada.\n\nTente atualizar."
-        binding.btnRecarregar.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
-
-        // Obejeto gerenciador de conexão, para poder controlar o serviço de conexão a internet do aplicativo
-        val gerenciadorConexao = this@PlayerActivity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        // Se o dispositivo estiver conectado ou conectando a internet
-        if (gerenciadorConexao.activeNetworkInfo?.isConnectedOrConnecting == true) {
-            ProcurarLetra().execute()
-        }else{
-            binding.letrasText.text = "Você precisa estar conectado a internet."
-        }
-    }
-
-    // Classe interna para fazer a procura das letras utilizando AsyncTask
-    internal open class ProcurarLetra : AsyncTask<Void?, Void?, Void?>() {
-        @SuppressLint("SetTextI18n")
-        @Deprecated("Deprecated in Java")
-        // Método que faz um processo em background quando executado
-        override fun doInBackground(vararg p0: Void?): Void? {
-            var letra: String
-            // Retorna título e artista da música e coloca o seu texto em caixa baixa (letra minúsculo)
-            // Isso é necessário para poder fazer a busca na internet por meio da url
-            var titulo = filaMusica[posMusica].titulo.lowercase()
-            var artista = filaMusica[posMusica].artista.lowercase()
-
-            // Troca os valores de alguns caracteres que podem atrapalhar na busca da música pela internet
-            // Verifica a existência de acentos no título ou artista
-            // e aplica a letra equivalente sem o acento.
-            // Letra A
-            titulo = titulo.replace("á", "a")
-            titulo = titulo.replace("à", "a")
-            titulo = titulo.replace("â", "a")
-            titulo = titulo.replace("ã", "a")
-            titulo = titulo.replace("ä", "a")
-            titulo = titulo.replace("ă", "a")
-            artista = artista.replace("á", "a")
-            artista = artista.replace("à", "a")
-            artista = artista.replace("â", "a")
-            artista = artista.replace("ã", "a")
-            artista = artista.replace("ä", "a")
-            artista = artista.replace("ă", "a")
-            // Letra E
-            titulo = titulo.replace("é", "e")
-            titulo = titulo.replace("è", "e")
-            titulo = titulo.replace("ê", "e")
-            titulo = titulo.replace("ë", "e")
-            artista = artista.replace("é", "e")
-            artista = artista.replace("è", "e")
-            artista = artista.replace("ê", "e")
-            artista = artista.replace("ë", "e")
-            // Letra I
-            titulo = titulo.replace("í", "i")
-            titulo = titulo.replace("ì", "i")
-            titulo = titulo.replace("î", "i")
-            titulo = titulo.replace("ï", "i")
-            artista = artista.replace("í", "i")
-            artista = artista.replace("ì", "i")
-            artista = artista.replace("î", "i")
-            artista = artista.replace("ï", "i")
-            // Letra O
-            titulo = titulo.replace("ó", "o")
-            titulo = titulo.replace("ò", "o")
-            titulo = titulo.replace("ô", "o")
-            titulo = titulo.replace("õ", "o")
-            titulo = titulo.replace("ö", "o")
-            artista = artista.replace("ó", "o")
-            artista = artista.replace("ò", "o")
-            artista = artista.replace("ô", "o")
-            artista = artista.replace("õ", "o")
-            artista = artista.replace("ö", "o")
-            // Letra U
-            titulo = titulo.replace("ú", "u")
-            titulo = titulo.replace("ù", "u")
-            titulo = titulo.replace("û", "u")
-            titulo = titulo.replace("ü", "u")
-            artista = artista.replace("ú", "u")
-            artista = artista.replace("ù", "u")
-            artista = artista.replace("û", "u")
-            artista = artista.replace("ü", "u")
-            // Letra Ñ
-            titulo = titulo.replace("ñ", "n")
-            artista = artista.replace("ñ", "n")
-            // Letra Ç
-            titulo = titulo.replace("ç", "c")
-            artista = artista.replace("ç", "c")
-
-            // Delimita a string a apenas a parte que importa para fazer a busca
-            // em músicas com títulos extendidos por () ou -, essa parte é cortada
-            // e em artistas que sejam mais de 1, separados por vírgula, apenas o primeiro é retornado
-            titulo = titulo.split("(", "-")[0]
-            artista = artista.split(",")[0]
-
-            // Corta espaços no início e fim da string
-            titulo = titulo.trim()
-            artista = artista.trim()
-
-            // Apaga caracteres especiais
-            titulo = titulo.replace(Regex("[_=+\"|;:>^<()@#$%*'?¿,.!¡]"), "")
-            artista = artista.replace(Regex("[_=+\"|;:>^<()@#$%*'?¿,.!¡]"), "")
-
-            // Troca & por "and"
-            titulo = titulo.replace("&", "and")
-            artista = artista.replace("&", "and")
-
-            // Troca espaços vazios por "-"
-            titulo = titulo.replace(" ", "-")
-            artista = artista.replace(" ", "-")
-
-            try {
-                // Utilizando a biblioteca Jsoup, conectamos ao site provedor das letras passando como argumento o artista e o titulo
-                val site : org.jsoup.nodes.Document? = Jsoup.connect("https://www.vagalume.com.br/$artista/$titulo.html").get()
-                // No site, utilizamos um método "select" para procurar divs dentro do html, nesse caso, procuramos pela primeira div com id="lyrics"
-                val div = site!!.select("div[id=lyrics]").first()
-
-                // Se a div contém texto
-                if (div != null){
-                    // Retorna o texto em HTML para string
-                    letra = div.html().toString()
-                    // Retornamos em HTML, porque queremos aplicar uma formatação de letra de música, como no próprio site
-                    // então todas as vezes que houver um "<br>" (quebra de linha), trocamos esse valor por "\n" que corresponde também a quebra de linha
-                    // porém, especifico para o Android compreender o comando
-                    letra = letra.replace("<br>", "\n")
-                    // Filtro para músicas instrumentais
-                    letra = letra.replace("<img src=\"/img/etc/instrumental.png\" class=\"instrumental-icon\" alt=\"Instrumental\">", "")
-                    // Passa a letra da música para a TextView onde é mostrado a letra
-                    binding.letrasText.text = "● ${binding.tituloMusicaTpl.text}\n\n$letra"
-                // Caso contrário (Não há texto)
-                }else{
-                    // Mostra o texto avisando que não conseguiu retornar a letra
-                    binding.letrasText.text = "Não foi possível retornar a letra desta música, tente atualizar."
-                }
-                // Desbloqueia a rolagem apenas quando a letra for carregada
-                binding.letrasText.isEnabled = !binding.letrasText.equals("Procurando.... Se estiver procurando por muito tempo, sua conexão pode estar lenta ou a letra não pode ser retornada.\n\nTente atualizar.")
-            }catch (e: Exception){
-                return null
-            }
-            return null
         }
     }
 

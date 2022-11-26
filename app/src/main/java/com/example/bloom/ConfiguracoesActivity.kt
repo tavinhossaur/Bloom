@@ -1,10 +1,8 @@
 package com.example.bloom
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.net.ConnectivityManager
-import android.net.Uri
 import android.os.Bundle
 import android.view.animation.AnimationUtils
 import android.widget.Toast
@@ -43,15 +41,14 @@ class ConfiguracoesActivity : AppCompatActivity() {
         // no caso, a ActivityMainBinding (activity_main.xml)
         setContentView(binding.root)
 
-        binding.switchRickRoll.isChecked = false
-
         // Ajuste de cores para o modo escuro do Android
         if (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES){
             binding.btnVoltarConfig.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
             binding.btnBugs.setColorFilter(ContextCompat.getColor(this, R.color.grey2), android.graphics.PorterDuff.Mode.SRC_IN)
             binding.tituloActivityConfig.setTextColor(ContextCompat.getColor(this, R.color.grey2))
-            binding.btnFeedback.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
             binding.btnMudarNome.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
+            binding.btnFeedback.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
+            binding.btnTerceiros.setCardBackgroundColor(ContextCompat.getColor(this, R.color.black6))
         }
 
         // Ao clicar no botão fechar, a activity é simplesmente encerrada.
@@ -88,18 +85,6 @@ class ConfiguracoesActivity : AppCompatActivity() {
 
         // Ao clicar no switch da configuração 1, passa o método para checar se o switch está ligado (true) ou desligado (false)
         binding.switchConfig.setOnCheckedChangeListener{ _, _ -> checarSwitch() }
-
-        // Switch que faz um "rick roll" no usuário
-        binding.switchRickRoll.setOnCheckedChangeListener{ _, _ ->
-        val url = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley"
-            val rickRoll = Intent(Intent.ACTION_VIEW)
-            rickRoll.data = Uri.parse(url)
-            startActivity(rickRoll)
-            PlayerActivity.musicaService!!.mPlayer!!.pause()
-            PlayerActivity.tocando = false
-            setBtnsNotify()
-            finish()
-        }
 
         // Ao clicar no botão de mudar o nome do usuário
         binding.btnMudarNome.setOnClickListener {
@@ -189,7 +174,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
                     // Retorna o valor string da input "remetente_email"
                     val remetente = result.getString("remetente_email").toString()
                     // Retorna o valor string da input "feedback_email" e junta ela ao remetente
-                    val feedback = result.getString("feedback_email").toString() + "\n\nde $remetente"
+                    val feedback = result.getString("feedback_email").toString() + "\n\nEnviado por: $remetente"
 
                     // Endereço de email para onde será enviado o feedback (email e senha do aplicativo)
                     val usuario = "bloomapp2022@outlook.com"
@@ -270,6 +255,32 @@ class ConfiguracoesActivity : AppCompatActivity() {
                 negativeButtonColorRes(R.color.grey3)
             }
         }
+
+        binding.btnTerceiros.setOnClickListener {
+            // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
+            binding.btnTerceiros.isEnabled = false
+            // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
+            val terceirosSheet = InfoSheet().build(this) {
+                // Estilo do sheet (AlertDialog)
+                style(SheetStyle.DIALOG)
+                // Título
+                title("Softwares de Terceiros")
+                // Mensagem do AlertDialog
+                content("Segue abaixo a lista de softwares utilizados no desenvolvimento do aplicativo:" +
+                        "\n\n- Android Studio por Google" +
+                        "\n- IntelliJ IDEA Community Edition por JetBrains" +
+                        "\n- Glide por bumptech" +
+                        "\n- Sheets por maxkeppeler" +
+                        "\n- Android Gif Drawable por koral--" +
+                        "\n- JavaMail-API-Android por Oracle")
+                // Esconde os ambos os botões
+                displayButtons(false)
+                // Torna o objeto clicável novamente quando o diálogo for fechado
+                onClose { binding.btnBugs.isEnabled = true }
+            }
+            // Mostra o AlertDialog
+            terceirosSheet.show()
+        }
     }
 
     // Método para checar o switch quando o usuário clicar nele
@@ -303,7 +314,5 @@ class ConfiguracoesActivity : AppCompatActivity() {
         val switchAud = switchEditor.getBoolean("switchAud", switch1)
         // Se o valor da configuração for true então liga o switch permanecerá ligado ao entrar na tela
         binding.switchConfig.isChecked = switchAud
-        // O valor do switch do RickRoll é sempre falso
-        binding.switchRickRoll.isChecked = false
     }
 }

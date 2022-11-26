@@ -55,79 +55,6 @@
 
     </LinearLayout>
 
-    <!-- Card das letras da música -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/letras_card"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:visibility="gone"
-        android:layout_gravity="center"
-        android:layout_marginHorizontal="15dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="20dp">
-
-        <!-- Cabeçalho do card -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp">
-
-            <!-- Botão para recarregar o card -->
-            <ImageView
-                android:id="@+id/btn_recarregar"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_round_refresh_24"
-                app:tint="@color/black" />
-
-            <!-- Título do card -->
-            <TextView
-                android:id="@+id/titulo_letra"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Letra"
-                android:layout_toEndOf="@id/btn_recarregar"
-                android:textColor="@color/black"
-                android:textSize="22sp" />
-
-            <!-- Botão para alternar em modo claro e escuro -->
-            <ImageView
-                android:id="@+id/btn_tema"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:layout_toStartOf="@id/btn_fechar_letras"
-                android:src="@drawable/ic_round_dark_mode_24"
-                app:tint="@color/black" />
-
-            <!-- Botão para fechar o card -->
-            <ImageView
-                android:id="@+id/btn_fechar_letras"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_round_close_24"
-                app:tint="@color/black" />
-
-        </RelativeLayout>
-
-        <!-- Saída da letra da música -->
-        <TextView
-            android:id="@+id/letras_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:enabled="false"
-            android:padding="15dp"
-            android:text="Não foi possível retornar a letra desta música, tente atualizar."
-            android:lineSpacingExtra="2dp"
-            android:textSize="16sp"
-            android:layout_marginTop="40dp"
-            android:textColor="@color/black" />
-
-    </androidx.cardview.widget.CardView>
-
     <!-- Parte do meio do player (Detalhes da música e botão favorito) -->
     <RelativeLayout
         android:id="@+id/body_player"
@@ -254,16 +181,6 @@
             android:layout_height="27dp"
             android:layout_weight="1"
             android:src="@drawable/ic_round_equalizer_24"
-            android:forceDarkAllowed="false"
-            app:tint="@color/white"/>
-
-        <!-- Botão de letras -->
-        <ImageView
-            android:id="@+id/btn_letras"
-            android:layout_width="27dp"
-            android:layout_height="27dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_round_article_24"
             android:forceDarkAllowed="false"
             app:tint="@color/white"/>
 
