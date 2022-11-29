@@ -56,13 +56,13 @@ class PesquisarMusicasActivity : AppCompatActivity() {
         binding.pesqMusicaRv.layoutManager = LinearLayoutManager(this@PesquisarMusicasActivity)
         // Criando uma variável do Adapter com o contexto (tela) e a lista de músicas que será adicionada
         // ao RecyclerView por meio do mesmo Adapter
-        musicaAdapter = MusicaAdapter(this@PesquisarMusicasActivity, listaMusicaPesquisa, activityPesquisar = true)
+        musicaAdapter = MusicaAdapter(this@PesquisarMusicasActivity, listaMusicaMain, activityPesquisar = true)
         // Setando o Adapter para este RecyclerView
         binding.pesqMusicaRv.adapter = musicaAdapter
         // Evita que o usuário consiga clicar em dois itens ao mesmo tempo
         binding.pesqMusicaRv.isMotionEventSplittingEnabled = false
 
-        musicaAdapter.atualizarLista(listaMusicaPesquisa)
+        musicaAdapter.atualizarLista(listaMusicaMain)
 
         binding.voltarBtn.setOnClickListener {
             // Muda a animação do botão ao ser clicado
