@@ -17,7 +17,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="5dp"
         tools:ignore="UselessParent">
 
         <!-- Texto de saudação do cabeçalho -->
@@ -27,10 +26,10 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_toStartOf="@id/configs_btn"
-            android:fontFamily="@font/baloo_semibold"
             android:ellipsize="end"
+            android:fontFamily="@font/baloo_semibold"
             android:maxLines="1"
-            android:textSize="26sp" />
+            android:textSize="26sp"/>
 
         <!-- Botão de configurações -->
         <ImageButton
@@ -40,7 +39,7 @@
             android:layout_alignParentEnd="true"
             android:backgroundTint="@android:color/transparent"
             android:src="@drawable/ic_round_settings_24"
-            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck"/>
 
     </RelativeLayout>
 
@@ -72,8 +71,8 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
             android:layout_marginVertical="10dp"
+            android:layout_marginStart="10dp"
             android:clickable="true"
             app:cardBackgroundColor="@color/purple2"
             app:cardCornerRadius="10dp"
@@ -102,9 +101,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:layout_marginHorizontal="5dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/baloo_semibold"
                 android:maxLines="1"
-                android:ellipsize="end"
                 android:text="Para você"
                 android:textColor="@color/grey2"
                 android:textSize="18sp"/>

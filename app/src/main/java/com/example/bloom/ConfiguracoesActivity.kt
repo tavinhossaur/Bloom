@@ -92,6 +92,9 @@ class ConfiguracoesActivity : AppCompatActivity() {
             val nomeEditor = getSharedPreferences("NOME", MODE_PRIVATE)
             val nomeUser = nomeEditor.getString("nomeUser", PermissaoActivity.nomeUser)
 
+            // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
+            binding.btnMudarNome.isEnabled = false
+
             // Diálogo para o usuário inserir o seu nome
             InputSheet().show(this) {
                 // Estilo do sheet (BottomSheet)
@@ -109,6 +112,8 @@ class ConfiguracoesActivity : AppCompatActivity() {
                     }
                     label("Insira seu novo nome ou apelido")
                 })
+                // Torna o objeto clicável novamente quando o diálogo for fechado
+                onClose { binding.btnMudarNome.isEnabled = true }
                 // Cor do botão "confirmar"
                 positiveButtonColorRes(R.color.purple1)
                 // Botão confirmar do BottomSheet
@@ -276,7 +281,7 @@ class ConfiguracoesActivity : AppCompatActivity() {
                 // Esconde os ambos os botões
                 displayButtons(false)
                 // Torna o objeto clicável novamente quando o diálogo for fechado
-                onClose { binding.btnBugs.isEnabled = true }
+                onClose { binding.btnTerceiros.isEnabled = true }
             }
             // Mostra o AlertDialog
             terceirosSheet.show()

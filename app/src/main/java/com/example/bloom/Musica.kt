@@ -96,26 +96,41 @@ fun mudarPosMusica(adicionar : Boolean){
         // Se estiver adicionando, e a posição da música for igual o tamanho da lista -1,
         // então a posição da música deverá ser 0, caso contrário apenas vá para próxima música
         if (adicionar) {
-            if (PlayerActivity.filaMusica.size - 1 == PlayerActivity.posMusica) {
+            // Se o player estiver randomizando as músicas
+            if (PlayerActivity.randomizando){
+                // Define a posição da música como 0
                 PlayerActivity.posMusica = 0
+                // Seleciona uma música aleatória da fila
+                val musicaRandom = PlayerActivity.filaMusica.random()
+
+                // Método para passar pelas músicas da fila e encontrar a música aleatória
+                for (i in PlayerActivity.filaMusica) {
+                    // Para cada item da fila da música, verifica se é igual a música aleatória
+                    if (i != musicaRandom) {
+                        // Se não for igual, vai para próxima música
+                        PlayerActivity.posMusica++
+                        // Quando encontrar, pare o loop
+                    } else break
+                }
+
+                // E atualiza a lista
+                PlayerActivity.musicaAdapter.atualizarLista(PlayerActivity.filaMusica)
             }else{
-                ++PlayerActivity.posMusica
+                if (PlayerActivity.filaMusica.size - 1 == PlayerActivity.posMusica) {
+                    PlayerActivity.posMusica = 0
+                }else{
+                    ++PlayerActivity.posMusica
+                }
+                // Caso contrário se a posição da música for igual a 0, então a posição da música
+                // deverá ser o tamanho da lista -1, caso contrário apenas vá para a música anterior
             }
-            // Caso contrário se a posição da música for igual a 0, então a posição da música
-            // deverá ser o tamanho da lista -1, caso contrário apenas vá para a música anterior
         } else {
+            PlayerActivity.randomizando = false
             if (0 == PlayerActivity.posMusica) {
                 PlayerActivity.posMusica = PlayerActivity.filaMusica.size - 1
             } else {
                 --PlayerActivity.posMusica
             }
-        }
-        // Se o player estiver randomizando as músicas
-        if (PlayerActivity.randomizando){
-            // Aplica o método shuffle()
-            PlayerActivity.filaMusica.shuffle()
-            // E atualiza a lista
-            PlayerActivity.musicaAdapter.atualizarLista(PlayerActivity.filaMusica)
         }
     } // Se estiver repetindo, então não execute o código para ir para próxima música ou voltar para anterior
 }
