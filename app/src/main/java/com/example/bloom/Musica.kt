@@ -100,8 +100,8 @@ fun mudarPosMusica(adicionar : Boolean){
             if (PlayerActivity.randomizando){
                 // Define a posição da música como 0
                 PlayerActivity.posMusica = 0
-                // Seleciona uma música aleatória da fila
-                val musicaRandom = PlayerActivity.filaMusica.random()
+                // Randomiza a fila e seleciona a primeira música [0]
+                val musicaRandom = PlayerActivity.filaMusica.shuffled()[0]
 
                 // Método para passar pelas músicas da fila e encontrar a música aleatória
                 for (i in PlayerActivity.filaMusica) {
