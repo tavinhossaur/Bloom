@@ -61,39 +61,42 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
         }
 
         // Se a playlist não estiver vazia
-        if (PlaylistsActivity.playlists.modelo[posicao].playlist.isNotEmpty()){
-            // Utilizando um loop de 0 a 3 (mais fácil por conta da utilização da variável "i" no glide abaixo)
-            for(i in 0..3){
-                // Quando a música da lista que estiver sendo passada no glide for de valor 0,1,2,3 (index)
-                // um caminho de um componente da tela será atribuído a variavel imagem,
-                // para identificar em qual dos quatro componentes de imagem a capa da música irá.
-                when(i){
-                    0 -> imagem = holder.imagem1
-                    1 -> imagem = holder.imagem2
-                    2 -> imagem = holder.imagem3
-                    3 -> imagem = holder.imagem4
+        when {
+            PlaylistsActivity.playlists.modelo[posicao].playlist.isNotEmpty() -> {
+                // Utilizando um loop de 0 a 3 (mais fácil por conta da utilização da variável "i" no glide abaixo)
+                for (i in 0..3) {
+                    // Quando a música da lista que estiver sendo passada no glide for de valor 0,1,2,3 (index)
+                    // um caminho de um componente da tela será atribuído a variavel imagem,
+                    // para identificar em qual dos quatro componentes de imagem a capa da música irá.
+                    when (i) {
+                        0 -> imagem = holder.imagem1
+                        1 -> imagem = holder.imagem2
+                        2 -> imagem = holder.imagem3
+                        3 -> imagem = holder.imagem4
+                    }
+                    // Utilizando Glide, Procura na lista de músicas a posição da música em específico
+                    // e retorna sua imagem de álbum no lugar da ImageView da mesma
+                    Glide.with(context)
+                        // Carrega a posição da música com base no index do loop (que segue a mesma equivalencia: 0,1,2,3) e a uri da sua imagem
+                        // "getOrNull" é utilizado para caso o index não exista.
+                        .load(PlaylistsActivity.playlists.modelo[posicao].playlist.getOrNull(i)?.imagemUri)
+                        // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                        // junto do método centerCrop() para ajustar a imagem dentro da view
+                        .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
+                        // Alvo da aplicação da imagem
+                        .into(imagem)
                 }
-                // Utilizando Glide, Procura na lista de músicas a posição da música em específico
-                // e retorna sua imagem de álbum no lugar da ImageView da mesma
-                Glide.with(context)
-                    // Carrega a posição da música com base no index do loop (que segue a mesma equivalencia: 0,1,2,3) e a uri da sua imagem
-                    .load(PlaylistsActivity.playlists.modelo[posicao].playlist[i].imagemUri)
-                    // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-                    // junto do método centerCrop() para ajustar a imagem dentro da view
-                    .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
-                    // Alvo da aplicação da imagem
-                    .into(imagem)
-                // Aumenta o valor da variável música que identifica o index do loop e da lista de músicas
             }
-        // Caso a playlist esteja vazia
-        }else{
-            Glide.with(context)
-                // Carrega a posição da imagem placeholder
-                .load(R.drawable.placeholder_grey)
-                // Faz a aplicação da imagem com o método centerCrop() para ajustar a imagem dentro da view
-                .apply(RequestOptions().centerCrop())
-                // Alvo da aplicação da imagem
-                .into(holder.placeholder)
+            // Em qualquer outro caso, mais especificamente caso não haja nenhuma música
+            else -> {
+                Glide.with(context)
+                    // Carrega a posição da imagem placeholder
+                    .load(R.drawable.placeholder_grey)
+                    // Faz a aplicação da imagem com o método centerCrop() para ajustar a imagem dentro da view
+                    .apply(RequestOptions().centerCrop())
+                    // Alvo da aplicação da imagem
+                    .into(holder.placeholder)
+            }
         }
 
         // Quando o usuário clicar e segurar no card da playlist, um menu será aberto
