@@ -60,9 +60,25 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
             holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.black6))
         }
 
-        // Se a playlist não estiver vazia
         when {
+            // Se a playlist tiver uma imagem selecionada pelo usuário
+            PlaylistsActivity.playlists.modelo[posicao].imagemPlaylistUri.isNotEmpty() -> {
+                // Traz a view do placeholder para frente
+                holder.placeholder.visibility = View.VISIBLE
+                holder.placeholder.bringToFront()
+                Glide.with(context)
+                    // Carrega a posição da música com base no index do loop (que segue a mesma equivalencia: 0,1,2,3) e a uri da sua imagem
+                    // "getOrNull" é utilizado para caso o index não exista.
+                    .load(PlaylistsActivity.playlists.modelo[posicao].imagemPlaylistUri)
+                    // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                    // junto do método centerCrop() para ajustar a imagem dentro da view
+                    .apply(RequestOptions().placeholder(R.drawable.placeholder_grey).centerCrop())
+                    // Alvo da aplicação da imagem
+                    .into(holder.placeholder)
+            }
+            // Se a playlist não estiver vazia
             PlaylistsActivity.playlists.modelo[posicao].playlist.isNotEmpty() -> {
+                holder.placeholder.visibility = View.GONE
                 // Utilizando um loop de 0 a 3 (mais fácil por conta da utilização da variável "i" no glide abaixo)
                 for (i in 0..3) {
                     // Quando a música da lista que estiver sendo passada no glide for de valor 0,1,2,3 (index)
@@ -89,6 +105,9 @@ class PlaylistsAdapter(private val context: Context, private var listaPlaylists:
             }
             // Em qualquer outro caso, mais especificamente caso não haja nenhuma música
             else -> {
+                // Traz a view do placeholder para frente
+                holder.placeholder.visibility = View.VISIBLE
+                holder.placeholder.bringToFront()
                 Glide.with(context)
                     // Carrega a posição da imagem placeholder
                     .load(R.drawable.placeholder_grey)

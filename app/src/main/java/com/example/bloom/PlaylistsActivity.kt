@@ -1,17 +1,22 @@
 package com.example.bloom
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.bloom.databinding.ActivityPlaylistsBinding
 import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.input.InputSheet
+import com.maxkeppeler.sheets.input.type.InputCheckBox
 import com.maxkeppeler.sheets.input.type.InputEditText
 
 class PlaylistsActivity : AppCompatActivity() {
@@ -23,6 +28,8 @@ class PlaylistsActivity : AppCompatActivity() {
         @SuppressLint("StaticFieldLeak")
         lateinit var binding : ActivityPlaylistsBinding // binding é a variável do ViewBinding para ligar as views ao código
         var escuroPl : Boolean = false // Variável para definir se o modo escuro está ligado ou desligado
+        lateinit var nomeCriador : String
+        lateinit var nomePlaylist : String
     }
 
     // Método chamado quando o aplicativo é iniciado
@@ -115,6 +122,10 @@ class PlaylistsActivity : AppCompatActivity() {
                 drawable(R.drawable.ic_round_person_24)
                 hint(nomescr.random())
             })
+            with(InputCheckBox("selecionar_imagem") { // Read value later by index or custom key from bundle
+                text("Deseja selecionar uma imagem para playlist?")
+                // ... more options
+            })
             // Torna o objeto clicável novamente quando o diálogo for fechado
             onClose { binding.fabCriarPl.isEnabled = true }
             // Cor do botão "confirmar"
@@ -122,19 +133,45 @@ class PlaylistsActivity : AppCompatActivity() {
             // Botão confirmar do BottomSheet
             onPositive("Criar") { result ->
                 // Retorna o valor string da input "nome_playlist"
-                val nomePlaylist = result.getString("nome_playlist").toString()
+                nomePlaylist = result.getString("nome_playlist").toString()
                 // Retorna o valor string da input "nome_criador"
-                val nomeCriador = result.getString("nome_criador").toString()
-                // Passa ambas para o método adicionar playlist
-                adicionarPlaylist(nomePlaylist, nomeCriador)
+                nomeCriador = result.getString("nome_criador").toString()
+
+                if (result.getBoolean("selecionar_imagem")){
+                    val i = Intent()
+                    i.type = "image/*"
+                    i.action = Intent.ACTION_GET_CONTENT
+                    launchSomeActivity.launch(i)
+                }else{
+                    // Passa todas para o método adicionar playlist
+                    adicionarPlaylist(nomePlaylist, nomeCriador, "")
+                }
             }
             // Cor do botão negativo
             negativeButtonColorRes(R.color.grey3)
         }
     }
 
+    private val launchSomeActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
+            // do your operation from here....
+            if (data != null && data.data != null) {
+                val selectedImageUri: Uri? = data.data
+
+                // Passa todas para o método adicionar playlist
+                adicionarPlaylist(nomePlaylist, nomeCriador, selectedImageUri.toString())
+
+                // SharedPreferences, para salvar o caminho da imagem escolhida
+                val editor = getSharedPreferences("Imagem", MODE_PRIVATE).edit()
+                editor.putString("imagepath", selectedImageUri.toString())
+                editor.apply()
+            }
+        }
+    }
+
     // Método para adicionar playlists, que recebe o nome da mesma e do criador
-    private fun adicionarPlaylist(nome : String, criador : String){
+    private fun adicionarPlaylist(nome: String, criador: String, imagem: String){
         // Variável para identificar se a playlist já existe, por padrão tem valor false
         var playlistExiste = false
         // Loop para verificar se já há alguma de mesmo nome na lista de playlists
@@ -159,6 +196,8 @@ class PlaylistsActivity : AppCompatActivity() {
             novaPlaylist.nome = nome
             // Define o nome do criador da playlist
             novaPlaylist.criador = criador
+            // Define a imagem da playlist se o usuário desejar
+            novaPlaylist.imagemPlaylistUri = imagem
             // Define a lista de músicas dessa playlist como um ArrayList
             novaPlaylist.playlist = ArrayList()
             // Adiciona a nova playlist para lista de playlists
@@ -177,5 +216,6 @@ class PlaylistsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         playlistsAdapter.notifyDataSetChanged()
+        playlistsAdapter.atualizarLista()
     }
 }

@@ -270,6 +270,18 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                 positiveButtonColorRes(R.color.purple1)
                 onPositive("Sim, adicionar") {
                     PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.add(musica)
+                    if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].imagemPlaylistUri == ""){
+                        // Caso haja músicas na playlist, muda a imagem para a capa da primeira música do álbum, caso contrário volta para a imagem placeholder
+                        Glide.with(this)
+                            // Carrega a posição da música com base no index e a uri da sua imagem
+                            // "getOrNull" é utilizado para caso o index não exista.
+                            .load(PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.getOrNull(0)?.imagemUri)
+                            // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                            // junto do método centerCrop() para ajustar a imagem dentro da view
+                            .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                            // Alvo da aplicação da imagem
+                            .into(ConteudoPlaylistActivity.binding.playlistImgCpl)
+                    }
                     holder.botao.visibility = View.VISIBLE
                     // Torna o objeto clicável novamente
                     holder.root.isEnabled = true

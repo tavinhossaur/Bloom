@@ -72,14 +72,13 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/ic_baseline_more_vert_24" />
+            android:background="@drawable/ic_baseline_more_vert_24"/>
 
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:layout_marginTop="10dp"
         android:orientation="vertical">
 
         <com.google.android.material.card.MaterialCardView
@@ -87,6 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="10dp"
+            android:clickable="true"
             app:cardElevation="5dp"
             app:cardCornerRadius="10dp"
             app:cardPreventCornerOverlap="false">

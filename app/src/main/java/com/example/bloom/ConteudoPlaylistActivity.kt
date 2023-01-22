@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -22,6 +25,8 @@ import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.info.InfoSheet
 import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputEditText
+import java.io.IOException
+
 
 class ConteudoPlaylistActivity : AppCompatActivity() {
 
@@ -78,6 +83,67 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
             // Muda a animação do botão ao ser clicado
             binding.btnVoltarCpl.startAnimation(AnimationUtils.loadAnimation(this, androidx.appcompat.R.anim.abc_popup_exit))
             finish()
+        }
+
+        // Ao clicar no botão de imagem na imagem da playlist, chama a função para fazer a alteração da mesma
+        binding.cardImgCpl.setOnLongClickListener {
+            // Cria o popup menu
+            val contexto: Context = ContextThemeWrapper(this, R.style.PopupMenuStyle)
+            val popup = PopupMenu(contexto, binding.playlistImgCpl, Gravity.CENTER)
+            popup.setForceShowIcon(true)
+            // Infla o menu do card
+            popup.inflate(R.menu.img_menu)
+            // Adicionando o listener das opções do menu
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    // Editar playlist
+                    R.id.alterar_img -> {
+                        selecionarImagem()
+                        true
+                    }
+                    // Remover imagem
+                    R.id.remover_img -> {
+                        // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
+                        InfoSheet().show(this) {
+                            // Estilo do sheet (AlertDialog)
+                            style(SheetStyle.DIALOG)
+                            // Título do AlertDialog
+                            title("Restaurar padrão")
+                            // Mensagem do AlertDialog
+                            content("Deseja restaurar para a imagem padrão?")
+                            // Botão positivo que exclui a playlist em questão
+                            positiveButtonColorRes(R.color.purple1)
+                            // onClose { binding.btnImagemPlaylist.isEnabled = true }
+                            onPositive("Sim, restaurar") {
+                                // Se houver uma imagem selecionada pelo usuário na playlist
+                                if (PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri != ""){
+                                    // Passa um valor em branco para a imagem da playlist atual
+                                    PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri = ""
+                                }
+                                Toast.makeText(this@ConteudoPlaylistActivity, "Padrão restaurado", Toast.LENGTH_SHORT).show()
+
+                                // Caso haja músicas na playlist, muda a imagem para a capa da primeira música do álbum, caso contrário volta para a imagem placeholder
+                                Glide.with(this)
+                                    // Carrega a posição da música com base no index e a uri da sua imagem
+                                    // "getOrNull" é utilizado para caso o index não exista.
+                                    .load(PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist.getOrNull(0)?.imagemUri)
+                                    // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                                    // junto do método centerCrop() para ajustar a imagem dentro da view
+                                    .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                                    // Alvo da aplicação da imagem
+                                    .into(binding.playlistImgCpl)
+                            }
+                            // Cor do botão negativo
+                            negativeButtonColorRes(R.color.grey3)
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
+            // Mostra o menu popup
+            popup.show()
+            true
         }
 
         // Quando clicado no botão para adicionar músicas, leva o usuário para tela de seleção de músicas
@@ -166,10 +232,11 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
                                 if (PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist.size >= 1){
                                     // Então limpe as músicas presentes nela
                                     PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist.clear()
-                                    // Atualize a playlist para mostrar ao usuário que as músicas foram removidas
-                                    musicaAdapter.atualizarPlaylists()
-                                    // Mude a imagem da playlist para a padrão.
-                                    binding.playlistImgCpl.setImageResource(R.drawable.bloom_lotus_icon_grey)
+
+                                    if (PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri.isEmpty()) {
+                                        binding.playlistImgCpl.setImageResource(R.drawable.bloom_lotus_icon_grey)
+                                    }
+
                                     // E mostre um toast confirmando para o usuário que a playlist foi limpa
                                     Toast.makeText(context, "Playlist limpa", Toast.LENGTH_SHORT).show()
 
@@ -210,6 +277,38 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         }else {escuroContPl = false }
     }
 
+    // Método que cria uma intent para fazer a requisição de uma ação de selecionar uma imagem do armazenamento do dispositivo
+    private fun selecionarImagem() {
+        val i = Intent()
+        i.type = "image/*"
+        i.action = Intent.ACTION_GET_CONTENT
+        imagensIntent.launch(i)
+    }
+
+    // intent que será lançada no método
+    private var imagensIntent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        // Se a intent funcionou
+        if (result.resultCode == RESULT_OK) {
+            // Retorna a imagem para o objeto data
+            val data = result.data
+            // Verifica se os dados não são nulos, ou seja, se a imagem foi mesmo selecionada
+            if (data != null && data.data != null) {
+                // Adiciona a uri da imagem aos dados
+                val uriImagem: Uri? = data.data
+                try {
+                    // Passa a uri para a imagem da playlist atual
+                    PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri = uriImagem.toString()
+                    // E define a imagem com base na mesma uri
+                    binding.playlistImgCpl.setImageURI(uriImagem)
+                    Toast.makeText(this, "Imagem alterada com sucesso", Toast.LENGTH_SHORT).show()
+                } catch (e: IOException) {
+                    // No caso de erro mostra a exception no toast abaixo
+                    Toast.makeText(this, "Erro: $e", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
@@ -219,22 +318,34 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         musicaAdapter = MusicaAdapter(this, PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist, conteudoPlaylist = true)
         binding.musicasPlaylistRv.adapter = musicaAdapter
 
-        if (musicaAdapter.itemCount > 0){
-            // Utilizando Glide, Procura na lista de músicas a posição da música em específico
-            // e retorna sua imagem de álbum no lugar da ImageView da mesma
+        // Se o usuário já escolheu uma imagem
+        if (PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri != ""){
             Glide.with(this)
-                // Carrega a posição da música e a uri da sua imagem
-                .load(PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist[0].imagemUri)
+                // Carrega a uri da imagem selecionada pelo usuário
+                .load(PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri)
                 // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
                 .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
                 // Alvo da aplicação da imagem
                 .into(binding.playlistImgCpl)
+        }else{
+            // Utilizando Glide, Procura na lista de músicas a posição da música em específico
+            // e retorna sua imagem de álbum no lugar da ImageView da mesma
+            Glide.with(this)
+                // Carrega a posição da primeira música e a uri da sua imagem
+                .load(PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist.getOrNull(0)?.imagemUri)
+                // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                // Alvo da aplicação da imagem
+                .into(binding.playlistImgCpl)
+        }
 
+        if (musicaAdapter.itemCount > 0){
             binding.fabRandomCpl.visibility = View.VISIBLE
             binding.musicasPlaylistRv.visibility = View.VISIBLE
             binding.avisoCpl.visibility = View.INVISIBLE
             binding.btnAddMusicas.visibility = View.INVISIBLE
         }
+
         musicaAdapter.notifyDataSetChanged()
 
         // SharedPreferences, para salvar a lista de playlists do usuário

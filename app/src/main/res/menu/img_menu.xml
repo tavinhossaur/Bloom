@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/alterar_img"
+        android:icon="@drawable/ic_round_photo_24"
+        android:title="Alterar imagem" />
+    <item
+        android:id="@+id/remover_img"
+        android:icon="@drawable/ic_round_delete_forever_24"
+        android:title="Restaurar padrão" />
+</menu>

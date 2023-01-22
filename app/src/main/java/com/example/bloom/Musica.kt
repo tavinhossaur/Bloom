@@ -19,6 +19,7 @@ class Playlist {
     lateinit var nome : String
     lateinit var playlist : ArrayList<Musica>
     lateinit var criador : String
+    lateinit var imagemPlaylistUri : String
 }
 
 class ModeloPlaylist{

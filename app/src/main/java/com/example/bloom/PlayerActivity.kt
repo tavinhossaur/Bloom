@@ -42,6 +42,7 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
 import java.io.File
 import java.util.*
+import kotlin.properties.Delegates
 
 
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
@@ -51,15 +52,18 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
     companion object{
         var filaMusica : ArrayList<Musica> = ArrayList() // Fila de reprodução das músicas
         var posMusica : Int = 0                          // Posição da música, valor padrão de 0
-        var tocando : Boolean = false                    // Variável para definir se a música está tocando ou não, por padrão: "false"
         var musicaService : MusicaService? = null        // Serviço da música, por padrão fica como null
         var musicaAtual : String = ""                    // Variável que recebe o id da música atual tocando
-        var favoritado = false                           // Variável para definir se a música está favoritada ou não
         var favIndex : Int = -1                          // Variável indicadora da música favoritada
         var telaCheia : Boolean = false                  // Variável para definir se o player está em tela cheia ou não
         var repetindo : Boolean = false                  // Variável para definir se a música está repetindo ou não, por padrão: "false"
         var randomizando : Boolean = false               // Variável para definir se a reprodução está randomizada ou não, por padrão: "false"
         var modoReproducao = 0                           // Por padrão o modo da reprodução é definido como 0 (Reprodução normal)
+
+        // Variáveis para definir se a música está tocando e se está favoritada, respectivamente
+        // Delegates.notNull<Boolean>() serve como um lateinit var para tipos primitivos, como o boolean
+        var tocando by Delegates.notNull<Boolean>()
+        var favoritado by Delegates.notNull<Boolean>()
 
         // Variáveis para indentificar qual opção do timer o usuário selecionou
         var min15 : Boolean = false

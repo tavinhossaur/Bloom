@@ -71,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="80dp"
-                android:text="Para criar uma playlist clique no botão do canto inferior direito"
+                android:text="Para criar uma playlist, clique no botão do canto inferior direito"
                 android:gravity="center"
                 android:textColor="@color/grey3"
                 android:textSize="20sp"
