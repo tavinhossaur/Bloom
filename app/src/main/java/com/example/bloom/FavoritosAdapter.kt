@@ -178,7 +178,7 @@ class FavoritosAdapter(private val context: Context, private var listaFavoritos:
                                     positiveButtonColorRes(R.color.purple1)
                                     onPositive("Sim, excluir") {
                                         // Criando o objeto "musica" com base nos dados da música que foi selecionada
-                                        val musica = Musica(listaFavoritos[posicao].id, listaFavoritos[posicao].titulo, listaFavoritos[posicao].artista, listaFavoritos[posicao].album, listaFavoritos[posicao].duracao, listaFavoritos[posicao].imagemUri, listaFavoritos[posicao].caminho)
+                                        val musica = Musica(listaFavoritos[posicao].id, listaFavoritos[posicao].titulo, listaFavoritos[posicao].artista, listaFavoritos[posicao].album, listaFavoritos[posicao].duracao, listaFavoritos[posicao].imagemUri, listaFavoritos[posicao].caminho, false)
                                         // Criando o objeto "arquivo" que leva o objeto "musica" e o seu caminho (url do arquivo no armazenamento do dispositivo)
                                         val arquivo = File(listaFavoritos[posicao].caminho)
                                         // Exclui a música do armazenamento do dispositivo

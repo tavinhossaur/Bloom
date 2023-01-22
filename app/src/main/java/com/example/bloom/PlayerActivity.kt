@@ -42,7 +42,6 @@ import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
 import java.io.File
 import java.util.*
-import kotlin.properties.Delegates
 
 
 // Classe do Player, com a implementação do ServiceConnection que monitora a conexão com o serviço
@@ -61,9 +60,8 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
         var modoReproducao = 0                           // Por padrão o modo da reprodução é definido como 0 (Reprodução normal)
 
         // Variáveis para definir se a música está tocando e se está favoritada, respectivamente
-        // Delegates.notNull<Boolean>() serve como um lateinit var para tipos primitivos, como o boolean
-        var tocando by Delegates.notNull<Boolean>()
-        var favoritado by Delegates.notNull<Boolean>()
+        var tocando = false
+        var favoritado = false
 
         // Variáveis para indentificar qual opção do timer o usuário selecionou
         var min15 : Boolean = false
@@ -171,7 +169,7 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
                             positiveButtonColorRes(R.color.purple1)
                             onPositive("Sim, excluir") {
                                 // Criando o objeto "musica" com base nos dados da música que foi selecionada
-                                val musica = Musica(filaMusica[posMusica].id, filaMusica[posMusica].titulo, filaMusica[posMusica].artista, filaMusica[posMusica].album, filaMusica[posMusica].duracao, filaMusica[posMusica].imagemUri, filaMusica[posMusica].caminho)
+                                val musica = Musica(filaMusica[posMusica].id, filaMusica[posMusica].titulo, filaMusica[posMusica].artista, filaMusica[posMusica].album, filaMusica[posMusica].duracao, filaMusica[posMusica].imagemUri, filaMusica[posMusica].caminho, false)
                                 // Criando o objeto "arquivo" que leva o objeto "musica" e o seu caminho (url do arquivo no armazenamento do dispositivo)
                                 val arquivo = File(filaMusica[posMusica].caminho)
                                 // Exclui a música do armazenamento do dispositivo
@@ -1225,11 +1223,19 @@ class PlayerActivity : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCom
             val duracao = duracaoC?.let { cursor.getLong(it) }!!
 
             // Passando os dados retornados da música para a classe Musica
-            val musica = Musica(id = "Externo", titulo = caminho.toString(), artista = "Desconhecido", album = "Desconhecido", duracao = duracao, imagemUri = "Desconhecido", caminho = caminho.toString())
 
             // Retorna a música ao fim da execução do método
-            return musica
-        }finally {
+            return Musica(
+                id = "Externo",
+                titulo = caminho.toString(),
+                artista = "Desconhecido",
+                album = "Desconhecido",
+                duracao = duracao,
+                imagemUri = "Desconhecido",
+                caminho = caminho.toString(),
+                false
+            )
+        } finally {
             // Encerra o cursor
             cursor?.close()
         }

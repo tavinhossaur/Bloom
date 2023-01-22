@@ -71,7 +71,7 @@ class PermissaoActivity : AppCompatActivity() {
                     with(InputEditText("nome") {
                         required(true)
                         drawable(R.drawable.ic_round_person_24)
-                        label("Você pode também pode editar seu nome mais tarde nas configurações se desejar.")
+                        label("Você pode editar seu nome mais tarde nas configurações se desejar.")
                         hint("Insira seu nome ou apelido...")
                     })
                     // Cor do botão "confirmar"
@@ -87,7 +87,7 @@ class PermissaoActivity : AppCompatActivity() {
                         editor.putString("nomeUser", nomeUser)
                         editor.apply()
 
-                        Toast.makeText(this@PermissaoActivity, "Nome salvo", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@PermissaoActivity, "Nome salvo! Olá, $nomeUser!", Toast.LENGTH_LONG).show()
 
                         // E então o usuário é enviado para tela principal
                         startActivity(Intent(applicationContext, MainActivity::class.java))

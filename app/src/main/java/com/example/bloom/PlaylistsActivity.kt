@@ -18,6 +18,7 @@ import com.maxkeppeler.sheets.core.SheetStyle
 import com.maxkeppeler.sheets.input.InputSheet
 import com.maxkeppeler.sheets.input.type.InputCheckBox
 import com.maxkeppeler.sheets.input.type.InputEditText
+import java.io.IOException
 
 class PlaylistsActivity : AppCompatActivity() {
 
@@ -122,9 +123,9 @@ class PlaylistsActivity : AppCompatActivity() {
                 drawable(R.drawable.ic_round_person_24)
                 hint(nomescr.random())
             })
-            with(InputCheckBox("selecionar_imagem") { // Read value later by index or custom key from bundle
-                text("Deseja selecionar uma imagem para playlist?")
-                // ... more options
+            // CheckBox para o usuário decidir se ele deseja selecionar uma imagem para a playlist em sua criação
+            with(InputCheckBox("selecionar_imagem") {
+                text("Selecionar uma imagem para playlist")
             })
             // Torna o objeto clicável novamente quando o diálogo for fechado
             onClose { binding.fabCriarPl.isEnabled = true }
@@ -141,7 +142,7 @@ class PlaylistsActivity : AppCompatActivity() {
                     val i = Intent()
                     i.type = "image/*"
                     i.action = Intent.ACTION_GET_CONTENT
-                    launchSomeActivity.launch(i)
+                    imagensIntent.launch(i)
                 }else{
                     // Passa todas para o método adicionar playlist
                     adicionarPlaylist(nomePlaylist, nomeCriador, "")
@@ -152,20 +153,24 @@ class PlaylistsActivity : AppCompatActivity() {
         }
     }
 
-    private val launchSomeActivity = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+    // Intent que será lançada no método
+    private val imagensIntent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        // Se a intent funcionou
         if (result.resultCode == RESULT_OK) {
+            // Retorna a imagem para o objeto data
             val data = result.data
-            // do your operation from here....
+            // Verifica se os dados não são nulos, ou seja, se a imagem foi mesmo selecionada
             if (data != null && data.data != null) {
-                val selectedImageUri: Uri? = data.data
-
-                // Passa todas para o método adicionar playlist
-                adicionarPlaylist(nomePlaylist, nomeCriador, selectedImageUri.toString())
-
-                // SharedPreferences, para salvar o caminho da imagem escolhida
-                val editor = getSharedPreferences("Imagem", MODE_PRIVATE).edit()
-                editor.putString("imagepath", selectedImageUri.toString())
-                editor.apply()
+                // Adiciona a uri da imagem aos dados
+                val uriImagem: Uri? = data.data
+                try {
+                    // Passa todas para o método adicionar playlist
+                    adicionarPlaylist(nomePlaylist, nomeCriador, uriImagem.toString())
+                    Toast.makeText(this, "Playlist criada com sucesso", Toast.LENGTH_SHORT).show()
+                } catch (e: IOException) {
+                    // No caso de erro mostra a exception no toast abaixo
+                    Toast.makeText(this, "Erro: $e", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

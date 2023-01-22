@@ -285,7 +285,7 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         imagensIntent.launch(i)
     }
 
-    // intent que será lançada no método
+    // Intent que será lançada no método
     private var imagensIntent = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
         // Se a intent funcionou
         if (result.resultCode == RESULT_OK) {
@@ -319,20 +319,20 @@ class ConteudoPlaylistActivity : AppCompatActivity() {
         binding.musicasPlaylistRv.adapter = musicaAdapter
 
         // Se o usuário já escolheu uma imagem
-        if (PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri != ""){
-            Glide.with(this)
-                // Carrega a uri da imagem selecionada pelo usuário
-                .load(PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri)
-                // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-                .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
-                // Alvo da aplicação da imagem
-                .into(binding.playlistImgCpl)
-        }else{
+        if (PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri == ""){
             // Utilizando Glide, Procura na lista de músicas a posição da música em específico
             // e retorna sua imagem de álbum no lugar da ImageView da mesma
             Glide.with(this)
                 // Carrega a posição da primeira música e a uri da sua imagem
                 .load(PlaylistsActivity.playlists.modelo[posPlaylistAtual].playlist.getOrNull(0)?.imagemUri)
+                // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                // Alvo da aplicação da imagem
+                .into(binding.playlistImgCpl)
+        }else{
+            Glide.with(this)
+                // Carrega a uri da imagem selecionada pelo usuário
+                .load(PlaylistsActivity.playlists.modelo[posPlaylistAtual].imagemPlaylistUri)
                 // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
                 .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
                 // Alvo da aplicação da imagem

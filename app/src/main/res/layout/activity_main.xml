@@ -28,8 +28,8 @@
             android:layout_toStartOf="@id/configs_btn"
             android:ellipsize="end"
             android:fontFamily="@font/baloo_semibold"
-            android:maxLines="1"
-            android:textSize="26sp"/>
+            android:textColor="@color/black2"
+            android:maxLines="1" android:textSize="26sp"/>
 
         <!-- Botão de configurações -->
         <ImageButton

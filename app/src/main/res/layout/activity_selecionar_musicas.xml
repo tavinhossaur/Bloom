@@ -23,7 +23,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
-            android:src="@drawable/ic_round_keyboard_arrow_left_24" />
+            android:src="@drawable/ic_round_keyboard_arrow_left_24"/>
 
         <!-- Cabeçalho -->
         <LinearLayout
@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/btn_voltar_slc"
+            android:layout_toStartOf="@id/btn_add_slc"
             android:orientation="horizontal">
 
             <!-- Barra de pesquisa -->
@@ -44,6 +45,17 @@
                 app:searchIcon="@drawable/ic_round_search_24"/>
 
         </LinearLayout>
+
+        <!-- Botão para voltar à tela principal -->
+        <ImageView
+            android:id="@+id/btn_add_slc"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_round_check_24"/>
 
     </RelativeLayout>
 

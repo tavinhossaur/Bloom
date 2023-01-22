@@ -1,6 +1,7 @@
 package com.example.bloom
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -23,6 +24,10 @@ import java.io.File
 
 // Classe do Adapter que liga a lista de músicas aos itens do RecyclerView
 class MusicaAdapter(private val context: Context, private var listaMusicas: ArrayList<Musica>, private val activityPesquisar : Boolean = false, private val conteudoPlaylist : Boolean = false, private val activitySelecionar : Boolean = false, private val filaReproducao : Boolean = false) : RecyclerView.Adapter<MusicaAdapter.Holder>() {
+
+    // Lista de músicas selecionadas
+    private var listaSelecionados : ArrayList<Musica> = ArrayList()
+
     class Holder(binding: MusicViewLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
         val titulo = binding.tituloMusicaView    // Título da música
         val artista = binding.artistaMusicaView  // Artista da música
@@ -178,7 +183,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                     positiveButtonColorRes(R.color.purple1)
                                     onPositive("Sim, excluir") {
                                         // Criando o objeto "musica" com base nos dados da música que foi selecionada
-                                        val musica = Musica(listaMusicas[posicao].id, listaMusicas[posicao].titulo, listaMusicas[posicao].artista, listaMusicas[posicao].album, listaMusicas[posicao].duracao, listaMusicas[posicao].imagemUri, listaMusicas[posicao].caminho)
+                                        val musica = Musica(listaMusicas[posicao].id, listaMusicas[posicao].titulo, listaMusicas[posicao].artista, listaMusicas[posicao].album, listaMusicas[posicao].duracao, listaMusicas[posicao].imagemUri, listaMusicas[posicao].caminho, false)
                                         // Criando o objeto "arquivo" que leva o objeto "musica" e o seu caminho (url do arquivo no armazenamento do dispositivo)
                                         val arquivo = File(listaMusicas[posicao].caminho)
                                         // Exclui a música do armazenamento do dispositivo
@@ -223,89 +228,43 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
         }
 
         // Método para adição de músicas na playlist
-        fun adicionarMusica(musica : Musica) : Boolean{
-            // Pra cada música clicada
-            PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.forEachIndexed { index, musicas ->
-                // Verifica se ela já foi adicionada
-                if (musica.id == musicas.id){
-                    // Se já tiver sido adicionada, remova da lista
-                    // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
-                    val falseSheet = InfoSheet().build(context) {
-                        // Estilo do sheet (AlertDialog)
-                        style(SheetStyle.DIALOG)
-                        // Título do AlertDialog
-                        title("Essa música já foi adicionada")
-                        // Mensagem do AlertDialog
-                        content("Deseja remove-lá?")
-                        // Torna o objeto clicável novamente quando o diálogo for fechado
-                        onClose { holder.root.isEnabled = true }
-                        // Botão positivo que remove a música selecionada da playlist
-                        positiveButtonColorRes(R.color.purple1)
-                        onPositive("Sim, remover") {
-                            PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.removeAt(index)
-                            holder.botao.visibility = View.INVISIBLE
-                            // Torna o objeto clicável novamente
-                            holder.root.isEnabled = true
-                        }
-                        // Cor do botão negativo
-                        negativeButtonColorRes(R.color.grey3)
-                    }
-                    // Mostra o AlertDialog
-                    falseSheet.show()
-                    return false
-                }
-            }
-            // Se não foi selecionada, adicione ela a lista
-            // Criação do AlertDialog utilizando o InfoSheet da biblioteca "Sheets"
-            val addSheet = InfoSheet().build(context) {
-                // Estilo do sheet (AlertDialog)
-                style(SheetStyle.DIALOG)
-                // Título do AlertDialog
-                title("Adicionar música")
-                // Mensagem do AlertDialog
-                content("Deseja adicionar a música selecionada?")
-                // Torna o objeto clicável novamente quando o diálogo for fechado
-                onClose { holder.root.isEnabled = true }
-                // Botão positivo que remove a música selecionada da playlist
-                positiveButtonColorRes(R.color.purple1)
-                onPositive("Sim, adicionar") {
+        fun adicionarMusica(lista: ArrayList<Musica>) {
+            // Se a lista de músicas selecionadas estiver vazia, apenas encerra a activity
+            if (lista.isEmpty()) (context as Activity).finish()
+            else
+            // Caso contrário, verifica individualmente as músicas da lista e se elas já foram adicionadas
+            lista.forEachIndexed { _, musica ->
+                if (!PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.contains(musica)){
+                    // Se não foi adicionada, adicione ela a lista
                     PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.add(musica)
-                    if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].imagemPlaylistUri == ""){
-                        // Caso haja músicas na playlist, muda a imagem para a capa da primeira música do álbum, caso contrário volta para a imagem placeholder
-                        Glide.with(this)
-                            // Carrega a posição da música com base no index e a uri da sua imagem
-                            // "getOrNull" é utilizado para caso o index não exista.
-                            .load(PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.getOrNull(0)?.imagemUri)
-                            // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
-                            // junto do método centerCrop() para ajustar a imagem dentro da view
-                            .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
-                            // Alvo da aplicação da imagem
-                            .into(ConteudoPlaylistActivity.binding.playlistImgCpl)
-                    }
-                    holder.botao.visibility = View.VISIBLE
-                    // Torna o objeto clicável novamente
-                    holder.root.isEnabled = true
+                    // Volta para a playlist
+                    (context as Activity).finish()
+                    // Define as selecionadas como falso
+                    musica.selecionado = false
+                }else{
+                    Toast.makeText(context, "\"${musica.titulo}\" já foi adicionada!", Toast.LENGTH_SHORT).show()
+                    // Volta para a playlist
+                    (context as Activity).finish()
+                    // Define as selecionadas como falso
+                    musica.selecionado = false
                 }
-                // Cor do botão negativo
-                negativeButtonColorRes(R.color.grey3)
             }
-            // Mostra o AlertDialog
-            addSheet.show()
-            return true
+            // Emite um toast sinalizando a atualização da playlist
+            Toast.makeText(context, "Playlist atualizada!", Toast.LENGTH_SHORT).show()
         }
 
         // Em algumas telas, as views das músicas terão comportamentos específicos
-        when{
+        when {
             // Na tela do conteudoPlaylist
             conteudoPlaylist -> {
-                if (ConteudoPlaylistActivity.escuroContPl){
+                if (ConteudoPlaylistActivity.escuroContPl) {
                     // Muda a cor do ícone branco
                     holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.white), android.graphics.PorterDuff.Mode.SRC_IN)
                     // Muda a cor do título para uma cor mais clara
                     holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
                     // Cor do background
                     holder.root.setCardBackgroundColor(ContextCompat.getColor(context, R.color.black1))
-                }else{
+                } else {
                     // Muda a cor do ícone para branco
                     holder.botao.setColorFilter(ContextCompat.getColor(context, R.color.black), android.graphics.PorterDuff.Mode.SRC_IN)
                     // Muda a cor do título para uma cor mais clara
@@ -326,10 +285,10 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                         holder.titulo.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_grow_fade_in_from_bottom))
                     }else{
                         // Muda a cor do título com base no modo escuro
-                        if (ConteudoPlaylistActivity.escuroContPl){
+                        if (ConteudoPlaylistActivity.escuroContPl) {
                             // Cor clara do texto
                             holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.grey2))
-                        }else{
+                        } else {
                             // Cor escura do texto
                             holder.titulo.setTextColor(ContextCompat.getColor(context, R.color.black2))
                         }
@@ -368,7 +327,7 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                 Option(R.drawable.ic_round_delete_forever_24, "Excluir")
                             )
                         // Caso contrário (não favoritada)
-                        }else{
+                        } else {
                             // Então mostre as opções com a opção de desfavoritar a música
                             with(
                                 Option(R.drawable.ic_round_favorite_menu_24, "Desfavoritar"),
@@ -378,28 +337,28 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                             )
                         }
                         onPositive { index: Int, _: Option ->
-                            when(index){
+                            when (index) {
                                 // Favoritar/Desfavoritar música
                                 0 -> {
                                     PlayerActivity.favIndex = checarFavoritos(listaMusicas[posicao].id)
                                     // Se a música já estiver favoritada
-                                    if (PlayerActivity.favoritado){
+                                    if (PlayerActivity.favoritado) {
                                         // Então defina a variável favoritado para false
                                         PlayerActivity.favoritado = false
                                         // Mude o ícone para o coração vazio de desfavoritado das views do miniplayer e da notificação
                                         // apenas se elas estiverem sendo visíveis e a música selecionada for a mesma tocando
-                                        if (PlayerActivity.musicaService != null && listaMusicas[posicao].id == PlayerActivity.musicaAtual){
+                                        if (PlayerActivity.musicaService != null && listaMusicas[posicao].id == PlayerActivity.musicaAtual) {
                                             setBtnsNotify()
                                         }
                                         // E remova a música da lista de favoritos utilizando o indicador favIndex
                                         FavoritosActivity.listaFavoritos.removeAt(PlayerActivity.favIndex)
                                         // Caso contrário (música desfavoritada)
-                                    }else{
+                                    } else {
                                         // Então defina a variável favoritado para true
                                         PlayerActivity.favoritado = true
                                         // Mude o ícone para o coração cheio de favoritado das views do miniplayer e da notificação
                                         // apenas se elas estiverem sendo visíveis e a música selecionada for a mesma tocando
-                                        if (PlayerActivity.musicaService != null && listaMusicas[posicao].id == PlayerActivity.musicaAtual){
+                                        if (PlayerActivity.musicaService != null && listaMusicas[posicao].id == PlayerActivity.musicaAtual) {
                                             setBtnsNotify()
                                         }
                                         // E adicione a música atual a lista de favoritos
@@ -437,13 +396,14 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                             notifyItemRemoved(posicao)
                                             atualizarPlaylists()
                                             // Se a playlist ficar com menos de uma música, esconde e mostra as views abaixo
-                                            if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.size < 1){
+                                            if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.size < 1) {
                                                 ConteudoPlaylistActivity.binding.playlistImgCpl.setImageResource(R.drawable.bloom_lotus_icon_grey)
                                                 ConteudoPlaylistActivity.binding.fabRandomCpl.visibility = View.INVISIBLE
                                                 ConteudoPlaylistActivity.binding.musicasPlaylistRv.visibility = View.INVISIBLE
                                                 ConteudoPlaylistActivity.binding.avisoCpl.visibility = View.VISIBLE
                                                 ConteudoPlaylistActivity.binding.btnAddMusicas.visibility = View.VISIBLE
                                             }
+                                            atualizarImagem()
                                         }
                                         // Botão negativo que apenas fecha o diálogo
                                         negativeButtonColorRes(R.color.grey3)
@@ -470,7 +430,16 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                             positiveButtonColorRes(R.color.purple1)
                                             onPositive("Sim, excluir") {
                                                 // Criando o objeto "musica" com base nos dados da música que foi selecionada
-                                                val musica = Musica(listaMusicas[posicao].id, listaMusicas[posicao].titulo, listaMusicas[posicao].artista, listaMusicas[posicao].album, listaMusicas[posicao].duracao, listaMusicas[posicao].imagemUri, listaMusicas[posicao].caminho)
+                                                val musica = Musica(
+                                                    listaMusicas[posicao].id,
+                                                    listaMusicas[posicao].titulo,
+                                                    listaMusicas[posicao].artista,
+                                                    listaMusicas[posicao].album,
+                                                    listaMusicas[posicao].duracao,
+                                                    listaMusicas[posicao].imagemUri,
+                                                    listaMusicas[posicao].caminho,
+                                                    false
+                                                )
                                                 // Criando o objeto "arquivo" que leva o objeto "musica" e o seu caminho (url do arquivo no armazenamento do dispositivo)
                                                 val arquivo = File(listaMusicas[posicao].caminho)
                                                 // Exclui a música do armazenamento do dispositivo
@@ -481,16 +450,17 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
                                                 notifyItemRemoved(posicao)
                                                 // E atualiza a lista da playlist e a principal
                                                 atualizarPlaylists()
-                                                atualizarLista(MainActivity.listaMusicaMain)
+                                                // atualizarLista(MainActivity.listaMusicaMain)
 
                                                 // Se a playlist ficar com menos de uma música, esconde e mostra as views abaixo
-                                                if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.size < 1){
+                                                if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.size < 1) {
                                                     ConteudoPlaylistActivity.binding.playlistImgCpl.setImageResource(R.drawable.bloom_lotus_icon_grey)
                                                     ConteudoPlaylistActivity.binding.fabRandomCpl.visibility = View.INVISIBLE
                                                     ConteudoPlaylistActivity.binding.musicasPlaylistRv.visibility = View.INVISIBLE
                                                     ConteudoPlaylistActivity.binding.avisoCpl.visibility = View.VISIBLE
                                                     ConteudoPlaylistActivity.binding.btnAddMusicas.visibility = View.VISIBLE
                                                 }
+                                                atualizarImagem()
                                             }
                                             // Cor do botão negativo
                                             negativeButtonColorRes(R.color.grey3)
@@ -527,16 +497,40 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
 
                 // Esconde a duração da música que não tem utilidade nessa tela
                 holder.duracao.visibility = View.INVISIBLE
-                // Esconde o ícone de selecionado inicialmente
+                // Esconde o ícone de selecionado
                 holder.botao.visibility = View.INVISIBLE
                 // Define o botão como não clicável
                 holder.botao.isClickable = false
                 // Quando a música for clicada
                 holder.root.setOnClickListener{
-                    // Previne que o usuário crie duas sheets ao dar dois cliques rápidos
-                    holder.root.isEnabled = false
-                    // E chama o método para adicionar a música selecionada
-                    adicionarMusica(listaMusicas[posicao])
+                    // Verifica se ela já foi selecionada
+                    if (listaMusicas[posicao].selecionado) {
+                        // Caso sim, define como falso a variável selecionado
+                        listaMusicas[posicao].selecionado = false
+                        // Remove da lista de músicas selecionadas
+                        listaSelecionados.remove(listaMusicas[posicao])
+                        // E torna o ícone de confirmação de seleção invisível
+                        holder.botao.visibility = View.INVISIBLE
+                    // Caso contrário
+                    } else {
+                        // Define como verdadeiro
+                        listaMusicas[posicao].selecionado = true
+                        // Adiciona a lista de músicas selecionadas
+                        listaSelecionados.add(listaMusicas[posicao])
+                        // E torna visível o ícone de confirmação
+                        holder.botao.visibility = View.VISIBLE
+                    }
+                    // Se o número de músicas selecionadas for maior ou igual a um, libera o botão de adicionar músicas
+                    if (listaSelecionados.size >= 1) SelecionarMusicasActivity.binding.btnAddSlc.visibility = View.VISIBLE
+                    // Caso contrário, esconde.
+                    else SelecionarMusicasActivity.binding.btnAddSlc.visibility = View.GONE
+                }
+                // Passa o método para o botão de adicionar
+                SelecionarMusicasActivity.binding.btnAddSlc.setOnClickListener {
+                    // Muda a animação do botão ao ser clicado
+                    SelecionarMusicasActivity.binding.btnAddSlc.startAnimation(AnimationUtils.loadAnimation(context, androidx.appcompat.R.anim.abc_popup_exit))
+                    // Chama o método de adicionar músicas a playlist com base na lista de músicas selecionadas
+                    adicionarMusica(listaSelecionados)
                 }
             }
             // No card da fila de reprodução
@@ -647,6 +641,29 @@ class MusicaAdapter(private val context: Context, private var listaMusicas: Arra
         listaMusicas = ArrayList()
         listaMusicas.addAll(lista)
         notifyDataSetChanged()
+    }
+
+    fun atualizarImagem(){
+        // Se o usuário já escolheu uma imagem
+        if (PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].imagemPlaylistUri == ""){
+            // Utilizando Glide, Procura na lista de músicas a posição da música em específico
+            // e retorna sua imagem de álbum no lugar da ImageView da mesma
+            Glide.with(context)
+                // Carrega a posição da primeira música e a uri da sua imagem
+                .load(PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].playlist.getOrNull(0)?.imagemUri)
+                // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                // Alvo da aplicação da imagem
+                .into(ConteudoPlaylistActivity.binding.playlistImgCpl)
+        }else{
+            Glide.with(context)
+                // Carrega a uri da imagem selecionada pelo usuário
+                .load(PlaylistsActivity.playlists.modelo[ConteudoPlaylistActivity.posPlaylistAtual].imagemPlaylistUri)
+                // Faz a aplicação da imagem com um placeholder caso a música não tenha nenhuma imagem ou ela ainda não tenha sido carregada
+                .apply(RequestOptions().placeholder(R.drawable.bloom_lotus_icon_grey).centerCrop())
+                // Alvo da aplicação da imagem
+                .into(ConteudoPlaylistActivity.binding.playlistImgCpl)
+        }
     }
 
     // Método para atualizar a lista de playlists

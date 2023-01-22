@@ -397,7 +397,8 @@ class MainActivity : AppCompatActivity() {
                         album = albumC,
                         duracao = duracaoC,
                         caminho = caminhoC,
-                        imagemUri = imagemUriC
+                        imagemUri = imagemUriC,
+                        selecionado = false
                     )
                     // Passando o caminho da música para uma constante que o identifica como um arquivo
                     val arquivo = File(musica.caminho)

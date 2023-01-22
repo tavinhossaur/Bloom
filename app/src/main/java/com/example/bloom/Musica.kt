@@ -13,7 +13,8 @@ data class Musica(
     val album:String,
     val duracao:Long = 0,
     val imagemUri:String,
-    val caminho: String)
+    val caminho: String,
+    var selecionado : Boolean)
 
 class Playlist {
     lateinit var nome : String
