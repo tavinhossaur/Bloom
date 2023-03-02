@@ -1,12 +1,23 @@
 # Bloom
 Bloom | A offline music player developed in Kotlin. | 2022
 
-Details:
+### Details:
 - Bloom isn't a streaming music-player like Spotify or YouTube Music, it fetches the songs on your device and shows in the app.
 - Bloom is only available in brazilian portuguese.
 - Bloom was primarily developed for smartphones, so there may be bugs on tablets.
 
 ![repository-open-graph-template](https://user-images.githubusercontent.com/64261696/195580109-4c24b030-23e5-4f40-8ee8-a433a18dac97.png)
+
+## Specs
+- Android Oreo (8.0) or higher
+- Developed in Kotlin
+- Build in Gradle
+
+### Dependencies
+- Glide by bumptech
+- Sheets by maxkeppeler
+- Android Gif Drawable by koral--
+- JavaMail-API-Android by Oracle
 
 ## Screenshots
 ### Main screen (light mode)
